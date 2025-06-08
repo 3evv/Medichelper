@@ -4,7 +4,7 @@
 // @match       http://localhost:8000/*,
 // @match       http*://medicus.usk/*
 // @grant       none
-// @version     1.1
+// @version     1.11
 // @author      3evv
 // @description 6/8/2025, 10:37:03 PM
 // ==/UserScript==

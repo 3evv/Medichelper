@@ -1,7 +1,8 @@
 // ==UserScript==
 // @name        Medichelper
 // @namespace   Violentmonkey Scripts
-// @match       http://localhost:8000/*, https://medicus.usk/*, http://medicus.usk/*
+// @match       http://localhost:8000/*,
+// @match       http*://medicus.usk/*
 // @grant       none
 // @version     1.1
 // @author      3evv

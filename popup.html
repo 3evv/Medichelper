@@ -1,16 +1,129 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
+<html lang="en" id="plugin_popup">
+<head class="popup">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Extension Popup</title>
+    <title> Medicus Helper Extension</title>
+    <style>
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider::before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #448eca;
+        }
+
+        input:checked + .slider::before {
+            transform: translateX(26px);
+        }
+
+        .popup {
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px 20px rgba(0, 0, 0, 0.5);
+        background-color: #3d3d3d;
+        width: fit-content;
+        margin: 0px;
+        padding: 2px;
+        margin: 5px;
+        }
+
+        .onswich {
+            text-align: center;
+            background-color:black;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-radius: 6px;
+            align-items: center;
+            gap: 5px;
+            padding: 5px;
+            margin-bottom: 2px;
+            width: 80px;
+            height: auto;
+        }
+        .Logo {
+            position: absolute;
+            width: 100%;
+            height: auto;
+            top: 0px;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+        }
+        .Logo_holder {
+            position: relative;
+            top: 0px;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            width: 100%;
+            height: auto;
+        }
+        .Settings {
+            width: 100%;
+            height: auto;
+            top: 0px;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            position: absolute;
+        }
+        .Logo_parent{
+            /* position: absolute; */
+            width: 80px;
+            height: 80px;
+            margin: 1px;
+        }
+
+    </style>
     <script src="popup.js"></script>
 </head>
-<body>
-    
-    <label for="badanie_przedmiotowe">Badanie Przedmiotowe:</label>
-    <input type="text" id="badanie_przedmiotowe" name="badanie_przedmiotowe">
-    <p id="statusMessage"></p>  <!-- This is where messages will be displayed -->
-    <button id="submitButton">Submit</button>
+<body class="popup" >
+    <div class="onswich"> 
+        <div class="Logo_parent">
+        <div class="Logo_holder" id="Logo_holder">
+        <img style="border-radius: 6px; " src="./images/icon128.jpeg" class="Logo" id="Logo"/>
+        <img style="border-radius: 6px; display: none; " src="./images/settings_icon.png" class="Settings" id="Settings"/>
+        </div>
+    </div>
+    <label style="width: max;" class="switch">
+        <input type="checkbox" id="toggleSwitch">
+        <span class="slider"></span>
+    </label>
+    </div>
 </body>
 </html>

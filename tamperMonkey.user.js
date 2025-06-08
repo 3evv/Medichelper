@@ -1,14 +1,12 @@
 // ==UserScript==
 // @name        Medichelper
 // @namespace   Violentmonkey Scripts
-// @match       *://medicus.usk/*, C:/Users/*
+// @match       http://localhost:8000/*, https://medicus.usk/*, http://medicus.usk/*
 // @grant       none
 // @version     1.0
-// @author      -
+// @author      3evv
 // @description 6/8/2025, 10:37:03 PM
 // ==/UserScript==
-
-//test auto-update
 
 if (document.readyState !== 'loading') {
     console.log('document is already ready, just execute code here');

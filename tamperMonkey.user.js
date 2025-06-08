@@ -3,7 +3,7 @@
 // @namespace   Violentmonkey Scripts
 // @match       http://localhost:8000/*, https://medicus.usk/*, http://medicus.usk/*
 // @grant       none
-// @version     1.0001
+// @version     1.1
 // @author      3evv
 // @description 6/8/2025, 10:37:03 PM
 // ==/UserScript==

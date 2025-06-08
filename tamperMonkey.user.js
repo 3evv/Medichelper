@@ -8,6 +8,8 @@
 // @description 6/8/2025, 10:37:03 PM
 // ==/UserScript==
 
+//test auto-update
+
 if (document.readyState !== 'loading') {
     console.log('document is already ready, just execute code here');
     fireExt();

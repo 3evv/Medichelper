@@ -4,7 +4,7 @@
 // @match       http://localhost:8000/*
 // @match       http*://medicus.usk/*
 // @grant       none
-// @version     1.12
+// @version     1.13
 // @author      3evv
 // @description 6/8/2025, 10:37:03 PM
 // @icon	https://raw.githubusercontent.com/3evv/Medichelper/main/images/icon128.jpeg	
@@ -23,41 +23,53 @@ if (document.readyState !== 'loading') {
 }
 
 function fireExt(){
-    const typ_strony = document.getElementsByName("x_procedura_id")[0]?.value;
-    console.log("Skrypt Medichelper działa. " + typ_strony);
-
-
-    if(typ_strony !== undefined){
-    switch(typ_strony){
-      case '1740':
-          handleBadaniePodmiotowe();
-          handleOcenaStanuPsychicznego();
-          handleOcenaStanuSpołecznego();
-      break;
-      case '252':
-        handlePlanDiagnostyczny();
-        handlePlanTerapeutyczny();
-        handleOczekiwaneEfekty();
-        selectOpisujący();
-      break;
-      default:
-        console.log("Inny typ strony: " + typ_strony);
-      };
-    } else {
       const nazwa_headera = document.getElementById("header").querySelector('.templateEditPageTitle').textContent;
       console.log(nazwa_headera);
       switch(nazwa_headera){
         case 'Zlecenie badań':
         handleBadaniaLaboratoryjne();
         break;
+        case 'Badanie podmiotowe i przedmiotowe - Neurochirurgii':
+          handleNeurochirurgia();
+          break;
+        case 'Badanie podmiotowe i przedmiotowe - Klinika Kardiologii':
+          handleInterna();
+          break;
+        case 'Proponowany plan diagnostyczno-terapeutyczny':
+          handlePlanDiagnostycznoTerapeutyczny();
+          break;
+        case 'Ocena ryzyka związanego ze stanem odżywiania (NRS 2002)':
+          handleNRS();
+          break;
+        case 'Obserwacje lekarskie':
+          handleObserwacje();
+          break;
+        case 'Zlecenie leku':
+          handleZlecenieLekow();
         default:
           console.log("Inny typ strony: " + nazwa_headera);
       }
-    }
 };
 
+function handleNeurochirurgia(){
+          handleBadaniePodmiotoweNeurochirurgia();
+          handleOcenaStanuPsychicznego();
+          handleOcenaStanuSpołecznego();
+};
+function handleInterna(){
+        handleBadaniePodmiotoweInterna();
+        handleOcenaStanuPsychicznego();
+        handleOcenaStanuSpołecznego();
+}
 
-  function handleBadaniePodmiotowe(){
+function handlePlanDiagnostycznoTerapeutyczny(){
+        handlePlanDiagnostyczny();
+        handlePlanTerapeutyczny();
+        handleOczekiwaneEfekty();
+        selectOpisujący();
+}
+
+  function handleBadaniePodmiotoweNeurochirurgia(){
   let poleBadaniePrzedmiotowe = document.getElementsByName("skladniki_procedury_4335")[0];
 
   poleBadaniePrzedmiotowe.style.position = 'relative';
@@ -251,6 +263,202 @@ ${papierosy? "Pali papierosy, ok. X dziennie.":"Nie pali papierosów."} ${alkoho
   poleBadaniePrzedmiotowe.onkeydown = disableCopy;
 
 };
+
+function handleBadaniePodmiotoweInterna(){
+  let poleBadaniePrzedmiotowe = document.getElementsByName("skladniki_procedury_4335")[0];
+
+  poleBadaniePrzedmiotowe.style.position = 'relative';
+  let parent = document.createElement('div');
+  parent.style.position = 'absolute';
+  parent.style.backgroundColor = 'invisible';
+  parent.style.borderRadius = '2px';
+  parent.style.left = (poleBadaniePrzedmiotowe.getBoundingClientRect().right + 20) + 'px';
+  parent.style.top =  poleBadaniePrzedmiotowe.getBoundingClientRect().top + 'px';
+  parent.style.width = '27%';
+  parent.style.display = 'flex';
+  parent.style.flexDirection = 'column';
+  parent.style.justifyContent = 'center';
+
+  popup = document.createElement('div');
+  popup.style.position = 'relative';
+  popup.style.backgroundColor = 'gray';
+  popup.style.gap = '5px';
+  popup.style.padding = '3px';
+  popup.style.borderRadius = '5px';
+  popup.style.display = 'flex';
+  popup.style.flexGrow = '1';
+  popup.style.flexDirection = 'column';
+  popup.style.justifyContent = 'space-around';
+  popup.style.alignContent = 'center';
+
+  const patientInfos = document.querySelectorAll('#header .templateEditPageSubTitle b');
+  let personal_data = patientInfos[0].innerHTML;
+  let date_of_procedure = patientInfos[1].innerHTML;
+
+  beg_of_PESEL = personal_data.indexOf('(') + 1;
+  end_of_PESEL = personal_data.indexOf(')');
+  let PESEL = personal_data.substring(beg_of_PESEL, end_of_PESEL);
+
+  function calculateAge(){
+    PESEL = PESEL.replace(/[^0-9]/g, '');
+    PESEL = PESEL.substring(0, 6);
+    // console.log(PESEL);
+    let year = parseInt(PESEL.substring(0,2));
+    let month = parseInt(PESEL.substring(2,4));
+    if (month > 20) {
+      year += 1999;
+    } else {
+      year += 1900;
+      month -= 20;
+    }
+    let day = parseInt(PESEL.substring(4,6));
+    let currentDate = new Date();
+    let currentYear = currentDate.getFullYear();
+    let currentMonth = currentDate.getMonth() + 1;
+    let currentDay = currentDate.getDate();
+    let age = currentYear - year;
+    if (currentMonth < month || (currentMonth == month && currentDay < day)) {
+      age--;
+    }
+    return age;
+  };
+
+  let age = calculateAge();
+  let tryb = true;
+  let oddział = 'Kliniki Kardiologii i Chorób Wewnętrznych';
+  let cel_przyjecia = '';
+  let choroby_przewlekle = true;
+  let leki = true;
+  let operacje = true;
+  let papierosy = false;
+  let alkohol = true;
+  let alergie = false;
+  let pasted_podmiotowe = false;
+
+  const suggestionText = document.createElement('div');
+  suggestionText.style.display = 'flex';
+  suggestionText.style.flexDirection = 'column';
+  suggestionText.style.flexGrow = 1;
+  suggestionText.style.justifyContent = 'space-between';
+  suggestionText.style.alignContent = 'center';
+  suggestionText.style.padding = '2px';
+  // suggestionText.style.select
+
+  // suggestionText.style.flexGrow = 1;
+
+  function generateSuggestionText() {
+  suggestionText.innerHTML = `
+  <div style= "gap: 10px;">
+  <div class="info"> Pacjent lat: ${age} przyjęty w trybie <span id=tryb_status>${tryb? 'planowym' : 'pilnym'}</span> do ${oddział} celem ${cel_przyjecia}. Pacjent zgłasza następujące dolegliwości: </div>
+  <div class="info" id="choroby_status"> ${choroby_przewlekle? "Choroby przewlekłe:" : "Nie choruje przewlekle"} </div>
+  <div class="info" id="leki_status"> ${leki? "Przyjmuje następujące leki:" : "Nie przyjmuje leków na stałe."} </div>
+  <div class="info" id="alergie_status"> ${alergie? "!Alergie: " : "Alergie neguje."} </div>
+  <div class="info" id="operacje_status"> ${operacje? "Operacje chirurgiczne w przeszłości:" : "Operacje chirurgiczne w przeszłości neguje."}  </div>
+  <div class="info" id="fajki_status"> ${papierosy? "Pali papierosy, ok. X dziennie.":"Nie pali papierosów."} </div>
+  <div class="info" id="alko_status" > ${alkohol? "Spożywa alkohol okazjonalnie.":"Nie spożywa alkoholu."} </div>
+  </div>
+  <div style="display: flex; justify-content: flex-end ;"> <button id="paste_button">  ${pasted_podmiotowe?  "Wyłącz auto-wklej": "<<< Wklej <<<" } </button> </div>
+  `
+  };
+
+  generateSuggestionText();
+
+    suggestionText.onclick = (e) => {
+      e.stopPropagation();
+      switch (e.target.id) {
+
+      case "alko_status":
+        alkohol = !alkohol;
+        break;
+      case "fajki_status":
+        papierosy = !papierosy;
+        break;
+      case "operacje_status":
+        operacje = !operacje;
+        break;
+      case "leki_status":
+        leki = !leki;
+        break;
+      case "tryb_status":
+        tryb = !tryb;
+        break;
+      case "choroby_status":
+        choroby_przewlekle = !choroby_przewlekle;
+        break;
+      case "alergie_status":
+        alergie = !alergie
+        break;
+      case "paste_button":
+        pasted_podmiotowe = !pasted_podmiotowe;
+        break;
+      };
+
+      generateSuggestionText();
+      if(pasted_podmiotowe){
+      copySuggestion();
+      }
+
+  };
+
+  if(poleBadaniePrzedmiotowe.value == ""){
+    pasted_podmiotowe = true;
+    copySuggestion();
+  };
+  generateSuggestionText();
+
+
+  function copySuggestion() {
+    let tempInput = `Pacjent lat: ${age} przyjęty w trybie ${tryb? 'planowym' : 'pilnym'} do ${oddział} celem ${cel_przyjecia}. Pacjent zgłasza następujące dolegliwości:
+${choroby_przewlekle? "Choroby przewlekłe:" : "Nie choruje przewlekle."}
+${leki? "Przyjmuje następujące leki:" : "Nie przyjmuje leków na stałe."}
+${alergie? "!Alergie: " : "Alergie neguje."}
+${operacje? "Operacje chirurgiczne w przeszłości:" : "Operacje chirurgiczne w przeszłości neguje."}
+${papierosy? "Pali papierosy, ok. X dziennie.":"Nie pali papierosów."} ${alkohol? "Spożywa alkohol okazjonalnie.":"Nie spożywa alkoholu."} `;
+  poleBadaniePrzedmiotowe.value = tempInput;
+  }
+
+  function disableCopy() {
+    pasted_podmiotowe = false;
+    generateSuggestionText();
+
+  };
+
+  suggestionText.style.color = 'black'; // Optional styling for the text color
+  suggestionText.style.whiteSpace = 'whiteSpace'; // Add this line to enable multiline text
+
+  popup.appendChild(suggestionText);
+  parent.appendChild(popup);
+
+
+
+
+  function updateFieldHeight() {
+    marg_bottom = parseFloat(window.getComputedStyle(poleBadaniePrzedmiotowe).marginBottom);
+    parent.style.left = (poleBadaniePrzedmiotowe.getBoundingClientRect.right + 20) + 'px';
+    parent.style.top = poleBadaniePrzedmiotowe.getBoundingClientRect.top + 'px';
+    if (poleBadaniePrzedmiotowe.getBoundingClientRect().height > popup.getBoundingClientRect().height){
+    popup.style.height = poleBadaniePrzedmiotowe.getBoundingClientRect().height + 'px';
+    } else {
+      if(poleBadaniePrzedmiotowe.getBoundingClientRect().height > minimal_przedmiotowe_suggestion_height) {
+      popup.style.height = poleBadaniePrzedmiotowe.getBoundingClientRect().height + 'px';
+      } else {
+       poleBadaniePrzedmiotowe.style.height = minimal_przedmiotowe_suggestion_height + marg_bottom + 'px';
+       popup.style.height = poleBadaniePrzedmiotowe.getBoundingClientRect().height + 'px'
+      }
+    }
+    parent.style.left = (poleBadaniePrzedmiotowe.getBoundingClientRect().right + 20) + 'px';
+  };
+
+
+  window.onclick = updateFieldHeight;
+  poleBadaniePrzedmiotowe.onclick = updateFieldHeight;
+  document.body.appendChild(parent);
+  let minimal_przedmiotowe_suggestion_height = popup.getBoundingClientRect().height;
+  updateFieldHeight();
+  poleBadaniePrzedmiotowe.onkeydown = disableCopy;
+
+};
+
 
 function  handleOcenaStanuPsychicznego(){
   let OcenaStanuPsychicznego = document.getElementsByName("skladniki_procedury_4350")[0];
@@ -885,13 +1093,18 @@ function handleBadaniaLaboratoryjne(){
   popup.style.justifyContent = 'space-around';
   popup.style.alignContent = 'center';
 
-  let kontakt = true;
+
   let przyjety = false;
-  let oddział = 'Kliniki Neurochirurgii';
   let podstawowy_zestaw = false;
-  let pasted_mode= false; 
-  let id_do_klikniecia = ['wykonanie_poz_pak_290443', 'wykonanie_poz_pak_290583', 'wykonanie_poz_pak_290627', 'wykonanie_poz_pak_290544', 'wykonanie_poz_pak_290590', 'wykonanie_poz_pak_290408', 'wykonanie_poz_pak_290472', 'wykonanie_poz_pak_290518', 'wykonanie_poz_pak_290603'];
-  
+  let kardiografia_zestaw = false;
+  let pielegniarskie_zestaw = false;
+  let pasted_mode = false; 
+  let hemodynamika_zestaw = false;
+  let id_do_klikniecia_podstawowe = ['wykonanie_poz_pak_290443', 'wykonanie_poz_pak_290583', 'wykonanie_poz_pak_290627', 'wykonanie_poz_pak_290544', 'wykonanie_poz_pak_290590', 'wykonanie_poz_pak_290408', 'wykonanie_poz_pak_290472', 'wykonanie_poz_pak_290518', 'wykonanie_poz_pak_290603'];
+  let id_do_klikniecia_koronarografia = ['wykonanie_poz_pak_290583', 'wykonanie_poz_pak_290544', 'wykonanie_poz_pak_290590', 'wykonanie_poz_pak_290408', 'wykonanie_poz_pak_290472', 'wykonanie_poz_pak_290518', 'wykonanie_poz_pak_290603', 'wykonanie_poz_pak_290586', 'wykonanie_poz_pak_290607', 'wykonanie_poz_pak_290651', 'wykonanie_poz_pak_290584', 'wykonanie_poz_pak_290524'];
+  let id_do_klikniecia_pielegniarskie = ['wykonanie_poz_pak_252588', 'wykonanie_poz_pak_252587'];
+  let id_do_klikniecia_hemodynamika =  ['wykonanie_poz_pak_252570', 'wykonanie_poz_pak_252591', 'wykonanie_poz_pak_252590', 'wykonanie_poz_pak_252573'];
+
   
   const suggestionText = document.createElement('div');
   suggestionText.style.display = 'flex';
@@ -901,47 +1114,67 @@ function handleBadaniaLaboratoryjne(){
   suggestionText.style.alignContent = 'center';
   suggestionText.style.padding = '2px';
 
+  
   function generateSuggestionText() { 
   suggestionText.innerHTML = `
   <div style= "gap: 10px;">
   <div class="info">  <span id=przyjecie_status style='${przyjety? '' : 'text-decoration: line-through; color: #6F0001;'}'>Badania kontrolne przy przyjęciu na oddział.</span></div>
   </div>
-  <div style= "gap: 5px; display: flex; flex-direction: row; width: 100%; justify-content: center;">
+  <div style= "gap: 5px; display: flex; flex-direction: column; width: 100%; justify-content: center;">
   <div style="width: 100%"> <button id="badania_podstawowe_button" style="width: 100%">  ${podstawowy_zestaw?  "Odklikaj podstawowy zestaw" : "Zleć podstawowy zestaw" } </button> </div>
+  <div style="width: 100%"> <button id="badania_kardiografia_button" style="width: 100%">  ${kardiografia_zestaw?  "Odklikaj zestaw koronarografii" : "Zleć zestaw do koronarografii" } </button> </div>
+  <div style="width: 100%"> <button id="badania_pielegniarskie_button" style="width: 100%">  ${pielegniarskie_zestaw?  "Odklikaj zestaw pielegniarski" : "Zleć zestaw do pielegniarski" } </button> </div>
+  <div style="width: 100%"> <button id="hemodynamika_button" style="width: 100%">  ${hemodynamika_zestaw?  "Odklikaj hemodynamike" : "Zleć hemodynamike" } </button> </div>
   </div>
-  <div style="display: flex; justify-content: flex-end ;"> <button id="paste_button">  ${pasted_mode?  "Wyłącz auto-wklej": "<<< Wklej <<<" } </button> </div>
   `
   };
 
 
-  function click_podstawowe(){
+  function click_badanie(przymiarka_bool,id_do_klikniecia){
     
     for (let id in id_do_klikniecia){
       let clicked_element = document.getElementById(id_do_klikniecia[id]);
-      if(clicked_element.hasAttribute('uwzg') != podstawowy_zestaw){
+      if(clicked_element.hasAttribute('uwzg') != przymiarka_bool){
         clicked_element.click();
       }
       // console.log(id_do_klikniecia[id]);
     }
   }
-  generateSuggestionText();
 
-      suggestionText.onclick = (e) => {
-      e.stopPropagation();
-      switch (e.target.id) {
+
+  function select_case(target){
+    switch (target) {
 
       case "przyjecie_status":
         przyjety = !przyjety;
         break;
       case "badania_podstawowe_button":
         podstawowy_zestaw = !podstawowy_zestaw;
-        click_podstawowe();
+        click_badanie(podstawowy_zestaw, id_do_klikniecia_podstawowe);
         break;
-      case "paste_button":
-        pasted_mode = !pasted_mode; 
+      case "badania_kardiografia_button":
+        kardiografia_zestaw = !kardiografia_zestaw;
+        click_badanie(kardiografia_zestaw, id_do_klikniecia_koronarografia);
         break;
-      };
+      case "badania_pielegniarskie_button":
+        pielegniarskie_zestaw = !pielegniarskie_zestaw;
+        click_badanie(pielegniarskie_zestaw, id_do_klikniecia_pielegniarskie);
+        break;
+      case "hemodynamika_button":
+        hemodynamika_zestaw = !hemodynamika_zestaw;
+        click_badanie(hemodynamika_zestaw, id_do_klikniecia_hemodynamika);
+        break;
+      
+      default:
+        
+      }
+  };
 
+  generateSuggestionText();
+
+      suggestionText.onclick = (e) => {
+      e.stopPropagation();
+      select_case(e.target.id);
       generateSuggestionText();
       if(pasted_mode){
       copySuggestion();
@@ -1007,3 +1240,155 @@ function selectOpisujący(){
     document.getElementsByName("rola_3733_default_values_button")[0].click();
   }
 };
+
+function handleNRS(){
+  button_panel = document.getElementById('buttons');
+  button_panel.querySelector('ul').innerHTML += `<li style="margin-left:0;margin-right:10px;display:inline;">
+  <button id="nrs" class="mdl-button editTemplateButtons mdl-js-button mdl-button--raised mdl-js-ripple-effect" style="background-color: #B2F797; border-radius:4px;"> Wszystko ok </button>
+  </li>`;
+  if(document.getElementsByName("karta_zywienia_asystujacy_l_user_id")[0].hasAttribute('selected')){
+    document.getElementsByName("karta_zywienia_asystujacy_l_user_id_default_values_button")[0].click();
+  }
+  document.getElementsByName("karta_zywienia_dataczas_default_values_button")[0].click();
+  document.getElementById("karta_zywienia_nrs_pogorszenie_stanu_dozyw1").click();
+  document.getElementById("karta_zywienia_nrs_nasilenie_choroby1").click();
+  document.getElementsByName("btn_ok")[0].click();
+}
+
+function handleObserwacje(){
+  let Obserwacjefield = document.getElementsByName("raport_tresc")[0];
+  Obserwacjefield.style.position = 'relative';
+  let parent = document.createElement('div');
+  parent.style.position = 'absolute';
+  parent.style.backgroundColor = 'invisible';
+  parent.style.borderRadius = '2px';
+  parent.style.left = (Obserwacjefield.getBoundingClientRect().right + 20) + 'px';
+  parent.style.top =  Obserwacjefield.getBoundingClientRect().top + 'px';
+  parent.style.width = '27%';
+  parent.style.display = 'flex';
+  parent.style.flexDirection = 'column';
+  parent.style.justifyContent = 'center';
+
+  popup = document.createElement('div');
+  popup.style.position = 'relative';
+  popup.style.backgroundColor = 'gray';
+  popup.style.gap = '5px';
+  popup.style.padding = '3px';
+  popup.style.borderRadius = '5px';
+  popup.style.display = 'flex';
+  popup.style.flexGrow = '1'; 
+  popup.style.flexDirection = 'column';
+  popup.style.justifyContent = 'space-around';
+  popup.style.alignContent = 'center';
+
+  let stan_dobry = true;
+  let stan_wydolnosci = true;
+ let stan_lekiibadania = true;
+ let stan_zgody = true;
+  let pasted_mode= false; 
+
+  const suggestionText = document.createElement('div');
+  suggestionText.style.display = 'flex';
+  suggestionText.style.flexDirection = 'column';
+  suggestionText.style.flexGrow = 1;
+  suggestionText.style.justifyContent = 'space-between';
+  suggestionText.style.alignContent = 'center';
+  suggestionText.style.padding = '2px';
+
+  function generateSuggestionText() { 
+  suggestionText.innerHTML = `
+  <div style= "gap: 10px;">
+  <div class="info">  <span id=stan_status>${stan_dobry? 'Przy przyjęciu stan ogólny dość dobry.' : 'Przy przyjęciu stan ogólny średni.'}</span></div>
+  <div class="info">  <span id=wydolnosci_status>${stan_wydolnosci? 'Wydolny k-o.' : 'Niewydolny k-o.'}</span></div>
+  <div class="info">  <span id=stan_lekiibadania>${stan_lekiibadania? 'Leki zlecono, badania zlecono.' : 'Leków nie zlecono.'}</span></div>
+  <div class="info">  <span id=stan_zgody style='${stan_zgody? '' : 'text-decoration: line-through; color: #6F0001;'}'>Wyraził zgodę na zabieg.</span></div>
+  </div>
+  <div style="display: flex; justify-content: flex-end ;"> <button id="paste_button">  ${pasted_mode?  "Wyłącz auto-wklej": "<<< Wklej <<<" } </button> </div>
+  `
+  };
+
+  generateSuggestionText();
+
+      suggestionText.onclick = (e) => {
+      e.stopPropagation();
+      switch (e.target.id) {
+
+      case "stan_status":
+        stan_dobry = !stan_dobry;
+        break;
+      case "wydolnosci_status":
+        stan_wydolnosci = !stan_wydolnosci;
+        break;
+      case "stan_lekiibadania":
+        stan_lekiibadania = !stan_lekiibadania;
+        break;
+      case "stan_zgody":
+        stan_zgody = !stan_zgody;
+        break;
+      case "paste_button":
+        pasted_mode = !pasted_mode; 
+        break;
+      };
+
+      generateSuggestionText();
+      if(pasted_mode){
+      copySuggestion();
+      }
+
+  };
+
+   if(Obserwacjefield.value == ""){
+    pasted_mode = true;
+    copySuggestion();
+  };
+  generateSuggestionText();
+
+  function copySuggestion() {
+    let tempInput = `${stan_dobry?  'Przy przyjęciu stan ogólny dość dobry. ' : 'Przy przyjęciu stan ogólny średni. '}${stan_wydolnosci? 'Wydolny k-o. ' : 'Niewydolny k-o. '}${stan_lekiibadania? 'Leki zlecono, badania zlecono.' : 'Leków nie zlecono.'}${stan_zgody? 'Wyraził zgodę na zabieg.' : ''}`;
+  Obserwacjefield.value = tempInput;
+  }
+
+  
+  function disableCopy() {
+    pasted_mode = false;
+    generateSuggestionText();
+
+  };
+
+  suggestionText.style.color = 'black'; // Optional styling for the text color
+  suggestionText.style.whiteSpace = 'whiteSpace'; // Add this line to enable multiline text
+  
+  popup.appendChild(suggestionText);
+  parent.appendChild(popup);
+
+    function updateFieldHeight() {
+    marg_bottom = parseFloat(window.getComputedStyle(Obserwacjefield).marginBottom);
+    parent.style.left = (Obserwacjefield.getBoundingClientRect.right + 20) + 'px';
+    parent.style.top = Obserwacjefield.getBoundingClientRect.top + 'px';
+    if (Obserwacjefield.getBoundingClientRect().height > popup.getBoundingClientRect().height){
+    popup.style.height = Obserwacjefield.getBoundingClientRect().height + 'px';
+    } else {
+      if(Obserwacjefield.getBoundingClientRect().height > minimal_przedmiotowe_suggestion_height) {
+      popup.style.height = Obserwacjefield.getBoundingClientRect().height + 'px';
+      } else {
+       Obserwacjefield.style.height = minimal_przedmiotowe_suggestion_height + marg_bottom + 'px';
+       popup.style.height = Obserwacjefield.getBoundingClientRect().height + 'px'
+      }
+    }
+    parent.style.left = (Obserwacjefield.getBoundingClientRect().right + 20) + 'px';
+  };
+
+  window.onclick = updateFieldHeight;
+  Obserwacjefield.onclick = updateFieldHeight;
+  document.body.appendChild(parent);
+  let minimal_przedmiotowe_suggestion_height = popup.getBoundingClientRect().height;
+  updateFieldHeight();
+  Obserwacjefield.onkeydown = disableCopy;
+
+};
+
+function handleZlecenieLekow(){
+  button_panel = document.getElementById('buttons');
+  button_panel.innerHTML += `<button id="leki_nchir" class="mdl-button editTemplateButtons mdl-js-button mdl-button--raised mdl-js-ripple-effect" type="button" style="background-color: #B2F797; border-radius:4px;"> Standardowe leki N.chirurgia </button>`;
+
+}

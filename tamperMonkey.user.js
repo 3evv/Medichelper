@@ -1,20 +1,23 @@
 // ==UserScript==
 // @name        Medichelper
 // @namespace   Violentmonkey Scripts
-// @match       http://localhost:8000/*,
+// @match       http://localhost:8000/*
 // @match       http*://medicus.usk/*
 // @grant       none
-// @version     1.11
+// @version     1.12
 // @author      3evv
 // @description 6/8/2025, 10:37:03 PM
+// @icon	https://raw.githubusercontent.com/3evv/Medichelper/main/images/icon128.jpeg	
+// @homepageURL	https://github.com/3evv/Medichelper/blob/main/tamperMonkey.user.js
+// @downloadURL https://github.com/3evv/Medichelper/raw/main/tamperMonkey.user.js
 // ==/UserScript==
 
+// node.innerHTML = GM_getResourceText("settings.html");
+
 if (document.readyState !== 'loading') {
-    console.log('document is already ready, just execute code here');
     fireExt();
 } else {
     document.addEventListener('DOMContentLoaded', function () {
-        console.log('document was not ready, place code here');
         fireExt();
   });
 }
@@ -40,8 +43,19 @@ function fireExt(){
       default:
         console.log("Inny typ strony: " + typ_strony);
       };
-    };
+    } else {
+      const nazwa_headera = document.getElementById("header").querySelector('.templateEditPageTitle').textContent;
+      console.log(nazwa_headera);
+      switch(nazwa_headera){
+        case 'Zlecenie badań':
+        handleBadaniaLaboratoryjne();
+        break;
+        default:
+          console.log("Inny typ strony: " + nazwa_headera);
+      }
+    }
 };
+
 
   function handleBadaniePodmiotowe(){
   let poleBadaniePrzedmiotowe = document.getElementsByName("skladniki_procedury_4335")[0];
@@ -842,6 +856,149 @@ function  handleOczekiwaneEfekty(){
   let minimal_przedmiotowe_suggestion_height = popup.getBoundingClientRect().height;
   updateFieldHeight();
   poleOczekiwaneEfekty.onkeydown = disableCopy;
+
+};
+
+function handleBadaniaLaboratoryjne(){
+  let Afield = document.getElementsByName("skierowanie_opis_skierowania")[0];
+  Afield.style.position = 'relative';
+  let parent = document.createElement('div');
+  parent.style.position = 'absolute';
+  parent.style.backgroundColor = 'invisible';
+  parent.style.borderRadius = '2px';
+  parent.style.left = (Afield.getBoundingClientRect().right + 20) + 'px';
+  parent.style.top =  Afield.getBoundingClientRect().top + 'px';
+  parent.style.width = '27%';
+  parent.style.display = 'flex';
+  parent.style.flexDirection = 'column';
+  parent.style.justifyContent = 'center';
+
+  popup = document.createElement('div');
+  popup.style.position = 'relative';
+  popup.style.backgroundColor = 'gray';
+  popup.style.gap = '5px';
+  popup.style.padding = '3px';
+  popup.style.borderRadius = '5px';
+  popup.style.display = 'flex';
+  popup.style.flexGrow = '1'; 
+  popup.style.flexDirection = 'column';
+  popup.style.justifyContent = 'space-around';
+  popup.style.alignContent = 'center';
+
+  let kontakt = true;
+  let przyjety = false;
+  let oddział = 'Kliniki Neurochirurgii';
+  let podstawowy_zestaw = false;
+  let pasted_mode= false; 
+  let id_do_klikniecia = ['wykonanie_poz_pak_290443', 'wykonanie_poz_pak_290583', 'wykonanie_poz_pak_290627', 'wykonanie_poz_pak_290544', 'wykonanie_poz_pak_290590', 'wykonanie_poz_pak_290408', 'wykonanie_poz_pak_290472', 'wykonanie_poz_pak_290518', 'wykonanie_poz_pak_290603'];
+  
+  
+  const suggestionText = document.createElement('div');
+  suggestionText.style.display = 'flex';
+  suggestionText.style.flexDirection = 'column';
+  suggestionText.style.flexGrow = 1;
+  suggestionText.style.justifyContent = 'space-between';
+  suggestionText.style.alignContent = 'center';
+  suggestionText.style.padding = '2px';
+
+  function generateSuggestionText() { 
+  suggestionText.innerHTML = `
+  <div style= "gap: 10px;">
+  <div class="info">  <span id=przyjecie_status style='${przyjety? '' : 'text-decoration: line-through; color: #6F0001;'}'>Badania kontrolne przy przyjęciu na oddział.</span></div>
+  </div>
+  <div style= "gap: 5px; display: flex; flex-direction: row; width: 100%; justify-content: center;">
+  <div style="width: 100%"> <button id="badania_podstawowe_button" style="width: 100%">  ${podstawowy_zestaw?  "Odklikaj podstawowy zestaw" : "Zleć podstawowy zestaw" } </button> </div>
+  </div>
+  <div style="display: flex; justify-content: flex-end ;"> <button id="paste_button">  ${pasted_mode?  "Wyłącz auto-wklej": "<<< Wklej <<<" } </button> </div>
+  `
+  };
+
+
+  function click_podstawowe(){
+    
+    for (let id in id_do_klikniecia){
+      let clicked_element = document.getElementById(id_do_klikniecia[id]);
+      if(clicked_element.hasAttribute('uwzg') != podstawowy_zestaw){
+        clicked_element.click();
+      }
+      // console.log(id_do_klikniecia[id]);
+    }
+  }
+  generateSuggestionText();
+
+      suggestionText.onclick = (e) => {
+      e.stopPropagation();
+      switch (e.target.id) {
+
+      case "przyjecie_status":
+        przyjety = !przyjety;
+        break;
+      case "badania_podstawowe_button":
+        podstawowy_zestaw = !podstawowy_zestaw;
+        click_podstawowe();
+        break;
+      case "paste_button":
+        pasted_mode = !pasted_mode; 
+        break;
+      };
+
+      generateSuggestionText();
+      if(pasted_mode){
+      copySuggestion();
+      }
+
+  };
+
+   if(Afield.value == ""){
+    pasted_mode = true;
+    copySuggestion();
+  };
+  generateSuggestionText();
+
+  function copySuggestion() {
+    let tempInput = `${przyjety? 'Badania kontrolne przy przyjęciu na oddział.' : ''}
+ `;
+  Afield.value = tempInput;
+  }
+
+  
+  function disableCopy() {
+    pasted_mode = false;
+    generateSuggestionText();
+
+  };
+
+  suggestionText.style.color = 'black'; // Optional styling for the text color
+  suggestionText.style.whiteSpace = 'whiteSpace'; // Add this line to enable multiline text
+  
+  popup.appendChild(suggestionText);
+  parent.appendChild(popup);
+
+  function updateFieldHeight() {
+    marg_bottom = parseFloat(window.getComputedStyle(Afield).marginBottom);
+    parent.style.left = (Afield.getBoundingClientRect.right + 20) + 'px';
+    parent.style.top = Afield.clientHeight.top + 'px';
+
+    if (Afield.getBoundingClientRect().height > popup.getBoundingClientRect().height){
+    popup.style.height = Afield.getBoundingClientRect().height + 'px';
+    } else {
+      if(Afield.getBoundingClientRect().height > minimal_przedmiotowe_suggestion_height) {
+      popup.style.height = Afield.getBoundingClientRect().height + 'px';
+      } else {
+       Afield.style.height = minimal_przedmiotowe_suggestion_height + marg_bottom + 'px';
+       popup.style.height = Afield.getBoundingClientRect().height + 'px'
+      }
+    }
+    parent.style.left = (Afield.getBoundingClientRect().right + 20) + 'px';
+  };
+
+  window.onclick = updateFieldHeight;
+  Afield.onclick = updateFieldHeight;
+  document.body.appendChild(parent);
+  let minimal_przedmiotowe_suggestion_height = popup.getBoundingClientRect().height;
+  updateFieldHeight();
+  Afield.onkeydown = disableCopy;
+
 
 };
 

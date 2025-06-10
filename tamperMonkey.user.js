@@ -4,7 +4,7 @@
 // @match       http://localhost:8000/*
 // @match       http*://medicus.usk/*
 // @grant       none
-// @version     1.13
+// @version     1.14
 // @author      3evv
 // @description 6/8/2025, 10:37:03 PM
 // @icon	https://raw.githubusercontent.com/3evv/Medichelper/main/images/icon128.jpeg	
@@ -32,7 +32,9 @@ function fireExt(){
         case 'Badanie podmiotowe i przedmiotowe - Neurochirurgii':
           handleNeurochirurgia();
           break;
-        case 'Badanie podmiotowe i przedmiotowe - Klinika Kardiologii':
+
+          
+        case 'Badanie podmiotowe i przedmiotowe - Klinika Kardiologii i Chorób Wewnętrznych':
           handleInterna();
           break;
         case 'Proponowany plan diagnostyczno-terapeutyczny':
@@ -46,6 +48,7 @@ function fireExt(){
           break;
         case 'Zlecenie leku':
           handleZlecenieLekow();
+          break;
         default:
           console.log("Inny typ strony: " + nazwa_headera);
       }
@@ -58,8 +61,8 @@ function handleNeurochirurgia(){
 };
 function handleInterna(){
         handleBadaniePodmiotoweInterna();
-        handleOcenaStanuPsychicznego();
-        handleOcenaStanuSpołecznego();
+        handleOcenaStanuPsychicznegoInterna();
+        handleOcenaStanuSpołecznegoInterna();
 }
 
 function handlePlanDiagnostycznoTerapeutyczny(){
@@ -213,7 +216,7 @@ function handlePlanDiagnostycznoTerapeutyczny(){
 
 
   function copySuggestion() {
-    let tempInput = `Pacjent lat: ${age} przyjęty w trybie ${tryb? 'planowym' : 'pilnym'} do ${oddział} celem ${cel_przyjecia}. Pacjent zgłasza następujące dolegliwości:
+    let tempInput = `Pacjent lat ${age} przyjęty w trybie ${tryb? 'planowym' : 'pilnym'} do ${oddział} celem ${cel_przyjecia}. Pacjent zgłasza następujące dolegliwości:
 ${choroby_przewlekle? "Choroby przewlekłe:" : "Nie choruje przewlekle."}
 ${leki? "Przyjmuje następujące leki:" : "Nie przyjmuje leków na stałe."}
 ${alergie? "!Alergie: " : "Alergie neguje."}
@@ -265,7 +268,7 @@ ${papierosy? "Pali papierosy, ok. X dziennie.":"Nie pali papierosów."} ${alkoho
 };
 
 function handleBadaniePodmiotoweInterna(){
-  let poleBadaniePrzedmiotowe = document.getElementsByName("skladniki_procedury_4335")[0];
+  let poleBadaniePrzedmiotowe = document.getElementsByName("skladniki_procedury_4187")[0];
 
   poleBadaniePrzedmiotowe.style.position = 'relative';
   let parent = document.createElement('div');
@@ -325,8 +328,8 @@ function handleBadaniePodmiotoweInterna(){
 
   let age = calculateAge();
   let tryb = true;
-  let oddział = 'Kliniki Kardiologii i Chorób Wewnętrznych';
-  let cel_przyjecia = '';
+  let oddział = 'Oddziału Kardiologii';
+  let cel_przyjecia = 'wykonania koronarografii';
   let choroby_przewlekle = true;
   let leki = true;
   let operacje = true;
@@ -349,8 +352,8 @@ function handleBadaniePodmiotoweInterna(){
   function generateSuggestionText() {
   suggestionText.innerHTML = `
   <div style= "gap: 10px;">
-  <div class="info"> Pacjent lat: ${age} przyjęty w trybie <span id=tryb_status>${tryb? 'planowym' : 'pilnym'}</span> do ${oddział} celem ${cel_przyjecia}. Pacjent zgłasza następujące dolegliwości: </div>
-  <div class="info" id="choroby_status"> ${choroby_przewlekle? "Choroby przewlekłe:" : "Nie choruje przewlekle"} </div>
+  <div class="info"> ${age}-letni pacjent przyjęty w trybie <span id=tryb_status>${tryb? 'planowym' : 'pilnym'}</span> do ${oddział} celem ${cel_przyjecia}. Pacjent zgłasza następujące dolegliwości: </div>
+  <div class="info" id="choroby_status"> ${choroby_przewlekle? "Choroby przewlekłe:" : "Choroby przewlekłe neguje."} </div>
   <div class="info" id="leki_status"> ${leki? "Przyjmuje następujące leki:" : "Nie przyjmuje leków na stałe."} </div>
   <div class="info" id="alergie_status"> ${alergie? "!Alergie: " : "Alergie neguje."} </div>
   <div class="info" id="operacje_status"> ${operacje? "Operacje chirurgiczne w przeszłości:" : "Operacje chirurgiczne w przeszłości neguje."}  </div>
@@ -408,8 +411,8 @@ function handleBadaniePodmiotoweInterna(){
 
 
   function copySuggestion() {
-    let tempInput = `Pacjent lat: ${age} przyjęty w trybie ${tryb? 'planowym' : 'pilnym'} do ${oddział} celem ${cel_przyjecia}. Pacjent zgłasza następujące dolegliwości:
-${choroby_przewlekle? "Choroby przewlekłe:" : "Nie choruje przewlekle."}
+    let tempInput = `${age}-letni pacjent przyjęty w trybie ${tryb? 'planowym' : 'pilnym'} do ${oddział} celem ${cel_przyjecia}. Pacjent zgłasza następujące dolegliwości:
+${choroby_przewlekle? "Choroby przewlekłe:" : "Choroby przewlekłe neguje."}
 ${leki? "Przyjmuje następujące leki:" : "Nie przyjmuje leków na stałe."}
 ${alergie? "!Alergie: " : "Alergie neguje."}
 ${operacje? "Operacje chirurgiczne w przeszłości:" : "Operacje chirurgiczne w przeszłości neguje."}
@@ -428,9 +431,6 @@ ${papierosy? "Pali papierosy, ok. X dziennie.":"Nie pali papierosów."} ${alkoho
 
   popup.appendChild(suggestionText);
   parent.appendChild(popup);
-
-
-
 
   function updateFieldHeight() {
     marg_bottom = parseFloat(window.getComputedStyle(poleBadaniePrzedmiotowe).marginBottom);
@@ -1244,16 +1244,256 @@ function selectOpisujący(){
 function handleNRS(){
   button_panel = document.getElementById('buttons');
   button_panel.querySelector('ul').innerHTML += `<li style="margin-left:0;margin-right:10px;display:inline;">
-  <button id="nrs" class="mdl-button editTemplateButtons mdl-js-button mdl-button--raised mdl-js-ripple-effect" style="background-color: #B2F797; border-radius:4px;"> Wszystko ok </button>
+  <button id="nrs" class="mdl-button editTemplateButtons mdl-js-button mdl-button--raised mdl-js-ripple-effect" type="button" style="background-color: #B2F797; border-radius:4px;"> Wszystko ok </button>
   </li>`;
-  if(document.getElementsByName("karta_zywienia_asystujacy_l_user_id")[0].hasAttribute('selected')){
-    document.getElementsByName("karta_zywienia_asystujacy_l_user_id_default_values_button")[0].click();
-  }
+
+  document.getElementById('nrs').onclick = automate_NRS;
+
+  function automate_NRS(){
+  document.getElementsByName("karta_zywienia_asystujacy_l_user_id_default_values_button")[0].click();
   document.getElementsByName("karta_zywienia_dataczas_default_values_button")[0].click();
   document.getElementById("karta_zywienia_nrs_pogorszenie_stanu_dozyw1").click();
   document.getElementById("karta_zywienia_nrs_nasilenie_choroby1").click();
   document.getElementsByName("btn_ok")[0].click();
+  };
 }
+
+function  handleOcenaStanuPsychicznegoInterna(){
+  let OcenaStanuPsychicznego = document.getElementsByName("skladniki_procedury_4202")[0];
+  OcenaStanuPsychicznego.style.position = 'relative';
+  let parent = document.createElement('div');
+  parent.style.position = 'absolute';
+  parent.style.backgroundColor = 'invisible';
+  parent.style.borderRadius = '2px';
+  parent.style.left = (OcenaStanuPsychicznego.getBoundingClientRect().right + 20) + 'px';
+  parent.style.top =  OcenaStanuPsychicznego.getBoundingClientRect().top + 'px';
+  parent.style.width = '27%';
+  parent.style.display = 'flex';
+  parent.style.flexDirection = 'column';
+  parent.style.justifyContent = 'center';
+
+  popup = document.createElement('div');
+  popup.style.position = 'relative';
+  popup.style.backgroundColor = 'gray';
+  popup.style.gap = '5px';
+  popup.style.padding = '3px';
+  popup.style.borderRadius = '5px';
+  popup.style.display = 'flex';
+  popup.style.flexGrow = '1';
+  popup.style.flexDirection = 'column';
+  popup.style.justifyContent = 'space-around';
+  popup.style.alignContent = 'center';
+
+  let kontakt = true;
+  let zorientowany = true;
+  let pasted_mode= false;
+
+  const suggestionText = document.createElement('div');
+  suggestionText.style.display = 'flex';
+  suggestionText.style.flexDirection = 'column';
+  suggestionText.style.flexGrow = 1;
+  suggestionText.style.justifyContent = 'space-between';
+  suggestionText.style.alignContent = 'center';
+  suggestionText.style.padding = '2px';
+
+  function generateSuggestionText() {
+  suggestionText.innerHTML = `
+  <div style= "gap: 10px;">
+  <div class="info">  <span id=kontakt_status>${kontakt? 'Pełen kontakt słowno-logiczny.' : 'Kontakt słowno-logiczny utrudniony.'}</span> <span id=zorientowany_status>${zorientowany? 'Zorientowany auto i allopsychicznie.' : 'Niezorientowany auto oraz allopsychicznie.'}</span></div>
+  </div>
+  <div style="display: flex; justify-content: flex-end ;"> <button id="paste_button">  ${pasted_mode?  "Wyłącz auto-wklej": "<<< Wklej <<<" } </button> </div>
+  `
+  };
+
+  generateSuggestionText();
+
+      suggestionText.onclick = (e) => {
+      e.stopPropagation();
+      switch (e.target.id) {
+
+      case "kontakt_status":
+        kontakt = !kontakt;
+        break;
+      case "zorientowany_status":
+        zorientowany = !zorientowany;
+        break;
+      case "paste_button":
+        pasted_mode = !pasted_mode;
+        break;
+      };
+
+      generateSuggestionText();
+      if(pasted_mode){
+      copySuggestion();
+      }
+
+  };
+
+   if(OcenaStanuPsychicznego.value == "Pełny"){
+    pasted_mode = true;
+    copySuggestion();
+  };
+  generateSuggestionText();
+
+  function copySuggestion() {
+    let tempInput = `${kontakt? 'Pełen kontakt słowno-logiczny. ' : 'Kontakt słowno-logiczny utrudniony. '}${zorientowany? 'Zorientowany auto i allopsychicznie.' : 'Niezorientowany auto oraz allopsychicznie.'}
+    `;
+  OcenaStanuPsychicznego.value = tempInput;
+  }
+
+
+  function disableCopy() {
+    pasted_mode = false;
+    generateSuggestionText();
+
+  };
+
+  suggestionText.style.color = 'black'; // Optional styling for the text color
+  suggestionText.style.whiteSpace = 'whiteSpace'; // Add this line to enable multiline text
+
+  popup.appendChild(suggestionText);
+  parent.appendChild(popup);
+
+    function updateFieldHeight() {
+    marg_bottom = parseFloat(window.getComputedStyle(OcenaStanuPsychicznego).marginBottom);
+    parent.style.left = (OcenaStanuPsychicznego.getBoundingClientRect.right + 20) + 'px';
+    parent.style.top = OcenaStanuPsychicznego.getBoundingClientRect.top + 'px';
+    if (OcenaStanuPsychicznego.getBoundingClientRect().height > popup.getBoundingClientRect().height){
+    popup.style.height = OcenaStanuPsychicznego.getBoundingClientRect().height + 'px';
+    } else {
+      if(OcenaStanuPsychicznego.getBoundingClientRect().height > minimal_przedmiotowe_suggestion_height) {
+      popup.style.height = OcenaStanuPsychicznego.getBoundingClientRect().height + 'px';
+      } else {
+       OcenaStanuPsychicznego.style.height = minimal_przedmiotowe_suggestion_height + marg_bottom + 'px';
+       popup.style.height = OcenaStanuPsychicznego.getBoundingClientRect().height + 'px'
+      }
+    }
+    parent.style.left = (OcenaStanuPsychicznego.getBoundingClientRect().right + 20) + 'px';
+  };
+
+
+  window.onclick = updateFieldHeight;
+  OcenaStanuPsychicznego.onclick = updateFieldHeight;
+  document.body.appendChild(parent);
+  let minimal_przedmiotowe_suggestion_height = popup.getBoundingClientRect().height;
+  updateFieldHeight();
+  OcenaStanuPsychicznego.onkeydown = disableCopy;
+
+}	;
+
+function  handleOcenaStanuSpołecznegoInterna(){
+  let OcenaStanuSpołecznego = document.getElementsByName("skladniki_procedury_4142")[0];
+  OcenaStanuSpołecznego.style.position = 'relative';
+  let parent = document.createElement('div');
+  parent.style.position = 'absolute';
+  parent.style.backgroundColor = 'invisible';
+  parent.style.borderRadius = '2px';
+  parent.style.left = (OcenaStanuSpołecznego.getBoundingClientRect().right + 20) + 'px';
+  parent.style.top =  OcenaStanuSpołecznego.getBoundingClientRect().top + 'px';
+  parent.style.width = '27%';
+  parent.style.display = 'flex';
+  parent.style.flexDirection = 'column';
+  parent.style.justifyContent = 'center';
+
+  popup = document.createElement('div');
+  popup.style.position = 'relative';
+  popup.style.backgroundColor = 'gray';
+  popup.style.gap = '5px';
+  popup.style.padding = '3px';
+  popup.style.borderRadius = '5px';
+  popup.style.display = 'flex';
+  popup.style.flexGrow = '1';
+  popup.style.flexDirection = 'column';
+  popup.style.justifyContent = 'space-around';
+  popup.style.alignContent = 'center';
+
+  let pasted_mode= false;
+
+  const suggestionText = document.createElement('div');
+  suggestionText.style.display = 'flex';
+  suggestionText.style.flexDirection = 'column';
+  suggestionText.style.flexGrow = 1;
+  suggestionText.style.justifyContent = 'space-between';
+  suggestionText.style.alignContent = 'center';
+  suggestionText.style.padding = '2px';
+
+  function generateSuggestionText() {
+  suggestionText.innerHTML = `
+  <div style= "gap: 10px;">
+  <div class="info">  <span id=spoleczny_status> Bez zastrzeżeń </span> </div>
+  </div>
+  <div style="display: flex; justify-content: flex-end ;"> <button id="paste_button">  ${pasted_mode?  "Wyłącz auto-wklej": "<<< Wklej <<<" } </button> </div>
+  `
+  };
+
+  generateSuggestionText();
+
+      suggestionText.onclick = (e) => {
+      e.stopPropagation();
+      switch (e.target.id) {
+
+      case "paste_button":
+        pasted_mode = !pasted_mode;
+        break;
+      };
+
+      generateSuggestionText();
+      if(pasted_mode){
+      copySuggestion();
+      }
+
+  };
+
+   if(OcenaStanuSpołecznego.value == ""){
+    pasted_mode = true;
+    copySuggestion();
+  };
+  generateSuggestionText();
+
+  function copySuggestion() {
+    let tempInput = `Bez zastrzeżeń.
+ `;
+  OcenaStanuSpołecznego.value = tempInput;
+  }
+
+
+  function disableCopy() {
+    pasted_mode = false;
+    generateSuggestionText();
+
+  };
+
+  suggestionText.style.color = 'black'; // Optional styling for the text color
+  suggestionText.style.whiteSpace = 'whiteSpace'; // Add this line to enable multiline text
+
+  popup.appendChild(suggestionText);
+  parent.appendChild(popup);
+
+    function updateFieldHeight() {
+    marg_bottom = parseFloat(window.getComputedStyle(OcenaStanuSpołecznego).marginBottom);
+    parent.style.left = (OcenaStanuSpołecznego.getBoundingClientRect.right + 20) + 'px';
+    parent.style.top = OcenaStanuSpołecznego.getBoundingClientRect.top + 'px';
+    if (OcenaStanuSpołecznego.getBoundingClientRect().height > popup.getBoundingClientRect().height){
+    popup.style.height = OcenaStanuSpołecznego.getBoundingClientRect().height + 'px';
+    } else {
+      if(OcenaStanuSpołecznego.getBoundingClientRect().height > minimal_przedmiotowe_suggestion_height) {
+      popup.style.height = OcenaStanuSpołecznego.getBoundingClientRect().height + 'px';
+      } else {
+       OcenaStanuSpołecznego.style.height = minimal_przedmiotowe_suggestion_height + marg_bottom + 'px';
+       popup.style.height = OcenaStanuSpołecznego.getBoundingClientRect().height + 'px'
+      }
+    }
+    parent.style.left = (OcenaStanuSpołecznego.getBoundingClientRect().right + 20) + 'px';
+  };
+
+  window.onclick = updateFieldHeight;
+  OcenaStanuSpołecznego.onclick = updateFieldHeight;
+  document.body.appendChild(parent);
+  let minimal_przedmiotowe_suggestion_height = popup.getBoundingClientRect().height;
+  updateFieldHeight();
+  OcenaStanuSpołecznego.onkeydown = disableCopy;
+
+}	;
 
 function handleObserwacje(){
   let Obserwacjefield = document.getElementsByName("raport_tresc")[0];
@@ -1391,4 +1631,12 @@ function handleZlecenieLekow(){
   button_panel = document.getElementById('buttons');
   button_panel.innerHTML += `<button id="leki_nchir" class="mdl-button editTemplateButtons mdl-js-button mdl-button--raised mdl-js-ripple-effect" type="button" style="background-color: #B2F797; border-radius:4px;"> Standardowe leki N.chirurgia </button>`;
 
+  let tabelaleków = document.getElementById('leki').querySelector('tbody').children;
+  // console.log(tabelaleków);
+  for (let row of tabelaleków){
+    // row.style.backgroundColor = 'black';
+    let insert = document.createElement('div');
+    insert.innerHTML = `<button type="button">here</button>`
+    // row.appendChild(insert);
+  };
 }

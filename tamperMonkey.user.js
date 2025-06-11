@@ -72,7 +72,7 @@ function handlePlanDiagnostycznoTerapeutyczny(){
         selectOpisujący();
 }
 
-  function handleBadaniePodmiotoweNeurochirurgia(){
+function handleBadaniePodmiotoweNeurochirurgia(){
   let poleBadaniePrzedmiotowe = document.getElementsByName("skladniki_procedury_4335")[0];
 
   poleBadaniePrzedmiotowe.style.position = 'relative';
@@ -236,9 +236,6 @@ ${papierosy? "Pali papierosy, ok. X dziennie.":"Nie pali papierosów."} ${alkoho
 
   popup.appendChild(suggestionText);
   parent.appendChild(popup);
-
-
-
 
   function updateFieldHeight() {
     marg_bottom = parseFloat(window.getComputedStyle(poleBadaniePrzedmiotowe).marginBottom);
@@ -1627,16 +1624,100 @@ function handleObserwacje(){
 
 };
 
+
+
 function handleZlecenieLekow(){
+
+  class ZlecenieLeku {
+    constructor(row) {
+      this.row = row;
+      this.Liczba_porzadkowa = row.children[0];
+      this.Lek_Schemat_podania = row.children[1];
+      this.lek_dzień_I = row.children[2];
+      this.lek_dzień_II = row.children[3];
+      this.lek_dzień_III = row.children[4];
+
+      let Liczba_porzadkowa = this.Liczba_porzadkowa.textContent.trim();
+      this.row_id = 'zlecTmpTblAO_' + Liczba_porzadkowa;
+      this.local_drug_id = document.getElementsByName(this.row_id + '_jm')[0];
+      this.local_add_schematic = document.getElementsByName(this.row_id + '_schemat_button')[0];
+      this.local_remove_schematic = document.getElementsByName(this.row_id + '_schemat_clear')[0];
+      this.local_schematic_container = document.getElementsByName('simpl' + Liczba_porzadkowa);
+      this.opis_zlecenia = document.getElementById(this.row_id + '_opis_zlec');
+      this.dorazny_checkbox = document.getElementById(this.row_id + '_dorazny');
+      let lek_dzień_I = row.children[2];
+      let lek_dzień_II = row.children[3];
+      let lek_dzień_III = row.children[4];
+      // Dzień 1:
+      this.akceptacja_dnia_I = lek_dzień_I.querySelector(`.btn_dzien_akcja[value="-"]`);
+      this.odstawienie_dnia_I = lek_dzień_I.querySelector(`.btn_dzien_akcja[value="x"]`);
+      this.schemat_dnia_I = lek_dzień_I.querySelector(`.simpl`+ Liczba_porzadkowa +`_1`);
+      // Dzień 2: 
+      this.akceptacja_dnia_II = lek_dzień_II.querySelector(`.btn_dzien_akcja[value="-"]`);
+      this.odstawienie_dnia_II = lek_dzień_II.querySelector(`.btn_dzien_akcja[value="x"]`);
+      this.schemat_dnia_II = lek_dzień_II.querySelector(`.simpl`+ Liczba_porzadkowa +`_1`);
+      // Dzień 3: 
+      this.akceptacja_dnia_III = lek_dzień_III.querySelector(`.btn_dzien_akcja[value="-"]`);
+      this.odstawienie_dnia_III = lek_dzień_III.querySelector(`.btn_dzien_akcja[value="x"]`);
+      this.schemat_dnia_III = lek_dzień_III.querySelector(`.simpl`+ Liczba_porzadkowa +`_1`);
+      // console.log(odstawienie_dnia_I);
+    }
+        // let Liczba_porzadkowa = row.children[0];
+    // let Lek_Schemat_podania = row.children[1];
+    // let lek_dzień_I = row.children[2];
+    // let lek_dzień_II = row.children[3];
+    // let lek_dzień_III = row.children[4];
+
+    // let row_id = 'zlecTmpTblAO_' + Liczba_porzadkowa.textContent.trim();
+    // console.log(row_id);
+    // let local_drug_id = document.getElementsByName(row_id + '_jm')[0];
+    // if (local_drug_id != null){
+    // console.log(local_drug_id.value);
+    // let local_add_schematic = document.getElementsByName(row_id + '_schemat_button')[0];
+    // let local_remove_schematic = document.getElementsByName(row_id + '_schemat_clear')[0];
+    // let local_schematic_container = document.getElementsByName('simpl' + Liczba_porzadkowa.textContent.trim())
+    // let opis_zlecenia = document.getElementById(row_id + '_opis_zlec');
+    // let dorazny_checkbox = document.getElementById(row_id + '_dorazny');
+
+    // // Dzień 1:
+    // let akceptacja_dnia_I = lek_dzień_I.querySelector(`.btn_dzien_akcja[value="-"]`);
+    // let odstawienie_dnia_I = lek_dzień_I.querySelector(`.btn_dzien_akcja[value="x"]`);
+    // let schemat_dnia_I = lek_dzień_I.querySelector(`.simpl`+ Liczba_porzadkowa.textContent.trim() +`_1`);
+    // // Dzień 2: 
+    // let akceptacja_dnia_II = lek_dzień_II.querySelector(`.btn_dzien_akcja[value="-"]`);
+    // let odstawienie_dnia_II = lek_dzień_II.querySelector(`.btn_dzien_akcja[value="x"]`);
+    // let schemat_dnia_II = lek_dzień_II.querySelector(`.simpl`+ Liczba_porzadkowa.textContent.trim() +`_1`);
+    // // Dzień 3: 
+    // let akceptacja_dnia_III = lek_dzień_III.querySelector(`.btn_dzien_akcja[value="-"]`);
+    // let odstawienie_dnia_III = lek_dzień_III.querySelector(`.btn_dzien_akcja[value="x"]`);
+    // let schemat_dnia_III = lek_dzień_III.querySelector(`.simpl`+ Liczba_porzadkowa.textContent.trim() +`_1`);
+    // // console.log(odstawienie_dnia_I);
+    // }
+  }
+
   button_panel = document.getElementById('buttons');
-  button_panel.innerHTML += `<button id="leki_nchir" class="mdl-button editTemplateButtons mdl-js-button mdl-button--raised mdl-js-ripple-effect" type="button" style="background-color: #B2F797; border-radius:4px;"> Standardowe leki N.chirurgia </button>`;
+  button_panel.innerHTML += `<button id="leki_nchir" class="mdl-button editTemplateButtons mdl-js-button mdl-button--raised mdl-js-ripple-effect" type="button" style="background-color:rgb(247, 151, 151); border-radius:4px; text-decoration: line-through"> Standardowe leki N.chirurgia </button>`; //background-color: #B2F797
 
   let tabelaleków = document.getElementById('leki').querySelector('tbody').children;
   // console.log(tabelaleków);
+
+  let array_zleceń_leków = [];
+
   for (let row of tabelaleków){
     // row.style.backgroundColor = 'black';
-    let insert = document.createElement('div');
-    insert.innerHTML = `<button type="button">here</button>`
-    // row.appendChild(insert);
+    if(row.querySelector('font').textContent == 'Zlecenie leku z apteczki pacjenta'){
+      break;
+    }
+
+    let tempclass = new ZlecenieLeku(row);
+    array_zleceń_leków.push(tempclass);
+
+    
+    // console.log(Lek_Schemat_podania);
+    // Lek_Schemat_podania.appendChild(insert);
   };
+  let insert = document.createElement('div');
+  insert.innerHTML = `<button type="button" id='fix_button'> Popraw godziny </button>`
+  console.log(array_zleceń_leków[0].schemat_dnia_I);
+  array_zleceń_leków[0].lek_dzień_I.appendChild(insert);
 }

@@ -13,6 +13,8 @@
 // ==/UserScript==
 
 // node.innerHTML = GM_getResourceText("settings.html");
+const cleanup_page = true;
+
 
 if (document.readyState !== 'loading') {
     fireExt();
@@ -32,8 +34,6 @@ function fireExt(){
         case 'Badanie podmiotowe i przedmiotowe - Neurochirurgii':
           handleNeurochirurgia();
           break;
-
-          
         case 'Badanie podmiotowe i przedmiotowe - Klinika Kardiologii i Chorób Wewnętrznych':
           handleInterna();
           break;
@@ -46,9 +46,9 @@ function fireExt(){
         case 'Obserwacje lekarskie':
           handleObserwacje();
           break;
-        case 'Zlecenie leku':
-          handleZlecenieLekow();
-          break;
+        // case 'Zlecenie leku':
+        //   handleZlecenieLekow();
+        //   break;
         default:
           console.log("Inny typ strony: " + nazwa_headera);
       }
@@ -1535,7 +1535,7 @@ function handleObserwacje(){
   function generateSuggestionText() { 
   suggestionText.innerHTML = `
   <div style= "gap: 10px;">
-  <div class="info">  <span id=stan_status>${stan_dobry? 'Przy przyjęciu stan ogólny dość dobry.' : 'Przy przyjęciu stan ogólny średni.'}</span></div>
+  <div class="info">  <span id=stan_status>${stan_dobry? 'Przy przyjęciu stan ogólny dość dobry.' : 'Stan ogólny dobry.'}</span></div>
   <div class="info">  <span id=wydolnosci_status>${stan_wydolnosci? 'Wydolny k-o.' : 'Niewydolny k-o.'}</span></div>
   <div class="info">  <span id=stan_lekiibadania>${stan_lekiibadania? 'Leki zlecono, badania zlecono.' : 'Leków nie zlecono.'}</span></div>
   <div class="info">  <span id=stan_zgody style='${stan_zgody? '' : 'text-decoration: line-through; color: #6F0001;'}'>Wyraził zgodę na zabieg.</span></div>
@@ -1581,7 +1581,7 @@ function handleObserwacje(){
   generateSuggestionText();
 
   function copySuggestion() {
-    let tempInput = `${stan_dobry?  'Przy przyjęciu stan ogólny dość dobry. ' : 'Przy przyjęciu stan ogólny średni. '}${stan_wydolnosci? 'Wydolny k-o. ' : 'Niewydolny k-o. '}${stan_lekiibadania? 'Leki zlecono, badania zlecono.' : 'Leków nie zlecono.'}${stan_zgody? 'Wyraził zgodę na zabieg.' : ''}`;
+    let tempInput = `${stan_dobry?  'Przy przyjęciu stan ogólny dość dobry. ' : 'Stan ogólny dobry.'}${stan_wydolnosci? 'Wydolny k-o. ' : 'Niewydolny k-o. '}${stan_lekiibadania? 'Leki zlecono, badania zlecono.' : 'Leków nie zlecono.'}${stan_zgody? 'Wyraził zgodę na zabieg.' : ''}`;
   Obserwacjefield.value = tempInput;
   }
 
@@ -1626,98 +1626,284 @@ function handleObserwacje(){
 
 
 
-function handleZlecenieLekow(){
+// function handleZlecenieLekow(){
 
-  class ZlecenieLeku {
-    constructor(row) {
-      this.row = row;
-      this.Liczba_porzadkowa = row.children[0];
-      this.Lek_Schemat_podania = row.children[1];
-      this.lek_dzień_I = row.children[2];
-      this.lek_dzień_II = row.children[3];
-      this.lek_dzień_III = row.children[4];
+//   class ZlecenieLeku {
+//     constructor(row) {
+//       this.row = row;
+//       this.Liczba_porzadkowa_element = row.children[0];
+//       this.Lek_Schemat_podania_element = row.children[1];
+//       this.lek_dzień_I = row.children[2];
+//       this.lek_dzień_II = row.children[3];
+//       this.lek_dzień_III = row.children[4];
 
-      let Liczba_porzadkowa = this.Liczba_porzadkowa.textContent.trim();
-      this.row_id = 'zlecTmpTblAO_' + Liczba_porzadkowa;
-      this.local_drug_id = document.getElementsByName(this.row_id + '_jm')[0];
-      this.local_add_schematic = document.getElementsByName(this.row_id + '_schemat_button')[0];
-      this.local_remove_schematic = document.getElementsByName(this.row_id + '_schemat_clear')[0];
-      this.local_schematic_container = document.getElementsByName('simpl' + Liczba_porzadkowa);
-      this.opis_zlecenia = document.getElementById(this.row_id + '_opis_zlec');
-      this.dorazny_checkbox = document.getElementById(this.row_id + '_dorazny');
-      let lek_dzień_I = row.children[2];
-      let lek_dzień_II = row.children[3];
-      let lek_dzień_III = row.children[4];
-      // Dzień 1:
-      this.akceptacja_dnia_I = lek_dzień_I.querySelector(`.btn_dzien_akcja[value="-"]`);
-      this.odstawienie_dnia_I = lek_dzień_I.querySelector(`.btn_dzien_akcja[value="x"]`);
-      this.schemat_dnia_I = lek_dzień_I.querySelector(`.simpl`+ Liczba_porzadkowa +`_1`);
-      // Dzień 2: 
-      this.akceptacja_dnia_II = lek_dzień_II.querySelector(`.btn_dzien_akcja[value="-"]`);
-      this.odstawienie_dnia_II = lek_dzień_II.querySelector(`.btn_dzien_akcja[value="x"]`);
-      this.schemat_dnia_II = lek_dzień_II.querySelector(`.simpl`+ Liczba_porzadkowa +`_1`);
-      // Dzień 3: 
-      this.akceptacja_dnia_III = lek_dzień_III.querySelector(`.btn_dzien_akcja[value="-"]`);
-      this.odstawienie_dnia_III = lek_dzień_III.querySelector(`.btn_dzien_akcja[value="x"]`);
-      this.schemat_dnia_III = lek_dzień_III.querySelector(`.simpl`+ Liczba_porzadkowa +`_1`);
-      // console.log(odstawienie_dnia_I);
-    }
-        // let Liczba_porzadkowa = row.children[0];
-    // let Lek_Schemat_podania = row.children[1];
-    // let lek_dzień_I = row.children[2];
-    // let lek_dzień_II = row.children[3];
-    // let lek_dzień_III = row.children[4];
+      
+//       this.Liczba_porzadkowa = this.Liczba_porzadkowa_element.textContent.trim();
+//       this.row_id = 'zlecTmpTblAO_' + this.Liczba_porzadkowa;
+//       this.local_drug_id = document.getElementsByName(this.row_id + '_jm')[0];
+//       this.local_add_schematic = document.getElementsByName(this.row_id + '_schemat_button')[0];
+//       this.local_remove_schematic = document.getElementsByName(this.row_id + '_schemat_clear')[0];
+//       this.local_schematic_container = document.querySelector('.simpl' + this.Liczba_porzadkowa);
+//       var opis_href_text = `a[href="javascript:toggle(\'${this.row_id}_opis_zlec\');"]`;
+//       this.opis_href = document.querySelector(opis_href_text);
+//       this.opis_zlecenia = document.getElementById(this.row_id + '_opis_zlec');
+//       this.dorazny_checkbox = document.getElementById(this.row_id + '_dorazny');
+//       let lek_dzień_I = row.children[2];
+//       let lek_dzień_II = row.children[3];
+//       let lek_dzień_III = row.children[4];
+//       // Dzień 1:
+//       this.akceptacja_dnia_I = lek_dzień_I.querySelector(`.btn_dzien_akcja[value="-"]`);
+//       this.odstawienie_dnia_I = lek_dzień_I.querySelector(`.btn_dzien_akcja[value="x"]`);
+//       this.schemat_dnia_I = lek_dzień_I.querySelector(`.simpl`+ this.Liczba_porzadkowa +`_1`);
+//       // Dzień 2: 
+//       this.akceptacja_dnia_II = lek_dzień_II.querySelector(`.btn_dzien_akcja[value="-"]`);
+//       this.odstawienie_dnia_II = lek_dzień_II.querySelector(`.btn_dzien_akcja[value="x"]`);
+//       this.schemat_dnia_II = lek_dzień_II.querySelector(`.simpl`+ this.Liczba_porzadkowa +`_2`);
+//       // Dzień 3: 
+//       this.akceptacja_dnia_III = lek_dzień_III.querySelector(`.btn_dzien_akcja[value="-"]`);
+//       this.odstawienie_dnia_III = lek_dzień_III.querySelector(`.btn_dzien_akcja[value="x"]`);
+//       this.schemat_dnia_III = lek_dzień_III.querySelector(`.simpl`+ this.Liczba_porzadkowa +`_3`);
+//       // console.log(odstawienie_dnia_I);
+//     }
+//         // let Liczba_porzadkowa = row.children[0];
+//     // let Lek_Schemat_podania = row.children[1];
+//     // let lek_dzień_I = row.children[2];
+//     // let lek_dzień_II = row.children[3];
+//     // let lek_dzień_III = row.children[4];
 
-    // let row_id = 'zlecTmpTblAO_' + Liczba_porzadkowa.textContent.trim();
-    // console.log(row_id);
-    // let local_drug_id = document.getElementsByName(row_id + '_jm')[0];
-    // if (local_drug_id != null){
-    // console.log(local_drug_id.value);
-    // let local_add_schematic = document.getElementsByName(row_id + '_schemat_button')[0];
-    // let local_remove_schematic = document.getElementsByName(row_id + '_schemat_clear')[0];
-    // let local_schematic_container = document.getElementsByName('simpl' + Liczba_porzadkowa.textContent.trim())
-    // let opis_zlecenia = document.getElementById(row_id + '_opis_zlec');
-    // let dorazny_checkbox = document.getElementById(row_id + '_dorazny');
+//     // let row_id = 'zlecTmpTblAO_' + Liczba_porzadkowa.textContent.trim();
+//     // console.log(row_id);
+//     // let local_drug_id = document.getElementsByName(row_id + '_jm')[0];
+//     // if (local_drug_id != null){
+//     // console.log(local_drug_id.value);
+//     // let local_add_schematic = document.getElementsByName(row_id + '_schemat_button')[0];
+//     // let local_remove_schematic = document.getElementsByName(row_id + '_schemat_clear')[0];
+//     // let local_schematic_container = document.getElementsByName('simpl' + Liczba_porzadkowa.textContent.trim())
+//     // let opis_zlecenia = document.getElementById(row_id + '_opis_zlec');
+//     // let dorazny_checkbox = document.getElementById(row_id + '_dorazny');
 
-    // // Dzień 1:
-    // let akceptacja_dnia_I = lek_dzień_I.querySelector(`.btn_dzien_akcja[value="-"]`);
-    // let odstawienie_dnia_I = lek_dzień_I.querySelector(`.btn_dzien_akcja[value="x"]`);
-    // let schemat_dnia_I = lek_dzień_I.querySelector(`.simpl`+ Liczba_porzadkowa.textContent.trim() +`_1`);
-    // // Dzień 2: 
-    // let akceptacja_dnia_II = lek_dzień_II.querySelector(`.btn_dzien_akcja[value="-"]`);
-    // let odstawienie_dnia_II = lek_dzień_II.querySelector(`.btn_dzien_akcja[value="x"]`);
-    // let schemat_dnia_II = lek_dzień_II.querySelector(`.simpl`+ Liczba_porzadkowa.textContent.trim() +`_1`);
-    // // Dzień 3: 
-    // let akceptacja_dnia_III = lek_dzień_III.querySelector(`.btn_dzien_akcja[value="-"]`);
-    // let odstawienie_dnia_III = lek_dzień_III.querySelector(`.btn_dzien_akcja[value="x"]`);
-    // let schemat_dnia_III = lek_dzień_III.querySelector(`.simpl`+ Liczba_porzadkowa.textContent.trim() +`_1`);
-    // // console.log(odstawienie_dnia_I);
-    // }
-  }
+//     // // Dzień 1:
+//     // let akceptacja_dnia_I = lek_dzień_I.querySelector(`.btn_dzien_akcja[value="-"]`);
+//     // let odstawienie_dnia_I = lek_dzień_I.querySelector(`.btn_dzien_akcja[value="x"]`);
+//     // let schemat_dnia_I = lek_dzień_I.querySelector(`.simpl`+ Liczba_porzadkowa.textContent.trim() +`_1`);
+//     // // Dzień 2:  
+//     // let akceptacja_dnia_II = lek_dzień_II.querySelector(`.btn_dzien_akcja[value="-"]`);
+//     // let odstawienie_dnia_II = lek_dzień_II.querySelector(`.btn_dzien_akcja[value="x"]`);
+//     // let schemat_dnia_II = lek_dzień_II.querySelector(`.simpl`+ Liczba_porzadkowa.textContent.trim() +`_1`);
+//     // // Dzień 3: 
+//     // let akceptacja_dnia_III = lek_dzień_III.querySelector(`.btn_dzien_akcja[value="-"]`);
+//     // let odstawienie_dnia_III = lek_dzień_III.querySelector(`.btn_dzien_akcja[value="x"]`);
+//     // let schemat_dnia_III = lek_dzień_III.querySelector(`.simpl`+ Liczba_porzadkowa.textContent.trim() +`_1`);
+//     // // console.log(odstawienie_dnia_I);
+//     // }
+//   }
 
-  button_panel = document.getElementById('buttons');
-  button_panel.innerHTML += `<button id="leki_nchir" class="mdl-button editTemplateButtons mdl-js-button mdl-button--raised mdl-js-ripple-effect" type="button" style="background-color:rgb(247, 151, 151); border-radius:4px; text-decoration: line-through"> Standardowe leki N.chirurgia </button>`; //background-color: #B2F797
+//   button_panel = document.getElementById('buttons');
+//   button_panel.innerHTML += `<button id="leki_nchir" class="mdl-button editTemplateButtons mdl-js-button mdl-button--raised mdl-js-ripple-effect" type="button" style="background-color:rgb(247, 151, 151); border-radius:4px; text-decoration: line-through"> Standardowe leki N.chirurgia </button>`; //background-color: #B2F797
+//   // button_panel.innerHTML += `<button id="toggle_experymentalnych" class="mdl-button editTemplateButtons mdl-js-button mdl-button--raised mdl-js-ripple-effect" type="button" style="background-color:rgb(165, 164, 164); border-radius:4px; text-decoration: line-through"> Funkcje eksperymentalne </button>`;
 
-  let tabelaleków = document.getElementById('leki').querySelector('tbody').children;
-  // console.log(tabelaleków);
 
-  let array_zleceń_leków = [];
 
-  for (let row of tabelaleków){
-    // row.style.backgroundColor = 'black';
-    if(row.querySelector('font').textContent == 'Zlecenie leku z apteczki pacjenta'){
-      break;
-    }
 
-    let tempclass = new ZlecenieLeku(row);
-    array_zleceń_leków.push(tempclass);
+//   let tabelaleków = document.getElementById('leki').querySelector('tbody').children;
+//   // console.log(tabelaleków);
 
+//   let array_zleceń_leków = [];
+
+//   for (let row of tabelaleków){
+//     // row.style.backgroundColor = 'black';
+//     if(row.querySelector('font').textContent == 'Zlecenie leku z apteczki pacjenta'){
+//       break;
+//     }
+
+//     let tempclass = new ZlecenieLeku(row);
+//     array_zleceń_leków.push(tempclass);
     
-    // console.log(Lek_Schemat_podania);
-    // Lek_Schemat_podania.appendChild(insert);
-  };
-  let insert = document.createElement('div');
-  insert.innerHTML = `<button type="button" id='fix_button'> Popraw godziny </button>`
-  console.log(array_zleceń_leków[0].schemat_dnia_I);
-  array_zleceń_leków[0].lek_dzień_I.appendChild(insert);
-}
+    
+//     // console.log(Lek_Schemat_podania);
+//     // Lek_Schemat_podania.appendChild(insert);
+//   };
+
+//   function addButtons(){
+//       for (let zlecenie of array_zleceń_leków){
+//   let domyślne_schematy = document.createElement('div');
+//   const orginal_html = zlecenie.local_schematic_container.innerHTML;
+
+//   interpret_scheme(zlecenie.local_schematic_container.innerHTML, zlecenie.local_schematic_container); //zamiana stringa z lekami hh:mm/dosage.sub(podanie)
+//   zlecenie.opis_href.click();
+//   interpret_scheme(zlecenie.schemat_dnia_I?.innerHTML, zlecenie.schemat_dnia_I);
+//   interpret_scheme(zlecenie.schemat_dnia_II?.innerHTML, zlecenie.schemat_dnia_II);
+//   interpret_scheme(zlecenie.schemat_dnia_III?.innerHTML, zlecenie.schemat_dnia_III);
+//   declutter(zlecenie);
+  
+
+
+//   // domyślne_schematy.innerHTML = `<button type="button" id='fix_button'> 8:00 </button> 
+//   // <button type="button" id='fix_button'> 13:00 </button> 
+//   // <button type="button" id='fix_button'> 18:00 </button> 
+//   // <button type="button" id='fix_button'> 21:00 </button> `
+//   // // console.log(zlecenie.Liczba_porzadkowa)
+//   // console.log(zlecenie.local_schematic_container);
+//   zlecenie.local_schematic_container.appendChild(domyślne_schematy);
+
+//   zlecenie.local_add_schematic;
+  
+//   var niepełne_zlecenie = zlecenie.lek_dzień_I?.querySelector('span[style="color:red; font-size:0.6em; text-align:center;"][title="nieokreślono podawania leku lub brak schematu"]');
+
+//   if(niepełne_zlecenie != undefined && cleanup_page){
+//     niepełne_zlecenie.style.display = 'none';
+//   };
+
+
+//   let popraw_godziny = document.createElement('div');
+//   popraw_godziny.innerHTML = `<button type="button" id='fix_button'> Popraw godziny </button>`
+//   popraw_godziny.style.gap = '10px';
+//   zlecenie.lek_dzień_I.appendChild(popraw_godziny);
+//   };
+//   }
+
+
+
+// function declutter(target){
+//   var href = target.opis_href.getAttribute('href');
+//   var fixed_opis = document.createElement('div');
+//   fixed_opis.type = 'checkbox';
+//   fixed_opis.setAttribute('href',href);
+//   fixed_opis.onclick = function() {href};
+//   fixed_opis.innerHTML = '<input type="checkbox" checked><label> Opis </label>'
+//   target.opis_href.replaceWith(fixed_opis);
+  
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//   const way_of_administration_selector_HTML = `<select style="width: 100%;" name="schemat_1_sposob" option="selected">
+//   <option value=""></option>
+// 	<option value="IV">Dożylnie </option>
+// 	<option value="PO">Doustnie</option>
+//   <option value="SC">Podskórnie</option>
+//   <option value="WZ">Wziew</option>
+// 	<option value="WC">Wkłucie centralne</option>
+// 	<option value="IM">Domięśniowo</option>
+// 	<option value="PEG">PEG</option>
+//   <option value="WCI">Wlew Ciągły</option>
+// 	<option value="WK">Wlew Kroplowy</option>
+// 	<option value="DO">Do oczu</option>
+// 	<option value="PV">Dopochwowo</option>
+// 	<option value="NS">Na skórę</option>
+// 	<option value="PA">Doodbytniczo</option>
+// 	<option value="TD">Śródskórnie</option>
+// 	<option value="IN">Donosowo</option>
+// 	<option value="OS">Do worka spojówkowego</option>
+// 	<option value="kru">Kruszone</option>
+// 	<option value="BO">BOLUS</option>
+// 	<option value="ZOP">Do cewnika ZOP</option>
+// 	<option value="DIAL">Do dializy</option>
+// 	<option value="DN">Do nosa</option>
+// 	<option value="PM">Do płukania pęcherza moczowego</option>
+// 	<option value="PŻ">Do płukania żołądka</option>
+// 	<option value="DSO">Do sondy</option>
+// 	<option value="DUCH">Do ucha</option>
+// 	<option value="I">Implant</option>
+// 	<option value="NAS">Nasiękowo</option>
+// 	<option value="NEB">Nebulizacja</option>
+// 	<option value="PJU">Pędzlowanie jamy ustnej</option>
+// 	<option value="PJ">Podjęzykowo</option>
+// 	<option value="P Ż-T">Przetoka Żylno-Tętnicza</option>
+// 	<option value="PS">Przezskórnie</option>
+// </select>`
+
+
+
+
+//   function interpret_scheme(scheme, parent){
+//     console.log(scheme);
+//     if(scheme != undefined){
+//     let parts_array = scheme.split('<br>').filter(part => part !== '');
+    
+//     let schematic_table = document.createElement('div');
+//     schematic_table.style.border = '1px solid black';
+//     schematic_table.style.borderRadius = '2px';
+//     schematic_table.style.backgroundColor = '#C6C8CD';
+//     schematic_table.style.width = '100%';
+//     schematic_table.style.overflow = 'hidden';
+//     let header = document.createElement('div');
+//     // header.style.border = '1px solid black';
+//     header.style.borderTopLeftRadius = '2px;'
+//     header.style.borderTopRightRadius = '2px;'
+//     header.style.display = 'flex';
+//     header.style.flexDirection = 'row';
+//     header.innerHTML = `<span style="width: 33.3%; border: 1px solid black; border-top-left-radius: 2px;"> Godzina </span> <span style="width: 33.3%; border: 1px solid black;"> Dawka </span> <span style="width: 33.3%; border:1px solid black;  border-top-right-radius: 2px;"> Droga podania </span>
+//     `
+//     schematic_table.appendChild(header);
+
+//     console.log(parts_array);
+//     var iterator = 0;
+//     for (let linijka of parts_array){
+//     let row_of_schematic = document.createElement('div');
+//     // row_of_schematic.style.border = '1px solid black';
+//     row_of_schematic.style.display = 'flex';
+//     row_of_schematic.style.flex = '1';
+//     row_of_schematic.style.flexDirection = 'row';
+    
+//     let hour = document.createElement('div');
+//     var h_text = parts_array[iterator].substring(0,parts_array[iterator].indexOf('/'));
+//     hour.innerHTML = `<input type=text value=${h_text} style="width:95%; text-align="center";">
+//     `;
+//     // hour.innerHTML += h_text;
+//     let dosage = document.createElement('div');
+//     var d_text = parts_array[iterator].substring(parts_array[iterator].indexOf('/') + 1, parts_array[iterator].indexOf('('));
+//     dosage.innerHTML = `<input type=text value=${d_text} style="width:95%; text-align="center";">`; 
+     
+//     let way_of_administration = document.createElement('div');
+    
+//     var w_text = parts_array[iterator].substring(parts_array[iterator].indexOf('(') + 1, parts_array[iterator].indexOf(')'));
+    
+    
+//     way_of_administration.innerHTML += way_of_administration_selector_HTML;
+//     way_of_administration.children[0].setAttribute('option', w_text);
+//     way_of_administration.querySelector(`select option[value="${w_text}"]`).setAttribute('selected', '');
+//     iterator++;
+
+//     hour.style.width = '33.3%';
+//     hour.style.border = '0.5px solid black';
+//     dosage.style.width = '33.3%';
+//     dosage.style.border = '0.5px solid black';
+//     way_of_administration.style.width = '33.3%';
+//      way_of_administration.style.border = '0.5px solid black';
+
+//     row_of_schematic.appendChild(hour);
+//     row_of_schematic.appendChild(dosage)
+//     row_of_schematic.appendChild(way_of_administration)
+//     schematic_table.appendChild(row_of_schematic);
+//     }
+//     let footer = document.createElement('div');
+//     footer.style.borderTopLeftRadius = '2px;'
+//     footer.style.borderTopRightRadius = '2px;'
+//     footer.style.display = 'flex';
+//     footer.style.flexDirection = 'row';
+//     footer.style.justifyContent = 'space-evenly';
+//     footer.style.paddingTop = '2px';
+//     footer.style.paddingBottom = '2px';
+//     footer.innerHTML = `<button type="button"> Anuluj </button> <button> Dodaj </button  type="button"> <button> Schematy </button  type="button"> <button> Zastosuj </button  type="button">
+//     `
+//     schematic_table.appendChild(footer);
+//     parent.innerHTML = '';
+//     parent.appendChild(schematic_table);
+//   }
+//   }
+//   addButtons();
+  
+  
+// }

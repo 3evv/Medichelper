@@ -1,0 +1,133 @@
+{
+  "settings": {
+    "fields_with_autocomplete": [
+      {
+        "header_name": "Badanie podmiotowe i przedmiotowe - Neurochirurgii",
+        "suggest_text": true,
+        "user_configurable_text": [
+          {
+            "skladniki_procedury_4335": {
+              "line1": "${calculateAge()}-letni pacjent przyjęty w trybie ${tryb ? 'planowym' : 'pilnym'} do Kliniki Neurochirurgii celem . Pacjent zgłasza następujące dolegliwości:",
+              "line2": "${choroby_przewlekle ? 'Choroby przewlekłe:' : 'Nie choruje przewlekle'}",
+              "line3": "${leki ? 'Przyjmuje następujące leki:' : 'Nie przyjmuje leków na stałe.'}",
+              "line4": "${alergie ? '!Alergie: ' : 'Alergie neguje.'}",
+              "line5": "${operacje ? 'Operacje chirurgiczne w przeszłości:' : 'Operacje chirurgiczne w przeszłości neguje.'}",
+              "line6": "${papierosy ? 'Pali papierosy, ok. X dziennie.' : 'Nie pali papierosów.'}",
+              "line7": "${alkohol ? 'Spożywa alkohol okazjonalnie.' : 'Nie spożywa alkoholu.'}"
+            },
+            "skladniki_procedury_4350": {
+              "line1": "${kontakt? 'Pełen kontakt słowno-logiczny.' : 'Kontakt słowno-logiczny utrudniony.'}${zorientowany? 'Zorientowany auto i allopsychicznie.' : 'Niezorientowany auto oraz allopsychicznie.'}"
+            },
+            "skladniki_procedury_4290": {
+              "line1": "${spoleczny? 'Bez zastrzeżeń ' : ' '}"
+            }
+          }
+        ],
+        "autofill_checkboxes": false
+      },
+      {
+        "header_name": "Badanie podmiotowe i przedmiotowe - Klinika Kardiologii i Chorób Wewnętrznych",
+        "suggest_text": true,
+        "user_configurable_text": [
+          {
+            "skladniki_procedury_4187": {
+              "line1": "${calculateAge()}-letni pacjent przyjęty w trybie ${tryb ? 'planowym' : 'pilnym'} do Kliniki Neurochirurgii celem . Pacjent zgłasza następujące dolegliwości:",
+              "line2": "${choroby_przewlekle ? 'Choroby przewlekłe:' : 'Nie choruje przewlekle'}",
+              "line3": "${leki ? 'Przyjmuje następujące leki:' : 'Nie przyjmuje leków na stałe.'}",
+              "line4": "${alergie ? '!Alergie: ' : 'Alergie neguje.'}",
+              "line5": "${operacje ? 'Operacje chirurgiczne w przeszłości:' : 'Operacje chirurgiczne w przeszłości neguje.'}",
+              "line6": "${papierosy ? 'Pali papierosy, ok. X dziennie.' : 'Nie pali papierosów.'}",
+              "line7": "${alkohol ? 'Spożywa alkohol okazjonalnie.' : 'Nie spożywa alkoholu.'}"
+            },
+            "skladniki_procedury_4202": {
+              "line1": "${kontakt? 'Pełen kontakt słowno-logiczny.' : 'Kontakt słowno-logiczny utrudniony.'}${zorientowany? 'Zorientowany auto i allopsychicznie.' : 'Niezorientowany auto oraz allopsychicznie.'}"
+            },
+            "skladniki_procedury_4142": {
+              "line1": "${spoleczny? 'Bez zastrzeżeń ' : ' '}"
+            }
+          }
+        ],
+        "autofill_checkboxes": false
+      },
+      {
+        "header_name": "Proponowany plan diagnostyczno-terapeutyczny",
+        "suggest_text": true,
+        "user_configurable_text": [
+          {
+            "skladniki_procedury_2243": {
+              "line1": "${calculateAge()}-letni pacjent przyjęty w trybie ${tryb ? 'planowym' : 'pilnym'} do Kliniki Neurochirurgii celem . Pacjent zgłasza następujące dolegliwości:",
+              "line2": "${choroby_przewlekle ? 'Choroby przewlekłe:' : 'Nie choruje przewlekle'}",
+              "line3": "${leki ? 'Przyjmuje następujące leki:' : 'Nie przyjmuje leków na stałe.'}",
+              "line4": "${alergie ? '!Alergie: ' : 'Alergie neguje.'}",
+              "line5": "${operacje ? 'Operacje chirurgiczne w przeszłości:' : 'Operacje chirurgiczne w przeszłości neguje.'}",
+              "line6": "${papierosy ? 'Pali papierosy, ok. X dziennie.' : 'Nie pali papierosów.'}",
+              "line7": "${alkohol ? 'Spożywa alkohol okazjonalnie.' : 'Nie spożywa alkoholu.'}"
+            },
+            "skladniki_procedury_4202": {
+              "line1": "${kontakt? 'Pełen kontakt słowno-logiczny.' : 'Kontakt słowno-logiczny utrudniony.'}${zorientowany? 'Zorientowany auto i allopsychicznie.' : 'Niezorientowany auto oraz allopsychicznie.'}"
+            },
+            "skladniki_procedury_4142": {
+              "line1": "${spoleczny? 'Bez zastrzeżeń ' : ' '}"
+            }
+          }
+        ],
+        "autofill_checkboxes": false
+      },
+      {
+        "header_name": "Obserwacje lekarskie",
+        "suggest_text": true,
+        "user_configurable_text": [
+          {
+            "raport_tresc": {
+              "line1": "${tryb ? 'Przy przyjęciu stan ogólny dość dobry.' : 'Stan ogólny dobry.'} ${stan_wydolnosci? 'Wydolny krążeniowo-oddechowo.' : 'Niewydolny krążeniowo-oddechowo.'}",
+              "line2": "${stan_lekiibadania? 'Leki zlecono, badania zlecono.' : ' '}",
+              "line3": "${stan_zgody? 'Wyraził zgodę na zabieg.' : ' '}"
+            }
+          }
+        ],
+        "autofill_checkboxes": false
+      },
+      {
+        "header_name": "!!!!!!!Zlecenie badań",
+        "suggest_text": false,
+        "user_configurable_text": [
+          {
+            "skierowanie_opis_skierowania": {
+              "line1": "${tryb ? '' : 'Badania kontrolne przy przyjęciu na oddział.'}"
+            }
+          }
+        ],
+        "autofill_checkboxes": true,
+        "user_defined_packets": {
+          "BADLAB": [
+            {
+              "name": "Przyjęciowe Neurochirurgia",
+              "enabled": true,
+              "id_array": "['wykonanie_poz_pak_290443', 'wykonanie_poz_pak_290583', 'wykonanie_poz_pak_290627', 'wykonanie_poz_pak_290544', 'wykonanie_poz_pak_290590', 'wykonanie_poz_pak_290408', 'wykonanie_poz_pak_290472', 'wykonanie_poz_pak_290518', 'wykonanie_poz_pak_290603']"
+            },
+            {
+              "name": "Koronarografia",
+              "enabled": true,
+              "id_array": "['wykonanie_poz_pak_290583', 'wykonanie_poz_pak_290544', 'wykonanie_poz_pak_290590', 'wykonanie_poz_pak_290408', 'wykonanie_poz_pak_290472', 'wykonanie_poz_pak_290518', 'wykonanie_poz_pak_290603', 'wykonanie_poz_pak_290586', 'wykonanie_poz_pak_290607', 'wykonanie_poz_pak_290651', 'wykonanie_poz_pak_290584', 'wykonanie_poz_pak_290524']"
+            }
+          ],
+          "PGN": [
+            {
+              "name": "Pielegniarskie",
+              "enabled": true,
+              "id_array": "['wykonanie_poz_pak_252588', 'wykonanie_poz_pak_252587']"
+            }
+          ],
+          "HD": [
+            {
+              "name": "Hemodynamika",
+              "enabled": true,
+              "id_array": "['wykonanie_poz_pak_252570', 'wykonanie_poz_pak_252591', 'wykonanie_poz_pak_252590', 'wykonanie_poz_pak_252573']"
+            }
+          ]
+        }
+      }
+    ],
+    "optimize": true
+  }
+}

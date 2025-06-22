@@ -3,7 +3,7 @@
 // @namespace   Violentmonkey Scripts
 // @match       http://localhost:8000/*
 // @match       http*://medicus.usk/*
-// @version     1.15
+// @version     1.16
 // @author      3evv
 // @description 6/8/2025, 10:37:03 PM
 // @icon	https://raw.githubusercontent.com/3evv/Medichelper/main/images/icon128.jpeg	

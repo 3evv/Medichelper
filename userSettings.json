@@ -3,7 +3,7 @@
     {
       "header_name": "Badanie podmiotowe i przedmiotowe - Neurochirurgii",
       "suggest_text": true,
-      "user_configurable_text": [
+      "user_configurable_text":
         {
           "skladniki_procedury_4335": {
             "line1": "${calculateAge()}-letni pacjent przyjęty w trybie ${tryb ? 'planowym' : 'pilnym'} do Kliniki Neurochirurgii celem . Pacjent zgłasza następujące dolegliwości:",
@@ -20,8 +20,7 @@
           "skladniki_procedury_4290": {
             "line1": "${spoleczny? 'Bez zastrzeżeń ' : ' '}"
           }
-        }
-      ],
+        },
       "autofill_checkboxes": false
     },
     {

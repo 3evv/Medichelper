@@ -3,7 +3,7 @@
 // @namespace   Violentmonkey Scripts
 // @match       http://localhost:8000/*
 // @match       http*://medicus.usk/*
-// @version     1.17
+// @version     1.18
 // @author      3evv
 // @description 6/8/2025, 10:37:03 PM
 // @icon	https://raw.githubusercontent.com/3evv/Medichelper/main/images/icon128.jpeg
@@ -110,6 +110,7 @@ function handleHeader() {
     }
   }
 
+  detectEmptyInputFields();
   if (GM_getValue(["settings"])["optimize"]) {
     optimizePageLayout();
   }
@@ -117,6 +118,7 @@ function handleHeader() {
 
 function configurePopupParent(fieldOfIntrest) {
   const parent = document.createElement("div");
+  parent.classList += "MedhelperSuggestion";
   parent.style.position = "absolute";
   parent.style.backgroundColor = "invisible";
   parent.style.borderRadius = "0.1rem";
@@ -173,7 +175,7 @@ function calculateAge() {
   if (currentMonth < month || (currentMonth == month && currentDay < day)) {
     age--;
   }
-  return age;
+  return age - 1;
 }
 
 function findTenarySwitch(input) {
@@ -185,6 +187,7 @@ function findTenarySwitch(input) {
 
 function configureSuggestion(fieldOfIntrest, json_lines) {
   // console.log( Object.values(json_lines));
+
   const suggestionElement = document.createElement("div");
   suggestionElement.style.display = "flex";
   suggestionElement.style.flexDirection = "column";
@@ -192,7 +195,6 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
   // suggestionElement.style.justifyContent = 'space-between';
   suggestionElement.style.alignContent = "flex-start";
   // suggestionElement.style.padding = '2px';
-
   let boolArray = {};
   let pasted_input = false;
   let append_mode = false;
@@ -201,7 +203,7 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
   suggestionText.style.flexDirection = "column";
   suggestionText.style.flexWrap = "wrap";
   suggestionText.style.flexGrow = 1;
-  suggestionText.style.justifyContent = "space-between";
+  suggestionText.style.justifyContent = "flex-start";
   suggestionText.style.alignContent = "flex-start";
   suggestionText.style.padding = "0.1rem";
   suggestionText.style.color = "black"; // Optional styling for the text color
@@ -262,8 +264,9 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
     suggestionButtons.innerHTML = `
     <div style="display: flex; flex-drection:row; justify-content: flex-end ;"> 
     <button style="display:none" id="append_button">Doklej</button>
-    <button id="paste_button" style="min-width:50%;">  ${pasted_input ? "Wyłącz auto-wklej" : " Auto-wklej"
-      } </button> </div>`;
+    <button id="paste_button" style="min-width:50%;max-height: 1.5rem;">  ${pasted_input ? "Wyłącz auto-wklej" : " Auto-wklej"} </button> 
+    <img id="config" style="max-width: 1.5rem;max-height: 1.5rem; filter: opacity(0.75);" src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/settings_icon.png" alt="Konfiguruj auto-uzupełnianie"></div>
+    `;
     suggestionElement.appendChild(suggestionButtons);
   }
 
@@ -296,6 +299,9 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
         case "append_button":
           append_mode = !append_mode;
           break;
+        case "config":
+          synthesiseJSON(target_name = fieldOfIntrest.name);
+          break;
         default:
       }
     }
@@ -307,11 +313,11 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
     }
   };
 
-  if (fieldOfIntrest.value == "" && json_lines.disableAutoCopy != true) {
-    pasted_input = true;
-    copySuggestion();
-    updatePasteButton();
-  }
+  // if (fieldOfIntrest.value == "" && json_lines.disableAutoCopy != true) {
+  //   pasted_input = true;
+  //   copySuggestion();
+  //   updatePasteButton();
+  // }
 
   function copySuggestion() {
     let textInputSuggestion = fieldOfIntrest.value;
@@ -325,11 +331,11 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
       let overwriteIndex = -1;
       while (
         localHTML.indexOf(
-          `<span style="color:yellow; font-style:oblique;" id="`
+          `<span style="color:#ffffc2; font-style:oblique;" id="`
         ) != -1
       ) {
         const beginingReplace = localHTML.indexOf(
-          `<span style="color:yellow; font-style:oblique;" id="`
+          `<span style="color:#ffffc2; font-style:oblique;" id="`
         );
         let replacementHTML = localHTML.substring(beginingReplace);
         const endingReplace = localHTML.indexOf("</span>") + "</span>".length;
@@ -358,8 +364,9 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
         localHTML = replacementLine;
         // console.log(replacementLine);
       }
+      console.log(localHTML);
       if (textInputSuggestion.indexOf(localHTML) != -1) {
-        // console.log('Replacingu: ');
+        console.log('Replacingu: ');
         replacementLine = localText
           .replaceAll("[", "")
           .replaceAll("]", "")
@@ -435,24 +442,31 @@ function updateFieldHeight(
   }
   parent.style.left =
     fieldOfIntrest.getBoundingClientRect().right + 20 + window.scrollX + "px";
+  if (GM_getValue(["settings"])["optimize"]) {
+    resizeTextarea(fieldOfIntrest);
+  }
+
 }
 
 function autofill_text_fields(fieldJson) {
+  // console.log(fieldJson);
   for (let fieldNamesArray of Object.values(fieldJson.user_configurable_text)) {
     for (let fieldName of Object.keys(fieldNamesArray)) {
       const fieldOfIntrest = document.getElementsByName(fieldName)[0];
+      if (fieldOfIntrest == undefined) {
+        return;
+      }
       fieldOfIntrest.style.position = "relative";
-
+      fieldOfIntrest.classList += "MedhelperSuggestion";
       const parent = configurePopupParent(fieldOfIntrest);
       const popup = configurePopup();
-
       const suggestionText = configureSuggestion(
         fieldOfIntrest,
         fieldNamesArray[fieldName]
       );
 
-      const min_width = "60%";
-      fieldOfIntrest.style = `min-width:${min_width};`;
+      const min_width = "45%";
+      fieldOfIntrest.style.minWidth = min_width;
       popup.appendChild(suggestionText);
       parent.appendChild(popup);
 
@@ -639,7 +653,7 @@ function optimizePageLayout() {
     'table[border="1"][cellspacing="0"][cellpadding="2"][bgcolor="#d3d3d3"][class="templateEditTable"]'
   );
   // console.log(mainTable);
-  mainTable.style = "min-width:95%;";
+  mainTable.style.minWidth = "95%";
 }
 
 function fixMyView() {
@@ -662,4 +676,269 @@ function fixMyView() {
       // lowerDrawer.style.background = 'gray';
     }
   }
-} 
+}
+
+function detectEmptyInputFields() {
+  const emptyFields = document.querySelectorAll("textarea");
+  const nazwa_headera = document
+    .getElementById("header")
+    .querySelector(".templateEditPageTitle").textContent;
+
+  // console.log(emptyFields);
+  for (let field of emptyFields) {
+    if (!field.classList.contains("MedhelperSuggestion")) {
+      if (GM_getValue(["settings"])["optimize"]) {
+        resizeTextarea(field);
+      }
+      addSettingCog(field);
+    }
+
+  }
+
+}
+
+function configureJson(target_name = undefined) {
+
+  const parent = document.createElement('div');
+  const nazwa_headera = document
+    .getElementById("header")
+    .querySelector(".templateEditPageTitle").textContent;
+  const fieldIndex = GM_getValue(['settings'])["fields_with_autocomplete"].findIndex(
+    (item) => item.header_name === nazwa_headera
+  );
+  let configured = false;
+  if (fieldIndex != -1) {
+    configured = true;
+  }
+  const savedValues = GM_getValue(['settings'])["fields_with_autocomplete"][fieldIndex];
+  const titleDiv = document.createElement('div');
+  titleDiv.style.height = '3rem';
+  titleDiv.style.fontSize = '2rem';
+  titleDiv.innerHTML += `<span style='${configured ? 'color: green' : 'color: red'};'> Skonfigurowane: </span> <span style="color: black;"> ${savedValues.header_name} </span>`;
+  parent.append(titleDiv);
+  const autofillCheckbox = document.createElement('input');
+  // autofillCheckbox.type = 'checkbox';
+  // autofillCheckbox.checked = savedValues.suggest_text;
+  // const label = document.createElement('label');
+  // label.htmlFor = 'suggestText';
+  // label.textContent = 'Sugeruj tekst na stronie';
+
+  // autofillCheckbox.addEventListener('change', function () {
+  //   savedValues.suggest_text = this.checked;
+  // });
+  // parent.append(autofillCheckbox);
+  // parent.appendChild(label);
+  const drawer = document.createElement('div');
+  let jsonData = JSON.stringify(savedValues.user_configurable_text[0][target_name], null, 2);
+  if (jsonData == undefined) {
+    jsonData = `{
+    "line1" : "Twoja pierwsza autosugestia",
+    "line2" : "Naciśnij zapisz by ją zapamiętać w systemie",
+    "line3" : "\${ zapisałem ? 'Udało się zapisać' : ' Jak widzisz ten napis poza dialogiem konfiguracji to udało się zapisać.'}",
+    "line4" : "Jak chcesz się tego całkowicie pozbyć to zostaw pusty nawias {} bez linijek."
+}`;
+  }
+  drawer.style.gap = '0.5rem';
+  drawer.style.padding = '0.5rem';
+  drawer.innerHTML = ` <div class="drawer" id="drawer"> <textarea id="jsonTextArea" style="width: 90%; min-height:200px;">${jsonData}</textarea> 
+    <div style="display:flex;gap:2rem;font-size:1.5rem;"><button style="height:2rem;" id="checkjson">Sprawdź składnie i zapisz</button> <span id="mistake" style="display:none; color:red"> Niepoprawny JSON!</span> <span id="approved" style="display:none; color:green"> JSON zapisany</span></div>
+    </div>`;
+  const instruction = document.createElement('div');
+  instruction.style.background = 'white';
+  instruction.style.width = 'fit-content';
+  instruction.style.padding = '0.5rem';
+  instruction.style.marginTop = '1rem';
+  instruction.innerHTML = `<div> Krótka instrukcja pisania JSON: </div>
+    <div> Każda nowa linijka musi się zaczynać od "lineX": , pod X podstawić numer linijki. Nazwy linijek nie mogą się powtarzać! </div>
+    <div> Dalej definiujemy swoją linijkę wewnątrz cudzysłowia "". Jeżeli ma być to tylko wartość tekstowa to wystarczy po prostu wpisać. "Bardzo lubię autosugestie" </div>
+    <div> Przykład: "line99" : "Bardzo lubię autosugestie"</div>
+    <div>  Jeżeli ma być to wartość typu prawda albo fałsz, należy umieścić ją w następujący sposób: </div>
+    <div> "\${ dowolna_nazwa ? 'Domyślna wartość tekstu.' : ' Alternatywna wartość tekstu.'}" </div>
+    <div> Przykład: "line98" : "\${ lubie_sugestie ? 'Bardzo lubię autosugestie.' : ' Nie lubię autosugestii.'}" </div>
+    <div> Na koniec należy upewnić się że wszystkie linijki Z WYŁĄCZENIEM OSTATNIEJ zawierające "lineX" : "tekst" są zakończone przecinkiem.  </div>
+    <div> Przycisk "Sprawdź składnie i zapisz" nie zapisze jeżeli input nie będzie dobrym JSON, wyświetli komunikat że coś jest nie tak. </div>
+    <div> Żeby zamknąć to okno wystarczy kliknąć na szare pole dookoła. </div>`;
+  drawer.append(instruction);
+  parent.append(drawer);
+
+
+
+  // json_lines.disableAutoCopy
+
+  return parent;
+};
+function isValidJson(jsonString) {
+  try {
+    JSON.parse(jsonString);
+    return true; // Parsing succeeded
+  } catch (error) {
+    console.error("Invalid JSON format:", error);
+    return false; // Parsing failed
+  }
+}
+
+function synthesiseJSON(target_name = undefined) {
+
+
+  const existingDialog = document.querySelector('.MD__json_dialog');
+  if (existingDialog) {
+    document.removeChild(existingDialog);
+  }
+
+  const dialogElement = document.createElement('dialog');
+  dialogElement.style = "border: 1px solid purple; background: rgba(0, 0, 0, 0.4); width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;";
+  dialogElement.addEventListener('click', () => {
+    let changesUnsaved = false;
+    if (!changesUnsaved) {
+      dialogElement.close()
+      dialogElement.remove();
+    } else {
+      //show dialog for saving / discarding changes.
+    }
+  });
+  document.body.append(dialogElement);
+  const dialogInnerElement = document.createElement('div');
+  dialogInnerElement.style = "width: 80%; height: 80%; background: #DDD; display: flex; flex-direction: column; border: 1px solid black;";
+  dialogInnerElement.addEventListener('click', (event) => event.stopPropagation());
+  const dialogContent = configureJson(target_name);
+  dialogInnerElement.append(dialogContent);
+  dialogElement.append(dialogInnerElement);
+  dialogElement.showModal();
+
+  const checkButton = document.getElementById('checkjson');
+  checkButton.onclick = (e) => {
+    e.stopPropagation();
+    const tableInput = document.getElementById('jsonTextArea').value;
+    console.log(tableInput);
+    if (isValidJson(tableInput)) {
+      document.getElementById('mistake').style.display = "none";
+      const nazwa_headera = document
+        .getElementById("header")
+        .querySelector(".templateEditPageTitle").textContent;
+      const fieldIndex = GM_getValue(['settings'])["fields_with_autocomplete"].findIndex(
+        (item) => item.header_name === nazwa_headera
+      );
+      if (fieldIndex != -1) {
+        // Construct the path as a string
+        let path = 'settings["fields_with_autocomplete"][${fieldIndex}]["user_configurable_text"][0]["${target_name}"]';
+        path = path.replace("${fieldIndex}", fieldIndex);
+        path = path.replace("${target_name}", target_name);
+        let oldSettings = GM_getValue('settings', {});
+        oldSettings["fields_with_autocomplete"][fieldIndex]["user_configurable_text"][0][target_name] = JSON.parse(tableInput);
+        // console.log(oldSettings["fields_with_autocomplete"][fieldIndex]["user_configurable_text"][0][target_name]);
+        GM_setValue('settings', oldSettings); // Save back to storage.
+        document.getElementById('approved').style.display = "block";
+      }
+    } else {
+      document.getElementById('mistake').style.display = "block";
+      document.getElementById('approved').style.display = "none";
+    }
+  };
+}
+
+function resizeTextarea(textarea) {
+  // Set the minimum height to ensure at least some text is visible
+  const maxHeight = 1000;
+  const min_width = "45%";
+  textarea.style.minHeight = '20px'; // Adjust as needed
+
+  // Calculate the height of the content including padding and borders
+  var scrollHeight = textarea.scrollHeight;
+
+  // Ensure the height does not exceed a certain limit to prevent overflow
+  if (scrollHeight > maxHeight) { // Adjust this value based on your design
+    scrollHeight = maxHeight; // Maximum height, adjust as needed
+  }
+
+  textarea.style.minWidth = min_width;
+  textarea.style.minHeight = scrollHeight + 'px'; // Set the new height of the textarea
+}
+
+function addSettingCog(fieldOfIntrest) {
+  fieldOfIntrest.style.position = "relative";
+  fieldOfIntrest.classList += "MedhelperSuggestion";
+  const parent = document.createElement("div");
+  parent.classList += "MedhelperSuggestion";
+  parent.style.position = "absolute";
+  parent.style.backgroundColor = "invisible";
+  parent.style.borderRadius = "0.1rem";
+  parent.style.left =
+    fieldOfIntrest.getBoundingClientRect().right + 20 + window.scrollX + +"px";
+  parent.style.top =
+    fieldOfIntrest.getBoundingClientRect().top + window.scrollY + "px";
+  parent.style.minWidth = "fit-content";
+  parent.style.display = "flex";
+  parent.style.flexDirection = "column";
+  parent.style.justifyContent = "center";
+
+  popup = document.createElement("div");
+  popup.style.position = "relative";
+  // popup.style.backgroundColor = "#b1b1b1";
+  popup.style.padding = "0rem";
+  popup.style.borderRadius = "0.1rem";
+  popup.style.display = "flex";
+  popup.style.flexShrink = "1";
+  popup.style.flexDirection = "reverse-row";
+  popup.style.justifyContent = "center";
+  popup.style.alignContent = "center";
+
+  const suggestionText = document.createElement("div");
+  suggestionText.style.display = "flex";
+  suggestionText.style.flexDirection = "column";
+  suggestionText.style.flexWrap = "wrap";
+  suggestionText.style.justifyContent = "center";
+  suggestionText.style.alignContent = "center";
+  suggestionText.style.padding = "0.1rem";
+  suggestionText.style.maxHeight = "2rem";
+  suggestionText.style.maxWidth = "2rem";
+  suggestionText.style.backgroundColor = "#b1b1b1";
+
+  suggestionText.innerHTML = '<img style="max-width: 2rem;max-height: 2rem; filter: opacity(0.5);" src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/settings_icon.png" alt="Konfiguruj auto-uzupełnianie">';
+  popup.appendChild(suggestionText);
+  parent.appendChild(popup);
+
+  suggestionText.onclick = (e) => {
+    e.stopPropagation();
+    synthesiseJSON(fieldOfIntrest.name);
+  };
+
+  window.addEventListener("resize", function () {
+    updateFieldHeight(
+      fieldOfIntrest,
+      parent,
+      popup,
+      minimal_przedmiotowe_suggestion_height
+    );
+  });
+  window.addEventListener("onclick", function () {
+    updateFieldHeight(
+      fieldOfIntrest,
+      parent,
+      popup,
+      minimal_przedmiotowe_suggestion_height
+    );
+  });
+  fieldOfIntrest.addEventListener("resize", function () {
+    updateFieldHeight(
+      fieldOfIntrest,
+      parent,
+      popup,
+      minimal_przedmiotowe_suggestion_height
+    );
+  });
+  document.body.appendChild(parent);
+
+  const minimal_przedmiotowe_suggestion_height = 0;
+  updateFieldHeight(
+    fieldOfIntrest,
+    parent,
+    popup,
+    minimal_przedmiotowe_suggestion_height
+  );
+
+  const resizeObserver = new ResizeObserver((entries) => {
+    window.dispatchEvent(new Event("resize"));
+  });
+
+  resizeObserver.observe(fieldOfIntrest);
+}

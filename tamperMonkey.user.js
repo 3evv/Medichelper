@@ -3,7 +3,7 @@
 // @namespace   Violentmonkey Scripts
 // @match       http://localhost:8000/*
 // @match       http*://medicus.usk/*
-// @version     1.19
+// @version     1.191
 // @author      3evv
 // @description 6/8/2025, 10:37:03 PM
 // @icon	https://raw.githubusercontent.com/3evv/Medichelper/main/images/icon128.jpeg
@@ -70,7 +70,7 @@
   }
 })();
 
-console.log(GM_getValue("fixedViews"))
+// console.log(GM_getValue("fixedViews"))
 if (GM_getValue("fixedViews") == undefined) {
   GM_setValue("fixedViews", JSON.parse(`{
     "ODDZIAŁ KARDIOLOGICZNY (49042) ": true,
@@ -1637,17 +1637,26 @@ function fixMyView() {
   const wardName = tableHeader.querySelector('legend').parentElement.querySelector('select[name=filter_jedn_options]').querySelector('[selected]').textContent;
   const tableRows = tableHeader.querySelectorAll('tr.rowlist')
 
-  console.log(wardName);
-  if (GM_getValue('fixedViews')[wardName] != undefined) {
+  const logoutButton = document.querySelector('[class="logoutElementA"]').parentNode;
+  const disableButton = document.createElement('span');
+  disableButton.innerHTML = `<button id="MH__toggleOpti" type="button"> Wyłącz/włącz zmianę widoku </button>`;
+  disableButton.style.margin = '1rem';
+
+  logoutButton.insertBefore(disableButton, logoutButton.firstChild);
+  disableButton.onclick = (e) => {
+    e.stopPropagation();
+    if (e.target.id == 'MH__toggleOpti') {
+      let fixedViews = GM_getValue('fixedViews', {});
+      fixedViews[wardName] = !fixedViews[wardName];
+      GM_setValue('fixedViews', fixedViews);
+    }
+  }
+
+  // console.log(wardName);
+  if (GM_getValue('fixedViews')[wardName] != undefined && GM_getValue('fixedViews')[wardName] == true) {
     for (let row of tableRows) {
       const dataDIV = row.querySelector('td > table:nth-child(2) > tbody > tr:nth-child(2) > td > div');
       if (dataDIV.textContent != '') {
-
-
-        // const leftCollumn = dataDIV.querySelector('td[class="templateListColumnTd mdl-data-table__cell--non-numeric templateListSeparatorColumn sdw"]');
-        // const middleCollumn = dataDIV.querySelector('td[class="templateListColumnTd mdl-data-table__cell--non-numeric templateListSeparatorColumn sdr"]');
-        // const rightCollumn = dataDIV.querySelector('td[class="templateListColumnTd mdl-data-table__cell--non-numeric templateListSeparatorColumn sbp"]');
-        // const lowerDrawer = dataDIV.querySelector('td[colspan="3"][class="templateListColumnTd mdl-data-table__cell--non-numeric templateListSeparatorColumn sl"]');
         const style = document.createElement('style');
         style.textContent = `.MH_documentRow { 
    display: flex;

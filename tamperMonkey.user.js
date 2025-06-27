@@ -3,7 +3,7 @@
 // @namespace   Violentmonkey Scripts
 // @match       http://localhost:8000/*
 // @match       http*://medicus.usk/*
-// @version     1.191
+// @version     1.192
 // @author      3evv
 // @description 6/8/2025, 10:37:03 PM
 // @icon	https://raw.githubusercontent.com/3evv/Medichelper/main/images/icon128.jpeg
@@ -1649,6 +1649,9 @@ function fixMyView() {
       let fixedViews = GM_getValue('fixedViews', {});
       fixedViews[wardName] = !fixedViews[wardName];
       GM_setValue('fixedViews', fixedViews);
+      for (let button of document.querySelectorAll('button[id="MH__revert_button"]')) {
+        button.click();
+      }
     }
   }
 

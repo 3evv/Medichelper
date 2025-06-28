@@ -193,6 +193,7 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
   // console.log( Object.values(json_lines));
 
   const suggestionElement = document.createElement("div");
+  suggestionElement.id = 'MH__suggestiontext'
   suggestionElement.style.display = "flex";
   suggestionElement.style.flexDirection = "column";
   suggestionElement.style.height = "100%";
@@ -461,7 +462,7 @@ function autofill_text_fields(fieldJson) {
         return;
       }
       fieldOfIntrest.style.position = "relative";
-      fieldOfIntrest.classList += "MedhelperSuggestion";
+      fieldOfIntrest.classList = "MedhelperSuggestion";
       const parent = configurePopupParent(fieldOfIntrest);
       const popup = configurePopup();
       const suggestionText = configureSuggestion(
@@ -1852,6 +1853,7 @@ function detectEmptyInputFields() {
 function configureJson(target_name = undefined) {
 
   const parent = document.createElement('div');
+  parent.style.padding = '3rem';
   const nazwa_headera = document
     .getElementById("header")
     .querySelector(".templateEditPageTitle").textContent;
@@ -1881,8 +1883,12 @@ function configureJson(target_name = undefined) {
   // parent.append(autofillCheckbox);
   // parent.appendChild(label);
   const drawer = document.createElement('div');
-  let jsonData = JSON.stringify(savedValues.user_configurable_text[0][target_name], null, 2);
-  if (jsonData == undefined) {
+  let jsonData = '';
+  // console.log(savedValues.user_configurable_text);
+  console.log(savedValues.user_configurable_text[0][target_name]);
+  if (JSON.stringify(savedValues.user_configurable_text[0][target_name], null, 2) != undefined) {
+    jsonData = JSON.stringify(savedValues.user_configurable_text[0][target_name], null, 2);
+  } else {
     jsonData = `{
     "line1" : "Twoja pierwsza autosugestia",
     "line2" : "Naciśnij zapisz by ją zapamiętać w systemie",
@@ -1892,8 +1898,9 @@ function configureJson(target_name = undefined) {
   }
   drawer.style.gap = '0.5rem';
   drawer.style.padding = '0.5rem';
-  drawer.innerHTML = ` <div class="drawer" id="drawer"> <textarea id="jsonTextArea" style="width: 90%; min-height:200px;">${jsonData}</textarea> 
-    <div style="display:flex;gap:2rem;font-size:1.5rem;"><button style="height:2rem;" id="checkjson">Sprawdź składnie i zapisz</button> <span id="mistake" style="display:none; color:red"> Niepoprawny JSON!</span> <span id="approved" style="display:none; color:green"> JSON zapisany</span></div>
+  drawer.style.height = 'max-content';
+  drawer.innerHTML = ` <div class="drawer" id="drawer"> <textarea id="jsonTextArea" style="width: 100%; min-height:30rem;">${jsonData}</textarea> 
+    <div style="display:flex;gap:2rem;font-size:1.5rem;"><button style="height:2rem;" id="checkjson">Sprawdź składnie i zapisz</button> <span id="mistake" style="display:none; color:red"> Niepoprawny JSON!</span> <span id="approved" style="display:none; color:green"> JSON zapisany</span><button style="height:2rem;" id="removejson">Usuń autosugestie</button></div>
     </div>`;
   const instruction = document.createElement('div');
   instruction.style.background = 'white';
@@ -1909,7 +1916,7 @@ function configureJson(target_name = undefined) {
     <div> Przykład: "line98" : "\${ lubie_sugestie ? 'Bardzo lubię autosugestie.' : ' Nie lubię autosugestii.'}" </div>
     <div> Na koniec należy upewnić się że wszystkie linijki Z WYŁĄCZENIEM OSTATNIEJ zawierające "lineX" : "tekst" są zakończone przecinkiem.  </div>
     <div> Przycisk "Sprawdź składnie i zapisz" nie zapisze jeżeli input nie będzie dobrym JSON, wyświetli komunikat że coś jest nie tak. </div>
-    <div> Żeby zamknąć to okno wystarczy kliknąć na szare pole dookoła. </div>`;
+    <div> Żeby zamknąć to okno wystarczy kliknąć na ciemne szare pole dookoła. </div>`;
   drawer.append(instruction);
   parent.append(drawer);
 
@@ -1940,13 +1947,26 @@ function synthesiseJSON(target_name = undefined) {
   const dialogElement = document.createElement('dialog');
   dialogElement.style = "border: 1px solid purple; background: rgba(0, 0, 0, 0.4); width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;";
   dialogElement.addEventListener('click', () => {
-    let changesUnsaved = false;
-    if (!changesUnsaved) {
-      dialogElement.close()
-      dialogElement.remove();
-    } else {
-      //show dialog for saving / discarding changes.
+    const cleanup = document.querySelectorAll('div[id="MH__suggestiontext"]');
+    for (let element of cleanup) {
+      element.parentNode.classList -= 'MedhelperSuggestion'
+      element.parentNode.removeChild(element);
+
     }
+
+    const cleanupEmpty = document.querySelectorAll('div[id="MH__emptyfield"]');
+    for (let element of cleanupEmpty) {
+      element.parentNode.parentNode.classList -= 'MedhelperSuggestion'
+      element.parentNode.removeChild(element);
+    }
+    const cleanupClass = document.querySelectorAll('textarea[class="MedhelperSuggestion"]');
+    for (let element of cleanupClass) {
+      element.classList -= 'MedhelperSuggestion'
+    }
+
+    dialogElement.close()
+    dialogElement.remove();
+    handleHeader();
   });
   document.body.append(dialogElement);
   const dialogInnerElement = document.createElement('div');
@@ -1958,6 +1978,21 @@ function synthesiseJSON(target_name = undefined) {
   dialogElement.showModal();
 
   const checkButton = document.getElementById('checkjson');
+  const removeButton = document.getElementById('removejson');
+  removeButton.onclick = (e) => {
+    e.stopPropagation();
+    const nazwa_headera = document
+      .getElementById("header")
+      .querySelector(".templateEditPageTitle").textContent;
+    const fieldIndex = GM_getValue(['settings'])["fields_with_autocomplete"].findIndex(
+      (item) => item.header_name === nazwa_headera
+    );
+    let oldSettings = GM_getValue('settings', {});
+    oldSettings["fields_with_autocomplete"][fieldIndex]["user_configurable_text"][0][target_name] = undefined;
+    // oldSettings = oldSettings.filter(obj => obj["fields_with_autocomplete"][fieldIndex]["user_configurable_text"][0] !== target_name);
+    GM_setValue('settings', oldSettings); // Save back to storage.
+    document.getElementById('approved').style.display = "block";
+  }
   checkButton.onclick = (e) => {
     e.stopPropagation();
     const tableInput = document.getElementById('jsonTextArea').value;
@@ -1972,12 +2007,11 @@ function synthesiseJSON(target_name = undefined) {
       );
       if (fieldIndex != -1) {
         // Construct the path as a string
-        let path = 'settings["fields_with_autocomplete"][${fieldIndex}]["user_configurable_text"][0]["${target_name}"]';
-        path = path.replace("${fieldIndex}", fieldIndex);
-        path = path.replace("${target_name}", target_name);
+        // let path = 'settings["fields_with_autocomplete"][${fieldIndex}]["user_configurable_text"][0]["${target_name}"]';
+        // path = path.replace("${fieldIndex}", fieldIndex);
+        // path = path.replace("${target_name}", target_name);
         let oldSettings = GM_getValue('settings', {});
         oldSettings["fields_with_autocomplete"][fieldIndex]["user_configurable_text"][0][target_name] = JSON.parse(tableInput);
-        // console.log(oldSettings["fields_with_autocomplete"][fieldIndex]["user_configurable_text"][0][target_name]);
         GM_setValue('settings', oldSettings); // Save back to storage.
         document.getElementById('approved').style.display = "block";
       }
@@ -2010,9 +2044,10 @@ function resizeTextarea(textarea) {
 
 function addSettingCog(fieldOfIntrest) {
   fieldOfIntrest.style.position = "relative";
-  fieldOfIntrest.classList += "MedhelperSuggestion";
+  fieldOfIntrest.classList = "MedhelperSuggestion";
   const parent = document.createElement("div");
-  parent.classList += "MedhelperSuggestion";
+  parent.id = 'MH__emptyfield';
+  parent.classList = "MedhelperSuggestion";
   parent.style.position = "absolute";
   parent.style.backgroundColor = "invisible";
   parent.style.borderRadius = "0.1rem";

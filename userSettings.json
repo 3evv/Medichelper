@@ -3,7 +3,7 @@
     {
       "header_name": "Badanie podmiotowe i przedmiotowe - Neurochirurgii",
       "suggest_text": true,
-      "user_configurable_text":
+      "user_configurable_text": [
         {
           "skladniki_procedury_4335": {
             "line1": "${calculateAge()}-letni pacjent przyjęty w trybie ${tryb ? 'planowym' : 'pilnym'} do Kliniki Neurochirurgii celem . Pacjent zgłasza następujące dolegliwości:",
@@ -19,8 +19,15 @@
           },
           "skladniki_procedury_4290": {
             "line1": "${spoleczny? 'Bez zastrzeżeń ' : ' '}"
+          },
+          "skladniki_procedury_4399": {
+            "line1": "Twoja pierwsza autosugestia",
+            "line2": "Naciśnij zapisz by ją zapamiętać w systemie",
+            "line3": "${ zapisałem ? 'Udało się zapisać' : ' Jak widzisz ten napis poza dialogiem konfiguracji to udało się zapisać.'}",
+            "line4": "Jak chcesz się tego całkowicie pozbyć to zostaw pusty nawias {} bez linijek."
           }
-        },
+        }
+      ],
       "autofill_checkboxes": false
     },
     {
@@ -29,7 +36,7 @@
       "user_configurable_text": [
         {
           "skladniki_procedury_4187": {
-            "line1": "${calculateAge()}-letni pacjent przyjęty w trybie ${tryb ? 'planowym' : 'pilnym'} do Kliniki Neurochirurgii celem . Pacjent zgłasza następujące dolegliwości:",
+            "line1": "${calculateAge()}-letni pacjent przyjęty w trybie ${tryb ? 'planowym' : 'pilnym'} do Oddziału Kardiologicznego Uniwersyteckiego Szpitala Klinicznego w Olsztynie celem wykonania koronarografii. Zgłasza następujące dolegliwości:",
             "line2": "${choroby_przewlekle ? 'Choroby przewlekłe:' : 'Nie choruje przewlekle'}",
             "line3": "${leki ? 'Przyjmuje następujące leki:' : 'Nie przyjmuje leków na stałe.'}",
             "line4": "${alergie ? '!Alergie: ' : 'Alergie neguje.'}",
@@ -42,6 +49,9 @@
           },
           "skladniki_procedury_4142": {
             "line1": "${spoleczny? 'Bez zastrzeżeń ' : ' '}"
+          },
+          "skladniki_procedury_4251": {
+            "line1": "Przy przyjęciu pacjent w stanie ogólnym dobrym, stabilny, wydolny krążeniowo i oddechowo. BP 141/84 mmHg. Czynność serca miarowa o częstości ok. 80 ud./min. Tętno na tętnicach promieniowych symetrycznie wyczuwalne.Osłuchowo nad polami płucnymi szmer pęcherzykowy prawidłowy, symetryczny. Brzuch miękki, palpacyjnie niebolesny, bez oporów patologicznych, perystaltyka prawidłowa, objawy otrzewnowe, Chełmońskiego i Goldflama ujemne. Obrzęki nieobecne."
           }
         }
       ],
@@ -53,19 +63,17 @@
       "user_configurable_text": [
         {
           "skladniki_procedury_2243": {
-            "line1": "${calculateAge()}-letni pacjent przyjęty w trybie ${tryb ? 'planowym' : 'pilnym'} do Kliniki Neurochirurgii celem . Pacjent zgłasza następujące dolegliwości:",
-            "line2": "${choroby_przewlekle ? 'Choroby przewlekłe:' : 'Nie choruje przewlekle'}",
-            "line3": "${leki ? 'Przyjmuje następujące leki:' : 'Nie przyjmuje leków na stałe.'}",
-            "line4": "${alergie ? '!Alergie: ' : 'Alergie neguje.'}",
-            "line5": "${operacje ? 'Operacje chirurgiczne w przeszłości:' : 'Operacje chirurgiczne w przeszłości neguje.'}",
-            "line6": "${papierosy ? 'Pali papierosy, ok. X dziennie.' : 'Nie pali papierosów.'}",
-            "line7": "${alkohol ? 'Spożywa alkohol okazjonalnie.' : 'Nie spożywa alkoholu.'}"
+            "line1": "Badanie przedmiotowe i podmiotowe",
+            "line2": "Badania laboratoryjne",
+            "line3": "EKG spoczynkowe",
+            "line4": "Pomiar BP",
+            "line5": "Inne badania niezbędne do dalszej diagnostyki"
           },
-          "skladniki_procedury_4202": {
-            "line1": "${kontakt? 'Pełen kontakt słowno-logiczny.' : 'Kontakt słowno-logiczny utrudniony.'}${zorientowany? 'Zorientowany auto i allopsychicznie.' : 'Niezorientowany auto oraz allopsychicznie.'}"
+          "skladniki_procedury_2244": {
+            "line1": "Farmakoterapia i koronarografia"
           },
-          "skladniki_procedury_4142": {
-            "line1": "${spoleczny? 'Bez zastrzeżeń ' : ' '}"
+          "skladniki_procedury_2245": {
+            "line1": "Uzależnione od przebiegu hospitalizacji oraz wyniku koronarografii"
           }
         }
       ],
@@ -86,7 +94,28 @@
       "autofill_checkboxes": false
     },
     {
-      "header_name": "!!!!!!!Zlecenie badań",
+      "header_name": "Wypis ze szpitala",
+      "suggest_text": true,
+      "user_configurable_text": [
+        {
+          "skladniki_procedury_256983": {
+            "line1": "Hospitalizacja i  koronarografia przebiegły bez powikłań. W stanie ogólnym dość dobrym, po kontroli miejsca wkłucia, pacjent został wypisany do domu z zaleceniami"
+          },
+          "skladniki_procedury_515253": {
+            "line1": "Spożywanie posiłków regularnie o stałych porach. Unikanie słodyczy, węglowodanów o wysokim indeksie glikemicznym oraz nasyconych kwasów tłuszczowych."
+          },
+          "skladniki_procedury_256981": {
+            "line1": "Stała opieka w POZ.",
+            "line2": "Opieka w Poradni Kardiologicznej.",
+            "line3": "Regularne pomiary ciśnienia w warunkach domowych.",
+            "line4": "Leki:"
+          }
+        }
+      ],
+      "autofill_checkboxes": false
+    },
+    {
+      "header_name": "Zlecenie badań",
       "suggest_text": false,
       "user_configurable_text": [
         {
@@ -109,14 +138,28 @@
             "id_array": "['wykonanie_poz_pak_290583', 'wykonanie_poz_pak_290544', 'wykonanie_poz_pak_290590', 'wykonanie_poz_pak_290408', 'wykonanie_poz_pak_290472', 'wykonanie_poz_pak_290518', 'wykonanie_poz_pak_290603', 'wykonanie_poz_pak_290586', 'wykonanie_poz_pak_290607', 'wykonanie_poz_pak_290651', 'wykonanie_poz_pak_290584', 'wykonanie_poz_pak_290524']"
           }
         ],
-        "PGN": [
+        "PIEL": [
           {
             "name": "Pielegniarskie",
             "enabled": true,
             "id_array": "['wykonanie_poz_pak_252588', 'wykonanie_poz_pak_252587']"
           }
         ],
-        "HD": [
+        "NIEINWZSERC": [
+          {
+            "name": "EKG bez opisu",
+            "enabled": true,
+            "id_array": "['wykonanie_poz_pak_252240']"
+          }
+        ],
+        "Angio": [
+          {
+            "name": "Angiografia",
+            "enabled": true,
+            "id_array": "['wykonanie_poz_pak_252557']"
+          }
+        ],
+        "hd": [
           {
             "name": "Hemodynamika",
             "enabled": true,

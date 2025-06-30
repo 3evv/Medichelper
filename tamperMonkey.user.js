@@ -3,7 +3,7 @@
 // @namespace   Violentmonkey Scripts
 // @match       http://localhost:8000/*
 // @match       http*://medicus.usk/*
-// @version     1.192
+// @version     1.193
 // @author      3evv
 // @description 6/8/2025, 10:37:03 PM
 // @icon	https://raw.githubusercontent.com/3evv/Medichelper/main/images/icon128.jpeg
@@ -80,6 +80,7 @@ if (GM_getValue("fixedViews") == undefined) {
 
 if (document.title == 'Mój widok') {
   if (GM_getValue(["settings"])["optimize"]) {
+    // console.log("here");
     fixMyView();
   }
 } else {
@@ -267,9 +268,9 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
     suggestionElement.appendChild(suggestionText);
     let suggestionButtons = document.createElement("div");
     suggestionButtons.innerHTML = `
-    <div style="display: flex; flex-drection:row; justify-content: flex-end ;"> 
+    <div style="display: flex; flex-drection:row; justify-content: flex-end ;">
     <button style="display:none" id="append_button">Doklej</button>
-    <button id="paste_button" style="min-width:50%;max-height: 1.5rem;">  ${pasted_input ? "Wyłącz auto-wklej" : " Auto-wklej"} </button> 
+    <button id="paste_button" style="min-width:50%;max-height: 1.5rem;">  ${pasted_input ? "Wyłącz auto-wklej" : " Auto-wklej"} </button>
     <img id="config" style="max-width: 1.5rem;max-height: 1.5rem; filter: opacity(0.75);" src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/settings_icon.png" alt="Konfiguruj auto-uzupełnianie"></div>
     `;
     suggestionElement.appendChild(suggestionButtons);
@@ -705,7 +706,7 @@ function createAdmissionPanelInterna(dataSource, admissionPanel) {
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__zgodaKoroPrint"          src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__zgodaKoro" type="button"> Zgoda na koronarografię </div></div>
   <hr class="MH__divider">
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__badPodPrzedPrint"        src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__badPodPrzed" type="button"> Badanie podmiotowe i przedmiotowe</div></div>
-  <hr class="MH__divider">  
+  <hr class="MH__divider">
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__capriniPrint"            src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__caprini" type="button"> Skala Padewska </div></div>
   <hr class="MH__divider">
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__zakazeniePrzyjeciePrint" src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__zakazeniePrzyjecie" type="button"> Ryzyko zakażenia przy przyjęciu </div></div>
@@ -884,7 +885,7 @@ function createStayPanelInterna(dataSource, stayPanel) {
 
   documentsPanel.innerHTML = `
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__badPodPrzedPrint"        src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__badPodPrzed" type="button"> Badanie podmiotowe i przedmiotowe</div></div>
-  <hr class="MH__divider">  
+  <hr class="MH__divider">
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__infectionRiskPrint"           src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__infectionRisk" type="button"> Ocena ryzyka zakażenia</div></div>
   <hr class="MH__divider">
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__bloodTransfusionPrint"           src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__bloodTransfusion" type="button"> Karta zapotrzebowania na krew </div></div>
@@ -1042,7 +1043,7 @@ function createDischargePanelInterna(dataSource, dischargePanel) {
 
   documentsPanel.innerHTML = `
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__badPodPrzedPrint"        src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__badPodPrzed" type="button"> Badanie podmiotowe i przedmiotowe</div></div>
-  <hr class="MH__divider">  
+  <hr class="MH__divider">
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__dischargePrint"           src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__discharge" type="button"> Wypis </div></div>
   <hr class="MH__divider">
   `;
@@ -1180,7 +1181,7 @@ function createAdmissionPanelNchir(dataSource, admissionPanel) {
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__procedureConsentPrint"          src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__procedureConsent" type="button"> Zgoda na zabieg </div></div>
   <hr class="MH__divider">
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__badPodPrzedPrint"        src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__badPodPrzed" type="button"> Badanie podmiotowe i przedmiotowe</div></div>
-  <hr class="MH__divider">  
+  <hr class="MH__divider">
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__capriniPrint"            src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__caprini" type="button"> Skala Capriniego </div></div>
   <hr class="MH__divider">
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__zakazeniePrzyjeciePrint" src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__zakazeniePrzyjecie" type="button"> Ryzyko zakażenia przy przyjęciu </div></div>
@@ -1365,7 +1366,7 @@ function createStayPanelNchir(dataSource, stayPanel) {
 
   documentsPanel.innerHTML = `
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__badPodPrzedPrint"        src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__badPodPrzed" type="button"> Badanie podmiotowe i przedmiotowe</div></div>
-  <hr class="MH__divider">  
+  <hr class="MH__divider">
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__infectionRiskPrint"           src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__infectionRisk" type="button"> Ocena ryzyka zakażenia</div></div>
   <hr class="MH__divider">
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__bloodTransfusionPrint"           src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__bloodTransfusion" type="button"> Karta zapotrzebowania na krew </div></div>
@@ -1523,7 +1524,7 @@ function createDischargePanelNchir(dataSource, dischargePanel) {
 
   documentsPanel.innerHTML = `
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__badPodPrzedPrint"        src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__badPodPrzed" type="button"> Badanie podmiotowe i przedmiotowe</div></div>
-  <hr class="MH__divider">  
+  <hr class="MH__divider">
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__dischargePrint"           src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__discharge" type="button"> Wypis </div></div>
   <hr class="MH__divider">
   `;
@@ -1642,8 +1643,13 @@ function fixMyView() {
   const disableButton = document.createElement('span');
   disableButton.innerHTML = `<button id="MH__toggleOpti" type="button"> Wyłącz/włącz zmianę widoku </button>`;
   disableButton.style.margin = '1rem';
+  const forceButton = document.createElement('span');
+  forceButton.innerHTML = `<button id="MH__forceOpti" type="button"> Zmiana widoku </button>`;
+  forceButton.style.margin = '1rem';
 
   logoutButton.insertBefore(disableButton, logoutButton.firstChild);
+  logoutButton.insertBefore(forceButton, logoutButton.firstChild);
+
   disableButton.onclick = (e) => {
     e.stopPropagation();
     if (e.target.id == 'MH__toggleOpti') {
@@ -1652,24 +1658,36 @@ function fixMyView() {
       GM_setValue('fixedViews', fixedViews);
       for (let button of document.querySelectorAll('button[id="MH__revert_button"]')) {
         button.click();
+
       }
     }
   }
 
+  forceButton.onclick = (e) => {
+    e.stopPropagation();
+    if (e.target.id == 'MH__forceOpti') {
+        optimize()
+      }
+    }
+  optimize();
   // console.log(wardName);
-  if (GM_getValue('fixedViews')[wardName] != undefined && GM_getValue('fixedViews')[wardName] == true) {
+  function optimize(){
+    if (GM_getValue('fixedViews')[wardName] != undefined && GM_getValue('fixedViews')[wardName] == true) {
+
     for (let row of tableRows) {
       const dataDIV = row.querySelector('td > table:nth-child(2) > tbody > tr:nth-child(2) > td > div');
-      if (dataDIV.textContent != '') {
+      if (dataDIV.textContent != '' && dataDIV.classList != "MH__Optimized") {
+        dataDIV.classList += "MH__Optimized";
+
         const style = document.createElement('style');
-        style.textContent = `.MH_documentRow { 
+        style.textContent = `.MH_documentRow {
    display: flex;
   flex-direction: row;
   height: 2rem;
   width: 30rem;
   align-items: flex-end;
   }
-  .MH_documentLink:hover { 
+  .MH_documentLink:hover {
     color: blue;
   }
    .MH__printer {
@@ -1718,7 +1736,7 @@ function fixMyView() {
         border-bottom: unset;
         margin-top: 0.04rem;
         margin-right: 0.04rem;
-        
+
         }
         .MH__tab1{
         }
@@ -1740,7 +1758,7 @@ function fixMyView() {
         .MH__selected_tab{
         background-color: rgb(241, 241, 241);
         padding-bottom: 0.27rem;
-        z-index: 1; 
+        z-index: 1;
         }
         .MH__gruperStatus{
         justify-self:flex-end;
@@ -1759,10 +1777,10 @@ function fixMyView() {
         controlPanel.innerHTML = `<button id="MH__revert_button" type="button"> Oryginalny widok </button>`
         const bed = ''
         controlPanel.innerHTML += `<span id="MH__bed"> ${bed} </span>`
-        controlPanel.innerHTML += `<div style="height:100%; min-width: 33%;"> 
-        <button class="MH__tab MH__tab1" id="MH__addmission_button" type="button"> Przyjęcie </button> 
-        <button class="MH__tab MH__tab2 MH__selected_tab" id="MH__stay_button" type="button"> Prowadzenie Pacjenta </button> 
-        <button class="MH__tab MH__tab3" id="MH__discharge_button" type="button"> Wypis do domu </button> 
+        controlPanel.innerHTML += `<div style="height:100%; min-width: 33%;">
+        <button class="MH__tab MH__tab1" id="MH__addmission_button" type="button"> Przyjęcie </button>
+        <button class="MH__tab MH__tab2 MH__selected_tab" id="MH__stay_button" type="button"> Prowadzenie Pacjenta </button>
+        <button class="MH__tab MH__tab3" id="MH__discharge_button" type="button"> Wypis do domu </button>
         </div>`;
         overlay.append(controlPanel);
         const admissionPanel = document.createElement('div');
@@ -1799,6 +1817,7 @@ function fixMyView() {
             case 'MH__revert_button':
               dataDIV.parentElement.removeChild(overlay);
               dataDIV.style.display = 'block';
+              dataDIV.classList -= "MH__Optimized";
               break;
             case 'MH__addmission_button':
               admissionPanel.style.display = 'block';
@@ -1829,6 +1848,7 @@ function fixMyView() {
       }
     }
   }
+}
 }
 
 function detectEmptyInputFields() {
@@ -1899,7 +1919,7 @@ function configureJson(target_name = undefined) {
   drawer.style.gap = '0.5rem';
   drawer.style.padding = '0.5rem';
   drawer.style.height = 'max-content';
-  drawer.innerHTML = ` <div class="drawer" id="drawer"> <textarea id="jsonTextArea" style="width: 100%; min-height:30rem;">${jsonData}</textarea> 
+  drawer.innerHTML = ` <div class="drawer" id="drawer"> <textarea id="jsonTextArea" style="width: 100%; min-height:30rem;">${jsonData}</textarea>
     <div style="display:flex;gap:2rem;font-size:1.5rem;"><button style="height:2rem;" id="checkjson">Sprawdź składnie i zapisz</button> <span id="mistake" style="display:none; color:red"> Niepoprawny JSON!</span> <span id="approved" style="display:none; color:green"> JSON zapisany</span><button style="height:2rem;" id="removejson">Usuń autosugestie</button></div>
     </div>`;
   const instruction = document.createElement('div');

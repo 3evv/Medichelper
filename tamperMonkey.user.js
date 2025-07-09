@@ -2025,13 +2025,22 @@ function fixMyView() {
         justify-self:flex-end;
         }
         .MH__fixedMainPage__nameplate{
-        height: 2rem;
-        font-size: 1.5rem;
+        height: 1.5rem;
+        width 100%;
+        font-size: 1.25rem;
         margin: 0.5 rem;
         padding: 0.25rem;
+        padding-left: 0.75rem;
         background:rgb(44, 187, 111);
-        color: #f1f1e6;
+        color:rgb(231, 231, 225);
+        border-top: 0.15rem solid #434656;
+        border: 0.15rem solid transparent;
         }
+        .MH__fixedMainPage__nameplate:hover {
+        color: #0082bc;
+        border: 0.15rem solid #0082bc;
+
+         }
         `;
   document.head.appendChild(style);
 
@@ -2062,8 +2071,8 @@ function fixMyView() {
   logoutButton.insertBefore(forceButton, logoutButton.firstChild);
 
   disableButton.style.background = GM_getValue("fixedViews", {})[wardName]
-    ? "#4CAF50"
-    : "#f44336";
+    ? "#89e786"
+    : "#953e4d";
   disableButton.onclick = (e) => {
     e.stopPropagation();
 
@@ -2076,8 +2085,8 @@ function fixMyView() {
       button.click();
     }
     disableButton.style.background = GM_getValue("fixedViews", {})[wardName]
-      ? "#4CAF50"
-      : "#f44336";
+      ? "#89e786"
+      : "#953e4d";
     autoRefresh();
   };
 
@@ -2137,6 +2146,10 @@ function fixMyView() {
       fixedRow.className = "MH__fixedMainPage__nameplate";
       fixedRow.innerHTML = name + " " + age;
       row.querySelector("td").appendChild(fixedRow);
+
+      fixedRow.addEventListener("click", () => {
+        greenBar.click();
+      });
     }
   }
 

@@ -3,7 +3,7 @@
 // @namespace   Violentmonkey Scripts
 // @match       http://localhost:8000/*
 // @match       http*://medicus.usk/*
-// @version     1.193
+// @version     1.194
 // @author      3evv
 // @description 6/8/2025, 10:37:03 PM
 // @icon	https://raw.githubusercontent.com/3evv/Medichelper/main/images/icon128.jpeg
@@ -72,13 +72,16 @@
 
 // console.log(GM_getValue("fixedViews"))
 if (GM_getValue("fixedViews") == undefined) {
-  GM_setValue("fixedViews", JSON.parse(`{
+  GM_setValue(
+    "fixedViews",
+    JSON.parse(`{
     "ODDZIAŁ KARDIOLOGICZNY (49042) ": true,
     "Klinika Neurochirurgii ": true
-  }`));
+  }`)
+  );
 }
 
-if (document.title == 'Mój widok') {
+if (document.title == "Mój widok") {
   if (GM_getValue(["settings"])["optimize"]) {
     // console.log("here");
     fixMyView();
@@ -86,7 +89,6 @@ if (document.title == 'Mój widok') {
 } else {
   handleHeader();
 }
-
 
 function handleHeader() {
   const nazwa_headera = document
@@ -194,7 +196,7 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
   // console.log( Object.values(json_lines));
 
   const suggestionElement = document.createElement("div");
-  suggestionElement.id = 'MH__suggestiontext'
+  suggestionElement.id = "MH__suggestiontext";
   suggestionElement.style.display = "flex";
   suggestionElement.style.flexDirection = "column";
   suggestionElement.style.height = "100%";
@@ -245,11 +247,13 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
               falseVariant,
             };
           }
-          let output = `<span style="color:#ffffc2; font-style:oblique;" id="${key + "_" + local_index
-            }"> [${boolArray[key + "_" + local_index].textBool
+          let output = `<span style="color:#ffffc2; font-style:oblique;" id="${
+            key + "_" + local_index
+          }"> [${
+            boolArray[key + "_" + local_index].textBool
               ? trueVariant
               : falseVariant
-            }]</span>`;
+          }]</span>`;
           // if(trueVariant == '  '){
           //   output = `<span style="text-decoration: line-through; color: #6F0001;" id="${key + '_' + local_index}"> </span> [${falseVariant}]`;
           //   boolArray[key + '_' + local_index].textBool = false;
@@ -270,7 +274,9 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
     suggestionButtons.innerHTML = `
     <div style="display: flex; flex-drection:row; justify-content: flex-end ;">
     <button style="display:none" id="append_button">Doklej</button>
-    <button id="paste_button" style="min-width:50%;max-height: 1.5rem;">  ${pasted_input ? "Wyłącz auto-wklej" : " Auto-wklej"} </button>
+    <button id="paste_button" style="min-width:50%;max-height: 1.5rem;">  ${
+      pasted_input ? "Wyłącz auto-wklej" : " Auto-wklej"
+    } </button>
     <img id="config" style="max-width: 1.5rem;max-height: 1.5rem; filter: opacity(0.75);" src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/settings_icon.png" alt="Konfiguruj auto-uzupełnianie"></div>
     `;
     suggestionElement.appendChild(suggestionButtons);
@@ -278,10 +284,11 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
 
   function updateSuggestionText(targetId) {
     const target = suggestionElement.querySelector(`#${targetId}`);
-    target.innerHTML = ` [${boolArray[targetId].textBool
-      ? boolArray[targetId].trueVariant
-      : boolArray[targetId].falseVariant
-      }]`;
+    target.innerHTML = ` [${
+      boolArray[targetId].textBool
+        ? boolArray[targetId].trueVariant
+        : boolArray[targetId].falseVariant
+    }]`;
   }
   function updatePasteButton() {
     const target = suggestionElement.querySelector(`#paste_button`);
@@ -306,7 +313,7 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
           append_mode = !append_mode;
           break;
         case "config":
-          synthesiseJSON(target_name = fieldOfIntrest.name);
+          synthesiseJSON((target_name = fieldOfIntrest.name));
           break;
         default:
       }
@@ -353,10 +360,11 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
             replacementHTML.indexOf(`id="`) + `id="`.length
           )
         );
-        let inverseValue = `${!boolArray[targetId].textBool
-          ? boolArray[targetId].trueVariant
-          : boolArray[targetId].falseVariant
-          }`;
+        let inverseValue = `${
+          !boolArray[targetId].textBool
+            ? boolArray[targetId].trueVariant
+            : boolArray[targetId].falseVariant
+        }`;
         // console.log(line.innerHTML);
         replacementLine =
           localHTML.substring(0, beginingReplace) +
@@ -372,7 +380,7 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
       }
       console.log(localHTML);
       if (textInputSuggestion.indexOf(localHTML) != -1) {
-        console.log('Replacingu: ');
+        console.log("Replacingu: ");
         replacementLine = localText
           .replaceAll("[", "")
           .replaceAll("]", "")
@@ -451,7 +459,6 @@ function updateFieldHeight(
   if (GM_getValue(["settings"])["optimize"]) {
     resizeTextarea(fieldOfIntrest);
   }
-
 }
 
 function autofill_text_fields(fieldJson) {
@@ -624,7 +631,6 @@ function autofill_checkboxes(fieldJson) {
       const button = document.getElementById(packet);
       button.style.background = `${boolArray[packet] ? "#ccff99" : ""}`;
     }
-
   }
 
   const testCategoryElement = document
@@ -657,13 +663,13 @@ function autofill_checkboxes(fieldJson) {
 }
 
 function clickHREF(data, selector) {
-  data.querySelector(selector).target = '_blank';
+  data.querySelector(selector).target = "_blank";
   data.querySelector(selector).click();
 }
 
 function checkPrintability(data, target, selector, id) {
   if (data.querySelector(selector) == undefined) {
-    target.querySelector(`[id=${id}]`).style.display = 'none';
+    target.querySelector(`[id=${id}]`).style.display = "none";
   }
 }
 
@@ -676,29 +682,28 @@ function optimizePageLayout() {
 }
 
 function createAdmissionPanelInterna(dataSource, admissionPanel) {
-  admissionPanel.style.height = '100%';
-  const mainPanel = document.createElement('div');
-  mainPanel.style.display = 'flex';
-  mainPanel.style.minHeight = '5rem';
-  mainPanel.style.alignContent = 'center';
-  mainPanel.style.justifyContent = 'space-between';
-  mainPanel.style.fontSize = '1.25rem';
-  mainPanel.style.border = '1px solid rgb(190,195,199)';
+  admissionPanel.style.height = "100%";
+  const mainPanel = document.createElement("div");
+  mainPanel.style.display = "flex";
+  mainPanel.style.minHeight = "5rem";
+  mainPanel.style.alignContent = "center";
+  mainPanel.style.justifyContent = "space-between";
+  mainPanel.style.fontSize = "1.25rem";
+  mainPanel.style.border = "1px solid rgb(190,195,199)";
   // mainPanel.style.borderTop = '';
-  mainPanel.style.paddingRight = '1.25rem';
-  mainPanel.style.paddingTop = '1rem';
-  mainPanel.style.paddingBottom = '1rem';
-  mainPanel.style.position = 'relative';
-  mainPanel.style.zIndex = '0';
-  mainPanel.style.background = 'rgb(241, 241, 241)';
-  const documentsPanel = document.createElement('div');
-  documentsPanel.style.width = 'fit-content';
-  documentsPanel.style.height = '100%';
-  documentsPanel.style.display = 'flex';
-  documentsPanel.style.flexDirection = 'column';
-  documentsPanel.style.marginLeft = '0.3rem';
-  documentsPanel.style.marginRight = '5rem';
-
+  mainPanel.style.paddingRight = "1.25rem";
+  mainPanel.style.paddingTop = "1rem";
+  mainPanel.style.paddingBottom = "1rem";
+  mainPanel.style.position = "relative";
+  mainPanel.style.zIndex = "0";
+  mainPanel.style.background = "rgb(241, 241, 241)";
+  const documentsPanel = document.createElement("div");
+  documentsPanel.style.width = "fit-content";
+  documentsPanel.style.height = "100%";
+  documentsPanel.style.display = "flex";
+  documentsPanel.style.flexDirection = "column";
+  documentsPanel.style.marginLeft = "0.3rem";
+  documentsPanel.style.marginRight = "5rem";
 
   documentsPanel.innerHTML = `
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__planDiagTerPrint"        src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__planDiagTer" type="button"> Proponowany plan diagnostyczno-terapeutyczny </div> </div>
@@ -718,17 +723,55 @@ function createAdmissionPanelInterna(dataSource, admissionPanel) {
   mainPanel.append(documentsPanel);
   let addmissionDone = true;
   function checkIfPrintable() {
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=252"]', 'MH__planDiagTerPrint');
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=16740"]', 'MH__zgodaKoroPrint');
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]', 'MH__badPodPrzedPrint');
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=4188"]', 'MH__capriniPrint');
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1400"]', 'MH__zakazeniePrzyjeciePrint');
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.karta_zywienia_list"]'[href$ = "x_procedura_id=1400"], 'MH__skalaNRSPrint');
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=252"]',
+      "MH__planDiagTerPrint"
+    );
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=16740"]',
+      "MH__zgodaKoroPrint"
+    );
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]',
+      "MH__badPodPrzedPrint"
+    );
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=4188"]',
+      "MH__capriniPrint"
+    );
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1400"]',
+      "MH__zakazeniePrzyjeciePrint"
+    );
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.karta_zywienia_list"]'[(href$ = "x_procedura_id=1400")],
+      "MH__skalaNRSPrint"
+    );
 
-    const printARRAY = ["MH__planDiagTerPrint", "MH__zgodaKoroPrint", "MH__badPodPrzedPrint", "MH__capriniPrint", "MH__zakazeniePrzyjeciePrint"];
+    const printARRAY = [
+      "MH__planDiagTerPrint",
+      "MH__zgodaKoroPrint",
+      "MH__badPodPrzedPrint",
+      "MH__capriniPrint",
+      "MH__zakazeniePrzyjeciePrint",
+    ];
 
     for (let id of printARRAY) {
-      if (documentsPanel.querySelector(`img[id=${id}]`).style.display == 'none') {
+      if (
+        documentsPanel.querySelector(`img[id=${id}]`).style.display == "none"
+      ) {
         addmissionDone = false;
       }
     }
@@ -738,34 +781,64 @@ function createAdmissionPanelInterna(dataSource, admissionPanel) {
     e.stopPropagation();
     switch (e.target.id) {
       case "MH__planDiagTer":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=252"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=252"]'
+        );
         break;
       case "MH__planDiagTerPrint":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=252"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=252"]'
+        );
         break;
       case "MH__zgodaKoro":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=16740"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=16740"]'
+        );
         break;
       case "MH__zgodaKoroPrint":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=16740"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=16740"]'
+        );
         break;
       case "MH__badPodPrzed":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1739"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1739"]'
+        );
         break;
       case "MH__badPodPrzedPrint":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]'
+        );
         break;
       case "MH__caprini":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=4188"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=4188"]'
+        );
         break;
       case "MH__capriniPrint":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=4188"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=4188"]'
+        );
         break;
       case "MH__zakazeniePrzyjecie":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1400"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1400"]'
+        );
         break;
       case "MH__zakazeniePrzyjeciePrint":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1400"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1400"]'
+        );
         break;
       case "MH__skalaNRS":
         clickHREF(dataSource, 'a[href^="app.karta_zywienia_list"]');
@@ -778,11 +851,11 @@ function createAdmissionPanelInterna(dataSource, admissionPanel) {
     // <a href="app.karta_zywienia_list?x_context=karta_zywienia,sub,,20,,first,0,0,0,2097;…ial&x_jednostka_id=590&x_kontakt_id=1653375&jfo=&x_data_kontakt=2025-06-17">Karty&nbsp;żywienia&nbsp;pozajelit.</a>
   };
 
-  const prescriptionsPanel = document.createElement('div');
-  prescriptionsPanel.style.width = 'fit-content';
-  prescriptionsPanel.style.height = '100%';
-  prescriptionsPanel.style.marginLeft = '5rem';
-  prescriptionsPanel.style.marginRight = '5rem';
+  const prescriptionsPanel = document.createElement("div");
+  prescriptionsPanel.style.width = "fit-content";
+  prescriptionsPanel.style.height = "100%";
+  prescriptionsPanel.style.marginLeft = "5rem";
+  prescriptionsPanel.style.marginRight = "5rem";
   // prescriptionsPanel.style.background = '#c6c6c67a';
 
   prescriptionsPanel.innerHTML = `
@@ -805,10 +878,16 @@ function createAdmissionPanelInterna(dataSource, admissionPanel) {
         clickHREF(dataSource, 'a[href^="app.Zlecenia_lekow"]');
         break;
       case "MH__diagnosticplanning":
-        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]'
+        );
         break;
       case "MH__operativeplanning":
-        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]'
+        );
         break;
       case "MH__observationpanel":
         clickHREF(dataSource, 'a[href^="app.raport_list"]');
@@ -817,11 +896,11 @@ function createAdmissionPanelInterna(dataSource, admissionPanel) {
     }
   };
 
-  const utilitiesPanel = document.createElement('div');
-  utilitiesPanel.style.width = 'fit-content';
-  utilitiesPanel.style.height = '100%';
-  utilitiesPanel.style.marginLeft = '5rem';
-  utilitiesPanel.style.marginRight = '0.7rem';
+  const utilitiesPanel = document.createElement("div");
+  utilitiesPanel.style.width = "fit-content";
+  utilitiesPanel.style.height = "100%";
+  utilitiesPanel.style.marginLeft = "5rem";
+  utilitiesPanel.style.marginRight = "0.7rem";
   utilitiesPanel.innerHTML = `
   <div class="MH_documentRow"><div class="MH__spacer"></div><div class="MH_documentLink" id="MH__previousStay" type="button"> Lista hospitalizacji pacjenta </div></div>
   <hr class="MH__divider">
@@ -840,10 +919,16 @@ function createAdmissionPanelInterna(dataSource, admissionPanel) {
 
         break;
       case "MH__patientFiles":
-        clickHREF(dataSource, 'a[href^="app.BadaniePodstawa"][href$="x_tryb=K"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.BadaniePodstawa"][href$="x_tryb=K"]'
+        );
         break;
       case "MH__nurseQuestionarre":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=251"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=251"]'
+        );
         break;
       case "MH__patientDrugs":
         clickHREF(dataSource, 'a[href^="app.dokument_apteczka_list"]');
@@ -859,29 +944,28 @@ function createAdmissionPanelInterna(dataSource, admissionPanel) {
 }
 
 function createStayPanelInterna(dataSource, stayPanel) {
-  stayPanel.style.height = '100%';
-  const mainPanel = document.createElement('div');
-  mainPanel.style.display = 'flex';
-  mainPanel.style.minHeight = '5rem';
-  mainPanel.style.alignContent = 'center';
-  mainPanel.style.justifyContent = 'space-between';
-  mainPanel.style.fontSize = '1.25rem';
-  mainPanel.style.border = '1px solid rgb(190,195,199)';
+  stayPanel.style.height = "100%";
+  const mainPanel = document.createElement("div");
+  mainPanel.style.display = "flex";
+  mainPanel.style.minHeight = "5rem";
+  mainPanel.style.alignContent = "center";
+  mainPanel.style.justifyContent = "space-between";
+  mainPanel.style.fontSize = "1.25rem";
+  mainPanel.style.border = "1px solid rgb(190,195,199)";
   // mainPanel.style.borderTop = '';
-  mainPanel.style.paddingRight = '1.25rem';
-  mainPanel.style.paddingTop = '1rem';
-  mainPanel.style.paddingBottom = '1rem';
-  mainPanel.style.position = 'relative';
-  mainPanel.style.zIndex = '0';
-  mainPanel.style.background = 'rgb(241, 241, 241)';
-  const documentsPanel = document.createElement('div');
-  documentsPanel.style.width = 'fit-content';
-  documentsPanel.style.height = '100%';
-  documentsPanel.style.display = 'flex';
-  documentsPanel.style.flexDirection = 'column';
-  documentsPanel.style.marginLeft = '0.3rem';
-  documentsPanel.style.marginRight = '5rem';
-
+  mainPanel.style.paddingRight = "1.25rem";
+  mainPanel.style.paddingTop = "1rem";
+  mainPanel.style.paddingBottom = "1rem";
+  mainPanel.style.position = "relative";
+  mainPanel.style.zIndex = "0";
+  mainPanel.style.background = "rgb(241, 241, 241)";
+  const documentsPanel = document.createElement("div");
+  documentsPanel.style.width = "fit-content";
+  documentsPanel.style.height = "100%";
+  documentsPanel.style.display = "flex";
+  documentsPanel.style.flexDirection = "column";
+  documentsPanel.style.marginLeft = "0.3rem";
+  documentsPanel.style.marginRight = "5rem";
 
   documentsPanel.innerHTML = `
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__badPodPrzedPrint"        src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__badPodPrzed" type="button"> Badanie podmiotowe i przedmiotowe</div></div>
@@ -897,27 +981,58 @@ function createStayPanelInterna(dataSource, stayPanel) {
   mainPanel.append(documentsPanel);
 
   function checkIfPrintable() {
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]', 'MH__badPodPrzedPrint');
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.ocena_ryzyka_zakazenia_dr"][href$="x_procedura_id=1401"]', 'MH__infectionRiskPrint');
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.dokument_zap_bk_dr"]', 'MH__bloodTransfusionPrint');
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.DodatkoweProcedury_dr"][href$="x_procedura_id=393"]', 'MH__procedureConsentPrint');
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]',
+      "MH__badPodPrzedPrint"
+    );
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.ocena_ryzyka_zakazenia_dr"][href$="x_procedura_id=1401"]',
+      "MH__infectionRiskPrint"
+    );
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.dokument_zap_bk_dr"]',
+      "MH__bloodTransfusionPrint"
+    );
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.DodatkoweProcedury_dr"][href$="x_procedura_id=393"]',
+      "MH__procedureConsentPrint"
+    );
   }
-
 
   documentsPanel.onclick = (e) => {
     e.stopPropagation();
     switch (e.target.id) {
       case "MH__badPodPrzed":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1739"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1739"]'
+        );
         break;
       case "MH__badPodPrzedPrint":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]'
+        );
         break;
       case "MH__infectionRisk":
-        clickHREF(dataSource, 'a[href^="app.ocena_ryzyka_zakazenia_edit"][href$="x_procedura_id=1401"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.ocena_ryzyka_zakazenia_edit"][href$="x_procedura_id=1401"]'
+        );
         break;
       case "MH__infectionRiskPrint":
-        clickHREF(dataSource, 'a[href^="app.ocena_ryzyka_zakazenia_dr"][href$="x_procedura_id=1401"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.ocena_ryzyka_zakazenia_dr"][href$="x_procedura_id=1401"]'
+        );
         break;
       case "MH__bloodTransfusion":
         clickHREF(dataSource, 'a[href^="app.dokument_zap_bk_list"]');
@@ -926,22 +1041,26 @@ function createStayPanelInterna(dataSource, stayPanel) {
         // clickHREF(dataSource, 'a[href^="app.dokument_zap_bk_list"][href$="x_procedura_id=393"]');
         break;
       case "MH__procedureConsent":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProcedury_list"][href$="x_procedura_id=393"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProcedury_list"][href$="x_procedura_id=393"]'
+        );
         break;
       case "MH__procedureConsentPrint":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProcedury_dr"][href$="x_procedura_id=393"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProcedury_dr"][href$="x_procedura_id=393"]'
+        );
         break;
       default:
     }
-
-
   };
 
-  const prescriptionsPanel = document.createElement('div');
-  prescriptionsPanel.style.width = 'fit-content';
-  prescriptionsPanel.style.height = '100%';
-  prescriptionsPanel.style.marginLeft = '5rem';
-  prescriptionsPanel.style.marginRight = '5rem';
+  const prescriptionsPanel = document.createElement("div");
+  prescriptionsPanel.style.width = "fit-content";
+  prescriptionsPanel.style.height = "100%";
+  prescriptionsPanel.style.marginLeft = "5rem";
+  prescriptionsPanel.style.marginRight = "5rem";
   // prescriptionsPanel.style.background = '#c6c6c67a';
 
   prescriptionsPanel.innerHTML = `
@@ -964,10 +1083,16 @@ function createStayPanelInterna(dataSource, stayPanel) {
         clickHREF(dataSource, 'a[href^="app.Zlecenia_lekow"]');
         break;
       case "MH__diagnosticplanning":
-        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]'
+        );
         break;
       case "MH__operativeplanning":
-        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]'
+        );
         break;
       case "MH__observationpanel":
         clickHREF(dataSource, 'a[href^="app.raport_list"]');
@@ -976,11 +1101,11 @@ function createStayPanelInterna(dataSource, stayPanel) {
     }
   };
 
-  const utilitiesPanel = document.createElement('div');
-  utilitiesPanel.style.width = 'fit-content';
-  utilitiesPanel.style.height = '100%';
-  utilitiesPanel.style.marginLeft = '5rem';
-  utilitiesPanel.style.marginRight = '0.7rem';
+  const utilitiesPanel = document.createElement("div");
+  utilitiesPanel.style.width = "fit-content";
+  utilitiesPanel.style.height = "100%";
+  utilitiesPanel.style.marginLeft = "5rem";
+  utilitiesPanel.style.marginRight = "0.7rem";
   utilitiesPanel.innerHTML = `
   <div class="MH_documentRow"><div class="MH__spacer"></div><div class="MH_documentLink" id="MH__previousStay" type="button"> Lista hospitalizacji pacjenta </div></div>
   <hr class="MH__divider">
@@ -999,10 +1124,16 @@ function createStayPanelInterna(dataSource, stayPanel) {
 
         break;
       case "MH__patientFiles":
-        clickHREF(dataSource, 'a[href^="app.BadaniePodstawa"][href$="x_tryb=K"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.BadaniePodstawa"][href$="x_tryb=K"]'
+        );
         break;
       case "MH__nurseQuestionarre":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=251"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=251"]'
+        );
         break;
       case "MH__patientDrugs":
         clickHREF(dataSource, 'a[href^="app.dokument_apteczka_list"]');
@@ -1017,29 +1148,28 @@ function createStayPanelInterna(dataSource, stayPanel) {
 }
 
 function createDischargePanelInterna(dataSource, dischargePanel) {
-  dischargePanel.style.height = '100%';
-  const mainPanel = document.createElement('div');
-  mainPanel.style.display = 'flex';
-  mainPanel.style.minHeight = '5rem';
-  mainPanel.style.alignContent = 'center';
-  mainPanel.style.justifyContent = 'space-between';
-  mainPanel.style.fontSize = '1.25rem';
-  mainPanel.style.border = '1px solid rgb(190,195,199)';
+  dischargePanel.style.height = "100%";
+  const mainPanel = document.createElement("div");
+  mainPanel.style.display = "flex";
+  mainPanel.style.minHeight = "5rem";
+  mainPanel.style.alignContent = "center";
+  mainPanel.style.justifyContent = "space-between";
+  mainPanel.style.fontSize = "1.25rem";
+  mainPanel.style.border = "1px solid rgb(190,195,199)";
   // mainPanel.style.borderTop = '';
-  mainPanel.style.paddingRight = '1.25rem';
-  mainPanel.style.paddingTop = '1rem';
-  mainPanel.style.paddingBottom = '1rem';
-  mainPanel.style.position = 'relative';
-  mainPanel.style.zIndex = '0';
-  mainPanel.style.background = 'rgb(241, 241, 241)';
-  const documentsPanel = document.createElement('div');
-  documentsPanel.style.width = 'fit-content';
-  documentsPanel.style.height = '100%';
-  documentsPanel.style.display = 'flex';
-  documentsPanel.style.flexDirection = 'column';
-  documentsPanel.style.marginLeft = '0.3rem';
-  documentsPanel.style.marginRight = '5rem';
-
+  mainPanel.style.paddingRight = "1.25rem";
+  mainPanel.style.paddingTop = "1rem";
+  mainPanel.style.paddingBottom = "1rem";
+  mainPanel.style.position = "relative";
+  mainPanel.style.zIndex = "0";
+  mainPanel.style.background = "rgb(241, 241, 241)";
+  const documentsPanel = document.createElement("div");
+  documentsPanel.style.width = "fit-content";
+  documentsPanel.style.height = "100%";
+  documentsPanel.style.display = "flex";
+  documentsPanel.style.flexDirection = "column";
+  documentsPanel.style.marginLeft = "0.3rem";
+  documentsPanel.style.marginRight = "5rem";
 
   documentsPanel.innerHTML = `
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__badPodPrzedPrint"        src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__badPodPrzed" type="button"> Badanie podmiotowe i przedmiotowe</div></div>
@@ -1051,18 +1181,28 @@ function createDischargePanelInterna(dataSource, dischargePanel) {
   mainPanel.append(documentsPanel);
 
   function checkIfPrintable() {
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]', 'MH__badPodPrzedPrint');
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]',
+      "MH__badPodPrzedPrint"
+    );
   }
-
 
   documentsPanel.onclick = (e) => {
     e.stopPropagation();
     switch (e.target.id) {
       case "MH__badPodPrzed":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1739"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1739"]'
+        );
         break;
       case "MH__badPodPrzedPrint":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]'
+        );
         break;
       case "MH__discharge":
         clickHREF(dataSource, 'a[href^="app.wypis_edit"]');
@@ -1074,11 +1214,11 @@ function createDischargePanelInterna(dataSource, dischargePanel) {
     }
   };
 
-  const prescriptionsPanel = document.createElement('div');
-  prescriptionsPanel.style.width = 'fit-content';
-  prescriptionsPanel.style.height = '100%';
-  prescriptionsPanel.style.marginLeft = '5rem';
-  prescriptionsPanel.style.marginRight = '5rem';
+  const prescriptionsPanel = document.createElement("div");
+  prescriptionsPanel.style.width = "fit-content";
+  prescriptionsPanel.style.height = "100%";
+  prescriptionsPanel.style.marginLeft = "5rem";
+  prescriptionsPanel.style.marginRight = "5rem";
   // prescriptionsPanel.style.background = '#c6c6c67a';
 
   prescriptionsPanel.innerHTML = `
@@ -1098,10 +1238,16 @@ function createDischargePanelInterna(dataSource, dischargePanel) {
         clickHREF(dataSource, 'a[href^="app.Zlecenia_lekow"]');
         break;
       case "MH__diagnosticplanning":
-        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]'
+        );
         break;
       case "MH__operativeplanning":
-        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]'
+        );
         break;
       case "MH__observationpanel":
         clickHREF(dataSource, 'a[href^="app.raport_list"]');
@@ -1110,15 +1256,20 @@ function createDischargePanelInterna(dataSource, dischargePanel) {
     }
   };
   let grouper_rozliczony = false;
-  if (dataSource.querySelector('div[style="font-style:italic; color:green;"]') != 'Nie wybrano grupy.' && dataSource.querySelector('div[style="font-style:italic; color:green;"]') != undefined) {
+  if (
+    dataSource.querySelector('div[style="font-style:italic; color:green;"]') !=
+      "Nie wybrano grupy." &&
+    dataSource.querySelector('div[style="font-style:italic; color:green;"]') !=
+      undefined
+  ) {
     grouper_rozliczony = true;
   }
 
-  const utilitiesPanel = document.createElement('div');
-  utilitiesPanel.style.width = 'fit-content';
-  utilitiesPanel.style.height = '100%';
-  utilitiesPanel.style.marginLeft = '5rem';
-  utilitiesPanel.style.marginRight = '0.7rem';
+  const utilitiesPanel = document.createElement("div");
+  utilitiesPanel.style.width = "fit-content";
+  utilitiesPanel.style.height = "100%";
+  utilitiesPanel.style.marginLeft = "5rem";
+  utilitiesPanel.style.marginRight = "0.7rem";
   utilitiesPanel.innerHTML = `
   <div class="MH_documentRow"><div class="MH__spacer"></div><div class="MH_documentLink" id="MH__gruper" type="button"> Gruper </div> <div style='width:3rem;'></div> <div id='MH__gruperStatus'> </div>  </div>
   <hr class="MH__divider">
@@ -1136,10 +1287,14 @@ function createDischargePanelInterna(dataSource, dischargePanel) {
   mainPanel.append(utilitiesPanel);
   dischargePanel.append(mainPanel);
 
-  const grouperStatus = utilitiesPanel.querySelector('div[id="MH__gruperStatus"]');
+  const grouperStatus = utilitiesPanel.querySelector(
+    'div[id="MH__gruperStatus"]'
+  );
   if (grouper_rozliczony) {
     grouperStatus.innerHTML = "Rozliczony: ";
-    grouperStatus.innerHTML += dataSource.querySelector('div[style="font-style:italic; color:green;"]').innerHTML.replaceAll(/\&nbsp;/g, ' ');
+    grouperStatus.innerHTML += dataSource
+      .querySelector('div[style="font-style:italic; color:green;"]')
+      .innerHTML.replaceAll(/\&nbsp;/g, " ");
     grouperStatus.style.color = "green";
   } else {
     grouperStatus.innerHTML = "Nierozliczony";
@@ -1151,29 +1306,28 @@ function createDischargePanelInterna(dataSource, dischargePanel) {
 }
 
 function createAdmissionPanelNchir(dataSource, admissionPanel) {
-  admissionPanel.style.height = '100%';
-  const mainPanel = document.createElement('div');
-  mainPanel.style.display = 'flex';
-  mainPanel.style.minHeight = '5rem';
-  mainPanel.style.alignContent = 'center';
-  mainPanel.style.justifyContent = 'space-between';
-  mainPanel.style.fontSize = '1.25rem';
-  mainPanel.style.border = '1px solid rgb(190,195,199)';
+  admissionPanel.style.height = "100%";
+  const mainPanel = document.createElement("div");
+  mainPanel.style.display = "flex";
+  mainPanel.style.minHeight = "5rem";
+  mainPanel.style.alignContent = "center";
+  mainPanel.style.justifyContent = "space-between";
+  mainPanel.style.fontSize = "1.25rem";
+  mainPanel.style.border = "1px solid rgb(190,195,199)";
   // mainPanel.style.borderTop = '';
-  mainPanel.style.paddingRight = '1.25rem';
-  mainPanel.style.paddingTop = '1rem';
-  mainPanel.style.paddingBottom = '1rem';
-  mainPanel.style.position = 'relative';
-  mainPanel.style.zIndex = '0';
-  mainPanel.style.background = 'rgb(241, 241, 241)';
-  const documentsPanel = document.createElement('div');
-  documentsPanel.style.width = 'fit-content';
-  documentsPanel.style.height = '100%';
-  documentsPanel.style.display = 'flex';
-  documentsPanel.style.flexDirection = 'column';
-  documentsPanel.style.marginLeft = '0.3rem';
-  documentsPanel.style.marginRight = '5rem';
-
+  mainPanel.style.paddingRight = "1.25rem";
+  mainPanel.style.paddingTop = "1rem";
+  mainPanel.style.paddingBottom = "1rem";
+  mainPanel.style.position = "relative";
+  mainPanel.style.zIndex = "0";
+  mainPanel.style.background = "rgb(241, 241, 241)";
+  const documentsPanel = document.createElement("div");
+  documentsPanel.style.width = "fit-content";
+  documentsPanel.style.height = "100%";
+  documentsPanel.style.display = "flex";
+  documentsPanel.style.flexDirection = "column";
+  documentsPanel.style.marginLeft = "0.3rem";
+  documentsPanel.style.marginRight = "5rem";
 
   documentsPanel.innerHTML = `
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__planDiagTerPrint"        src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__planDiagTer" type="button"> Proponowany plan diagnostyczno-terapeutyczny </div> </div>
@@ -1195,55 +1349,122 @@ function createAdmissionPanelNchir(dataSource, admissionPanel) {
   let addmissionDone = true;
 
   function checkIfPrintable() {
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=252"]', 'MH__planDiagTerPrint');
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.DodatkoweProcedury_dr"][href*="x_procedura_id=393"]', 'MH__procedureConsentPrint');
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]', 'MH__badPodPrzedPrint');
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=4190"]', 'MH__capriniPrint');
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1400"]', 'MH__zakazeniePrzyjeciePrint');
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.karta_zywienia_list"][href$="x_procedura_id=1400"]', 'MH__skalaNRSPrint');
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=252"]',
+      "MH__planDiagTerPrint"
+    );
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.DodatkoweProcedury_dr"][href*="x_procedura_id=393"]',
+      "MH__procedureConsentPrint"
+    );
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]',
+      "MH__badPodPrzedPrint"
+    );
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=4190"]',
+      "MH__capriniPrint"
+    );
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1400"]',
+      "MH__zakazeniePrzyjeciePrint"
+    );
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.karta_zywienia_list"][href$="x_procedura_id=1400"]',
+      "MH__skalaNRSPrint"
+    );
 
-    const printARRAY = ["MH__planDiagTerPrint", "MH__procedureConsentPrint", "MH__badPodPrzedPrint", "MH__capriniPrint", "MH__zakazeniePrzyjeciePrint"];
+    const printARRAY = [
+      "MH__planDiagTerPrint",
+      "MH__procedureConsentPrint",
+      "MH__badPodPrzedPrint",
+      "MH__capriniPrint",
+      "MH__zakazeniePrzyjeciePrint",
+    ];
 
     for (let id of printARRAY) {
-      if (documentsPanel.querySelector(`img[id=${id}]`).style.display == 'none') {
+      if (
+        documentsPanel.querySelector(`img[id=${id}]`).style.display == "none"
+      ) {
         addmissionDone = false;
       }
     }
   }
 
-
   documentsPanel.onclick = (e) => {
     e.stopPropagation();
     switch (e.target.id) {
       case "MH__planDiagTer":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=252"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=252"]'
+        );
         break;
       case "MH__planDiagTerPrint":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=252"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=252"]'
+        );
         break;
       case "MH__procedureConsent":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProcedury_list"][href$="x_procedura_id=393"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProcedury_list"][href$="x_procedura_id=393"]'
+        );
         break;
       case "MH__procedureConsentPrint":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProcedury_dr"][href*="x_procedura_id=393"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProcedury_dr"][href*="x_procedura_id=393"]'
+        );
         break;
       case "MH__badPodPrzed":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1740"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1740"]'
+        );
         break;
       case "MH__badPodPrzedPrint":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]'
+        );
         break;
       case "MH__caprini":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=4190"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=4190"]'
+        );
         break;
       case "MH__capriniPrint":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=4190"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=4190"]'
+        );
         break;
       case "MH__zakazeniePrzyjecie":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1400"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1400"]'
+        );
         break;
       case "MH__zakazeniePrzyjeciePrint":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1400"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1400"]'
+        );
         break;
       case "MH__skalaNRS":
         clickHREF(dataSource, 'a[href^="app.karta_zywienia_list"]');
@@ -1254,15 +1475,14 @@ function createAdmissionPanelNchir(dataSource, admissionPanel) {
       default:
     }
 
-
     // <a href="app.karta_zywienia_list?x_context=karta_zywienia,sub,,20,,first,0,0,0,2097;…ial&x_jednostka_id=590&x_kontakt_id=1653375&jfo=&x_data_kontakt=2025-06-17">Karty&nbsp;żywienia&nbsp;pozajelit.</a>
   };
 
-  const prescriptionsPanel = document.createElement('div');
-  prescriptionsPanel.style.width = 'fit-content';
-  prescriptionsPanel.style.height = '100%';
-  prescriptionsPanel.style.marginLeft = '5rem';
-  prescriptionsPanel.style.marginRight = '5rem';
+  const prescriptionsPanel = document.createElement("div");
+  prescriptionsPanel.style.width = "fit-content";
+  prescriptionsPanel.style.height = "100%";
+  prescriptionsPanel.style.marginLeft = "5rem";
+  prescriptionsPanel.style.marginRight = "5rem";
   // prescriptionsPanel.style.background = '#c6c6c67a';
 
   prescriptionsPanel.innerHTML = `
@@ -1285,10 +1505,16 @@ function createAdmissionPanelNchir(dataSource, admissionPanel) {
         clickHREF(dataSource, 'a[href^="app.Zlecenia_lekow"]');
         break;
       case "MH__diagnosticplanning":
-        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]'
+        );
         break;
       case "MH__operativeplanning":
-        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]'
+        );
         break;
       case "MH__observationpanel":
         clickHREF(dataSource, 'a[href^="app.raport_list"]');
@@ -1297,11 +1523,11 @@ function createAdmissionPanelNchir(dataSource, admissionPanel) {
     }
   };
 
-  const utilitiesPanel = document.createElement('div');
-  utilitiesPanel.style.width = 'fit-content';
-  utilitiesPanel.style.height = '100%';
-  utilitiesPanel.style.marginLeft = '5rem';
-  utilitiesPanel.style.marginRight = '0.7rem';
+  const utilitiesPanel = document.createElement("div");
+  utilitiesPanel.style.width = "fit-content";
+  utilitiesPanel.style.height = "100%";
+  utilitiesPanel.style.marginLeft = "5rem";
+  utilitiesPanel.style.marginRight = "0.7rem";
   utilitiesPanel.innerHTML = `
   <div class="MH_documentRow"><div class="MH__spacer"></div><div class="MH_documentLink" id="MH__previousStay" type="button"> Lista hospitalizacji pacjenta </div></div>
   <hr class="MH__divider">
@@ -1320,10 +1546,16 @@ function createAdmissionPanelNchir(dataSource, admissionPanel) {
 
         break;
       case "MH__patientFiles":
-        clickHREF(dataSource, 'a[href^="app.BadaniePodstawa"][href$="x_tryb=K"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.BadaniePodstawa"][href$="x_tryb=K"]'
+        );
         break;
       case "MH__nurseQuestionarre":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=251"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=251"]'
+        );
         break;
       case "MH__patientDrugs":
         clickHREF(dataSource, 'a[href^="app.dokument_apteczka_list"]');
@@ -1340,29 +1572,28 @@ function createAdmissionPanelNchir(dataSource, admissionPanel) {
 }
 
 function createStayPanelNchir(dataSource, stayPanel) {
-  stayPanel.style.height = '100%';
-  const mainPanel = document.createElement('div');
-  mainPanel.style.display = 'flex';
-  mainPanel.style.minHeight = '5rem';
-  mainPanel.style.alignContent = 'center';
-  mainPanel.style.justifyContent = 'space-between';
-  mainPanel.style.fontSize = '1.25rem';
-  mainPanel.style.border = '1px solid rgb(190,195,199)';
+  stayPanel.style.height = "100%";
+  const mainPanel = document.createElement("div");
+  mainPanel.style.display = "flex";
+  mainPanel.style.minHeight = "5rem";
+  mainPanel.style.alignContent = "center";
+  mainPanel.style.justifyContent = "space-between";
+  mainPanel.style.fontSize = "1.25rem";
+  mainPanel.style.border = "1px solid rgb(190,195,199)";
   // mainPanel.style.borderTop = '';
-  mainPanel.style.paddingRight = '1.25rem';
-  mainPanel.style.paddingTop = '1rem';
-  mainPanel.style.paddingBottom = '1rem';
-  mainPanel.style.position = 'relative';
-  mainPanel.style.zIndex = '0';
-  mainPanel.style.background = 'rgb(241, 241, 241)';
-  const documentsPanel = document.createElement('div');
-  documentsPanel.style.width = 'fit-content';
-  documentsPanel.style.height = '100%';
-  documentsPanel.style.display = 'flex';
-  documentsPanel.style.flexDirection = 'column';
-  documentsPanel.style.marginLeft = '0.3rem';
-  documentsPanel.style.marginRight = '5rem';
-
+  mainPanel.style.paddingRight = "1.25rem";
+  mainPanel.style.paddingTop = "1rem";
+  mainPanel.style.paddingBottom = "1rem";
+  mainPanel.style.position = "relative";
+  mainPanel.style.zIndex = "0";
+  mainPanel.style.background = "rgb(241, 241, 241)";
+  const documentsPanel = document.createElement("div");
+  documentsPanel.style.width = "fit-content";
+  documentsPanel.style.height = "100%";
+  documentsPanel.style.display = "flex";
+  documentsPanel.style.flexDirection = "column";
+  documentsPanel.style.marginLeft = "0.3rem";
+  documentsPanel.style.marginRight = "5rem";
 
   documentsPanel.innerHTML = `
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__badPodPrzedPrint"        src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__badPodPrzed" type="button"> Badanie podmiotowe i przedmiotowe</div></div>
@@ -1378,27 +1609,58 @@ function createStayPanelNchir(dataSource, stayPanel) {
   mainPanel.append(documentsPanel);
 
   function checkIfPrintable() {
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]', 'MH__badPodPrzedPrint');
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.ocena_ryzyka_zakazenia_dr"][href$="x_procedura_id=1401"]', 'MH__infectionRiskPrint');
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.dokument_zap_bk_dr"]', 'MH__bloodTransfusionPrint');
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.DodatkoweProcedury_dr"][href*="x_procedura_id=393"]', 'MH__procedureConsentPrint');
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]',
+      "MH__badPodPrzedPrint"
+    );
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.ocena_ryzyka_zakazenia_dr"][href$="x_procedura_id=1401"]',
+      "MH__infectionRiskPrint"
+    );
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.dokument_zap_bk_dr"]',
+      "MH__bloodTransfusionPrint"
+    );
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.DodatkoweProcedury_dr"][href*="x_procedura_id=393"]',
+      "MH__procedureConsentPrint"
+    );
   }
-
 
   documentsPanel.onclick = (e) => {
     e.stopPropagation();
     switch (e.target.id) {
       case "MH__badPodPrzed":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1740"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1740"]'
+        );
         break;
       case "MH__badPodPrzedPrint":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]'
+        );
         break;
       case "MH__infectionRisk":
-        clickHREF(dataSource, 'a[href^="app.ocena_ryzyka_zakazenia_edit"][href$="x_procedura_id=1401"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.ocena_ryzyka_zakazenia_edit"][href$="x_procedura_id=1401"]'
+        );
         break;
       case "MH__infectionRiskPrint":
-        clickHREF(dataSource, 'a[href^="app.ocena_ryzyka_zakazenia_dr"][href$="x_procedura_id=1401"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.ocena_ryzyka_zakazenia_dr"][href$="x_procedura_id=1401"]'
+        );
         break;
       case "MH__bloodTransfusion":
         clickHREF(dataSource, 'a[href^="app.dokument_zap_bk_list"]');
@@ -1407,22 +1669,26 @@ function createStayPanelNchir(dataSource, stayPanel) {
         // clickHREF(dataSource, 'a[href^="app.dokument_zap_bk_list"][href$="x_procedura_id=393"]');
         break;
       case "MH__procedureConsent":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProcedury_list"][href$="x_procedura_id=393"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProcedury_list"][href$="x_procedura_id=393"]'
+        );
         break;
       case "MH__procedureConsentPrint":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProcedury_dr"][href*="x_procedura_id=393"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProcedury_dr"][href*="x_procedura_id=393"]'
+        );
         break;
       default:
     }
-
-
   };
 
-  const prescriptionsPanel = document.createElement('div');
-  prescriptionsPanel.style.width = 'fit-content';
-  prescriptionsPanel.style.height = '100%';
-  prescriptionsPanel.style.marginLeft = '5rem';
-  prescriptionsPanel.style.marginRight = '5rem';
+  const prescriptionsPanel = document.createElement("div");
+  prescriptionsPanel.style.width = "fit-content";
+  prescriptionsPanel.style.height = "100%";
+  prescriptionsPanel.style.marginLeft = "5rem";
+  prescriptionsPanel.style.marginRight = "5rem";
   // prescriptionsPanel.style.background = '#c6c6c67a';
 
   prescriptionsPanel.innerHTML = `
@@ -1445,10 +1711,16 @@ function createStayPanelNchir(dataSource, stayPanel) {
         clickHREF(dataSource, 'a[href^="app.Zlecenia_lekow"]');
         break;
       case "MH__diagnosticplanning":
-        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]'
+        );
         break;
       case "MH__operativeplanning":
-        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]'
+        );
         break;
       case "MH__observationpanel":
         clickHREF(dataSource, 'a[href^="app.raport_list"]');
@@ -1457,11 +1729,11 @@ function createStayPanelNchir(dataSource, stayPanel) {
     }
   };
 
-  const utilitiesPanel = document.createElement('div');
-  utilitiesPanel.style.width = 'fit-content';
-  utilitiesPanel.style.height = '100%';
-  utilitiesPanel.style.marginLeft = '5rem';
-  utilitiesPanel.style.marginRight = '0.7rem';
+  const utilitiesPanel = document.createElement("div");
+  utilitiesPanel.style.width = "fit-content";
+  utilitiesPanel.style.height = "100%";
+  utilitiesPanel.style.marginLeft = "5rem";
+  utilitiesPanel.style.marginRight = "0.7rem";
   utilitiesPanel.innerHTML = `
   <div class="MH_documentRow"><div class="MH__spacer"></div><div class="MH_documentLink" id="MH__previousStay" type="button"> Lista hospitalizacji pacjenta </div></div>
   <hr class="MH__divider">
@@ -1480,10 +1752,16 @@ function createStayPanelNchir(dataSource, stayPanel) {
 
         break;
       case "MH__patientFiles":
-        clickHREF(dataSource, 'a[href^="app.BadaniePodstawa"][href$="x_tryb=K"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.BadaniePodstawa"][href$="x_tryb=K"]'
+        );
         break;
       case "MH__nurseQuestionarre":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=251"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=251"]'
+        );
         break;
       case "MH__patientDrugs":
         clickHREF(dataSource, 'a[href^="app.dokument_apteczka_list"]');
@@ -1498,29 +1776,28 @@ function createStayPanelNchir(dataSource, stayPanel) {
 }
 
 function createDischargePanelNchir(dataSource, dischargePanel) {
-  dischargePanel.style.height = '100%';
-  const mainPanel = document.createElement('div');
-  mainPanel.style.display = 'flex';
-  mainPanel.style.minHeight = '5rem';
-  mainPanel.style.alignContent = 'center';
-  mainPanel.style.justifyContent = 'space-between';
-  mainPanel.style.fontSize = '1.25rem';
-  mainPanel.style.border = '1px solid rgb(190,195,199)';
+  dischargePanel.style.height = "100%";
+  const mainPanel = document.createElement("div");
+  mainPanel.style.display = "flex";
+  mainPanel.style.minHeight = "5rem";
+  mainPanel.style.alignContent = "center";
+  mainPanel.style.justifyContent = "space-between";
+  mainPanel.style.fontSize = "1.25rem";
+  mainPanel.style.border = "1px solid rgb(190,195,199)";
   // mainPanel.style.borderTop = '';
-  mainPanel.style.paddingRight = '1.25rem';
-  mainPanel.style.paddingTop = '1rem';
-  mainPanel.style.paddingBottom = '1rem';
-  mainPanel.style.position = 'relative';
-  mainPanel.style.zIndex = '0';
-  mainPanel.style.background = 'rgb(241, 241, 241)';
-  const documentsPanel = document.createElement('div');
-  documentsPanel.style.width = 'fit-content';
-  documentsPanel.style.height = '100%';
-  documentsPanel.style.display = 'flex';
-  documentsPanel.style.flexDirection = 'column';
-  documentsPanel.style.marginLeft = '0.3rem';
-  documentsPanel.style.marginRight = '5rem';
-
+  mainPanel.style.paddingRight = "1.25rem";
+  mainPanel.style.paddingTop = "1rem";
+  mainPanel.style.paddingBottom = "1rem";
+  mainPanel.style.position = "relative";
+  mainPanel.style.zIndex = "0";
+  mainPanel.style.background = "rgb(241, 241, 241)";
+  const documentsPanel = document.createElement("div");
+  documentsPanel.style.width = "fit-content";
+  documentsPanel.style.height = "100%";
+  documentsPanel.style.display = "flex";
+  documentsPanel.style.flexDirection = "column";
+  documentsPanel.style.marginLeft = "0.3rem";
+  documentsPanel.style.marginRight = "5rem";
 
   documentsPanel.innerHTML = `
   <div class="MH_documentRow"><div class="MH__printer" type="button"> <img id="MH__badPodPrzedPrint"        src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/print.png""> </div><div class="MH_documentLink" id="MH__badPodPrzed" type="button"> Badanie podmiotowe i przedmiotowe</div></div>
@@ -1532,19 +1809,34 @@ function createDischargePanelNchir(dataSource, dischargePanel) {
   mainPanel.append(documentsPanel);
 
   function checkIfPrintable() {
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]', 'MH__badPodPrzedPrint');
-    checkPrintability(dataSource, documentsPanel, 'a[href^="app.wypis_edit"][href$="x_procedura_id=1740"]', 'MH__dischargePrint');
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]',
+      "MH__badPodPrzedPrint"
+    );
+    checkPrintability(
+      dataSource,
+      documentsPanel,
+      'a[href^="app.wypis_edit"][href$="x_procedura_id=1740"]',
+      "MH__dischargePrint"
+    );
   }
-
 
   documentsPanel.onclick = (e) => {
     e.stopPropagation();
     switch (e.target.id) {
       case "MH__badPodPrzed":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1740"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1740"]'
+        );
         break;
       case "MH__badPodPrzedPrint":
-        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]'
+        );
         break;
       case "MH__discharge":
         clickHREF(dataSource, 'a[href^="app.wypis_edit"]');
@@ -1554,15 +1846,13 @@ function createDischargePanelNchir(dataSource, dischargePanel) {
         break;
       default:
     }
-
-
   };
 
-  const prescriptionsPanel = document.createElement('div');
-  prescriptionsPanel.style.width = 'fit-content';
-  prescriptionsPanel.style.height = '100%';
-  prescriptionsPanel.style.marginLeft = '5rem';
-  prescriptionsPanel.style.marginRight = '5rem';
+  const prescriptionsPanel = document.createElement("div");
+  prescriptionsPanel.style.width = "fit-content";
+  prescriptionsPanel.style.height = "100%";
+  prescriptionsPanel.style.marginLeft = "5rem";
+  prescriptionsPanel.style.marginRight = "5rem";
   // prescriptionsPanel.style.background = '#c6c6c67a';
 
   prescriptionsPanel.innerHTML = `
@@ -1582,10 +1872,16 @@ function createDischargePanelNchir(dataSource, dischargePanel) {
         clickHREF(dataSource, 'a[href^="app.Zlecenia_lekow"]');
         break;
       case "MH__diagnosticplanning":
-        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]'
+        );
         break;
       case "MH__operativeplanning":
-        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]');
+        clickHREF(
+          dataSource,
+          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]'
+        );
         break;
       case "MH__observationpanel":
         clickHREF(dataSource, 'a[href^="app.raport_list"]');
@@ -1594,15 +1890,20 @@ function createDischargePanelNchir(dataSource, dischargePanel) {
     }
   };
   let grouper_rozliczony = false;
-  if (dataSource.querySelector('div[style="font-style:italic; color:green;"]') != 'Nie wybrano grupy.' && dataSource.querySelector('div[style="font-style:italic; color:green;"]') != undefined) {
+  if (
+    dataSource.querySelector('div[style="font-style:italic; color:green;"]') !=
+      "Nie wybrano grupy." &&
+    dataSource.querySelector('div[style="font-style:italic; color:green;"]') !=
+      undefined
+  ) {
     grouper_rozliczony = true;
   }
 
-  const utilitiesPanel = document.createElement('div');
-  utilitiesPanel.style.width = 'fit-content';
-  utilitiesPanel.style.height = '100%';
-  utilitiesPanel.style.marginLeft = '5rem';
-  utilitiesPanel.style.marginRight = '0.7rem';
+  const utilitiesPanel = document.createElement("div");
+  utilitiesPanel.style.width = "fit-content";
+  utilitiesPanel.style.height = "100%";
+  utilitiesPanel.style.marginLeft = "5rem";
+  utilitiesPanel.style.marginRight = "0.7rem";
   utilitiesPanel.innerHTML = `
   <div class="MH_documentRow"><div class="MH__spacer"></div><div class="MH_documentLink" id="MH__gruper" type="button"> Gruper </div> <div style='width:3rem;'></div> <div id='MH__gruperStatus'> </div>  </div>
   <hr class="MH__divider">
@@ -1620,10 +1921,14 @@ function createDischargePanelNchir(dataSource, dischargePanel) {
   mainPanel.append(utilitiesPanel);
   dischargePanel.append(mainPanel);
 
-  const grouperStatus = utilitiesPanel.querySelector('div[id="MH__gruperStatus"]');
+  const grouperStatus = utilitiesPanel.querySelector(
+    'div[id="MH__gruperStatus"]'
+  );
   if (grouper_rozliczony) {
     grouperStatus.innerHTML = "Rozliczony: ";
-    grouperStatus.innerHTML += dataSource.querySelector('div[style="font-style:italic; color:green;"]').innerHTML.replaceAll(/\&nbsp;/g, ' ');
+    grouperStatus.innerHTML += dataSource
+      .querySelector('div[style="font-style:italic; color:green;"]')
+      .innerHTML.replaceAll(/\&nbsp;/g, " ");
     grouperStatus.style.color = "green";
   } else {
     grouperStatus.innerHTML = "Nierozliczony";
@@ -1635,52 +1940,8 @@ function createDischargePanelNchir(dataSource, dischargePanel) {
 }
 
 function fixMyView() {
-  const tableHeader = document.querySelector('body > center > form > table.templateListTable');
-  const wardName = tableHeader.querySelector('legend').parentElement.querySelector('select[name=filter_jedn_options]').querySelector('[selected]').textContent;
-  const tableRows = tableHeader.querySelectorAll('tr.rowlist')
-
-  const logoutButton = document.querySelector('[class="logoutElementA"]').parentNode;
-  const disableButton = document.createElement('span');
-  disableButton.innerHTML = `<button id="MH__toggleOpti" type="button"> Wyłącz/włącz zmianę widoku </button>`;
-  disableButton.style.margin = '1rem';
-  const forceButton = document.createElement('span');
-  forceButton.innerHTML = `<button id="MH__forceOpti" type="button"> Zmiana widoku </button>`;
-  forceButton.style.margin = '1rem';
-
-  logoutButton.insertBefore(disableButton, logoutButton.firstChild);
-  logoutButton.insertBefore(forceButton, logoutButton.firstChild);
-
-  disableButton.onclick = (e) => {
-    e.stopPropagation();
-    if (e.target.id == 'MH__toggleOpti') {
-      let fixedViews = GM_getValue('fixedViews', {});
-      fixedViews[wardName] = !fixedViews[wardName];
-      GM_setValue('fixedViews', fixedViews);
-      for (let button of document.querySelectorAll('button[id="MH__revert_button"]')) {
-        button.click();
-
-      }
-    }
-  }
-
-  forceButton.onclick = (e) => {
-    e.stopPropagation();
-    if (e.target.id == 'MH__forceOpti') {
-        optimize()
-      }
-    }
-  optimize();
-  // console.log(wardName);
-  function optimize(){
-    if (GM_getValue('fixedViews')[wardName] != undefined && GM_getValue('fixedViews')[wardName] == true) {
-
-    for (let row of tableRows) {
-      const dataDIV = row.querySelector('td > table:nth-child(2) > tbody > tr:nth-child(2) > td > div');
-      if (dataDIV.textContent != '' && dataDIV.classList != "MH__Optimized") {
-        dataDIV.classList += "MH__Optimized";
-
-        const style = document.createElement('style');
-        style.textContent = `.MH_documentRow {
+  const style = document.createElement("style");
+  style.textContent = `.MH_documentRow {
    display: flex;
   flex-direction: row;
   height: 2rem;
@@ -1762,93 +2023,332 @@ function fixMyView() {
         }
         .MH__gruperStatus{
         justify-self:flex-end;
-        }`;
-        document.head.appendChild(style);
+        }
+        .MH__fixedMainPage__nameplate{
+        height: 1.5rem;
+        width 100%;
+        font-size: 1.25rem;
+        margin: 0.5 rem;
+        padding: 0.25rem;
+        padding-left: 0.75rem;
+        background:rgb(44, 187, 111);
+        color:rgb(231, 231, 225);
+        border-top: 0.15rem solid #434656;
+        border: 0.15rem solid transparent;
+        }
+        .MH__fixedMainPage__nameplate:hover {
+        color: #0082bc;
+        border: 0.15rem solid #0082bc;
 
-        dataDIV.style.display = 'none';
-        const overlay = document.createElement('div');
-        overlay.style.minHeight = '10rem';
-        overlay.classList = 'MH__fixedMainPage';
-        const controlPanel = document.createElement('div');
-        controlPanel.style.background = 'rgb(190,195,199)';
-        controlPanel.style.display = 'flex';
-        controlPanel.style.flexDirection = 'row-reverse';
-        controlPanel.style.justifyContent = 'space-between';
-        controlPanel.innerHTML = `<button id="MH__revert_button" type="button"> Oryginalny widok </button>`
-        const bed = ''
-        controlPanel.innerHTML += `<span id="MH__bed"> ${bed} </span>`
-        controlPanel.innerHTML += `<div style="height:100%; min-width: 33%;">
+         }
+        `;
+  document.head.appendChild(style);
+
+  const tableHeader = document.querySelector(
+    "body > center > form > table.templateListTable"
+  );
+  const wardName = tableHeader
+    .querySelector("legend")
+    .parentElement.querySelector("select[name=filter_jedn_options]")
+    .querySelector("[selected]").textContent;
+  const tableRows = tableHeader.querySelectorAll("tr.rowlist");
+
+  const logoutButton = document.querySelector(
+    '[class="logoutElementA"]'
+  ).parentNode;
+  const disableButton = document.createElement("button");
+  disableButton.classList = "MH__toggleOpti";
+  disableButton.setAttribute("type", "button");
+  disableButton.textContent = `Wyłącz/włącz zmianę widoku`;
+  disableButton.style.margin = "1rem";
+  const forceButton = document.createElement("button");
+  forceButton.classList = "MH__toggleOpti";
+  forceButton.setAttribute("type", "button");
+  forceButton.textContent = `Wymuś zmianę widoku `;
+  forceButton.style.margin = "1rem";
+
+  logoutButton.insertBefore(disableButton, logoutButton.firstChild);
+  // logoutButton.insertBefore(forceButton, logoutButton.firstChild);
+
+  disableButton.style.background = GM_getValue("fixedViews", {})[wardName]
+    ? "#89e786"
+    : "#953e4d";
+  disableButton.onclick = (e) => {
+    e.stopPropagation();
+
+    let fixedViews = GM_getValue("fixedViews", {});
+    fixedViews[wardName] = !fixedViews[wardName];
+    GM_setValue("fixedViews", fixedViews);
+    for (let button of document.querySelectorAll(
+      'button[id="MH__revert_button"]'
+    )) {
+      button.click();
+    }
+    disableButton.style.background = GM_getValue("fixedViews", {})[wardName]
+      ? "#89e786"
+      : "#953e4d";
+    if (GM_getValue("fixedViews", {})[wardName]) {
+      declutterNameplates();
+      autoRefresh();
+    } else {
+      restoreView();
+    }
+  };
+
+  // forceButton.onclick = (e) => {
+  //   e.stopPropagation();
+  //   for (let cleanupElement of document.querySelectorAll(
+  //     ".MH__fixedMainPage"
+  //   )) {
+  //     cleanupElement.parentElement.removeChild(cleanupElement);
+  //   }
+  //   restoreView();
+  //   declutterNameplates();
+  //   autoRefresh();
+  // };
+
+  function capitalizeName(str) {
+    if (!str) return ""; // Check for non-empty string
+    return str
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(" ");
+  }
+
+  function declutterNameplates() {
+    for (let row of tableRows) {
+      blackBar = row
+        .querySelector("td")
+        .querySelector('table[class="pobytTable"]');
+      blackBar.style.display = "none";
+      greenBar = row
+        .querySelector("td")
+        .querySelector('table:nth-child(2)[class="pobytTable"]');
+      greenBar.setAttribute("MH__danepobytu", "");
+      greenBar.style.display = "none";
+      // console.log(greenBar);
+      PESELlenght = 11;
+      const namedataString = blackBar.textContent;
+      const name = capitalizeName(
+        namedataString
+          .substring(
+            namedataString.indexOf("Przyjęcie do szpitala:") +
+              "Przyjęcie do szpitala:".length,
+            namedataString.indexOf(",") - PESELlenght
+          )
+          .trim()
+      );
+
+      const age = namedataString
+        .substring(
+          namedataString.indexOf("wiek:") + "wiek:".length,
+          namedataString.indexOf(".")
+        )
+        .trim();
+      // console.log(age);
+
+      // console.log(namedataString);
+      const fixedRow = document.createElement("div");
+      // fixedRow.style.background = "rgb(91, 187, 104)";
+      fixedRow.className = "MH__fixedMainPage__nameplate";
+      fixedRow.innerHTML = name + " " + age;
+      row.querySelector("td").appendChild(fixedRow);
+
+      greenBar.click();
+
+      fixedRow.addEventListener("click", () => {
+        greenBar.click();
+
+        if (
+          row.querySelector(".MH__fixedMainPage__data").style.display == "block"
+        ) {
+          row.querySelector(".MH__fixedMainPage__data").style.display = "none";
+        } else {
+          console.log("here");
+          row.querySelector(".MH__fixedMainPage__data").style.display = "block";
+        }
+      });
+    }
+  }
+
+
+  for (let row of tableRows) { //activate scripts load
+      const greenBar = row
+        .querySelector("td")
+        .querySelector('table:nth-child(2)[class="pobytTable"] > tbody > tr > th');
+      greenBar.click();
+    greenBar.click();
+    }
+
+
+
+  function restoreView() {
+    for (let newNameplate of document.querySelectorAll(
+      ".MH__fixedMainPage__nameplate"
+    )) {
+      newNameplate.style.display = 'none';
+    }
+
+    for (let row of tableRows) {
+      const blackBar = row
+        .querySelector("td")
+        .querySelector('table[class="pobytTable"]');
+      blackBar.style.display = "table";
+
+      const greenBar = row
+        .querySelector("td")
+        .querySelector('table:nth-child(2)[class="pobytTable"]');
+      greenBar.style.display = "table";
+    }
+  }
+
+  function autoRefresh() {
+    if (
+      GM_getValue("fixedViews")[wardName] != undefined &&
+      GM_getValue("fixedViews")[wardName] == true
+    ) {
+      for (let row of tableRows) {
+        const dataDIV = row
+          ?.querySelector("[MH__danepobytu]")
+          .querySelector("td > div");
+
+        if (!dataDIV || !dataDIV.innerHTML) continue; // Skip if dataDIV is not found or empty
+
+        optimize(dataDIV, row);
+
+        const observer = new MutationObserver((mutationsList, observer) => {
+          for (let mutation of mutationsList) {
+            if (mutation.type === "childList" && mutation.type === "innerHTML") {
+              optimize(dataDI, row);
+            }
+          }
+        });
+
+        observer.observe(dataDIV, {
+          childList: true,
+          attributes: true,
+        });
+      }
+    }
+  }
+
+  if (
+    GM_getValue("fixedViews")[wardName] != undefined &&
+    GM_getValue("fixedViews")[wardName] == true
+  ) {
+    declutterNameplates();
+    autoRefresh();
+  }
+
+  function optimize(dataDIV, row) {
+    // for (let cleanupElement of row.parentElement.querySelectorAll(
+    //   '[class="MH__fixedMainPage__data"]'
+    // )) {
+    //   cleanupElement.parentElement.removeChild(cleanupElement);
+    // }
+
+    // dataDIV.classList += "MH__Optimized";
+    dataDIV.style.display = "none";
+
+    const overlay = document.createElement("div");
+    overlay.style.minHeight = "10rem";
+    overlay.classList = "MH__fixedMainPage__data";
+    const controlPanel = document.createElement("div");
+    controlPanel.style.background = "rgb(190,195,199)";
+    controlPanel.style.display = "flex";
+    controlPanel.style.flexDirection = "row-reverse";
+    controlPanel.style.justifyContent = "space-between";
+    controlPanel.innerHTML = `<button id="MH__revert_button" type="button"> Oryginalny widok </button>`;
+    const bed = "";
+    controlPanel.innerHTML += `<span id="MH__bed"> ${bed} </span>`;
+    controlPanel.innerHTML += `<div style="height:100%; min-width: 33%;">
         <button class="MH__tab MH__tab1" id="MH__addmission_button" type="button"> Przyjęcie </button>
         <button class="MH__tab MH__tab2 MH__selected_tab" id="MH__stay_button" type="button"> Prowadzenie Pacjenta </button>
         <button class="MH__tab MH__tab3" id="MH__discharge_button" type="button"> Wypis do domu </button>
         </div>`;
-        overlay.append(controlPanel);
-        const admissionPanel = document.createElement('div');
-        const stayPanel = document.createElement('div');
-        const dischargePanel = document.createElement('div');
-        if (wardName == "ODDZIAŁ KARDIOLOGICZNY (49042) ") {
-          const admissionDone = createAdmissionPanelInterna(dataDIV, admissionPanel);
-          createStayPanelInterna(dataDIV, stayPanel);
-          createDischargePanelInterna(dataDIV, dischargePanel);
-          if (admissionDone == false) {
-            controlPanel.querySelector("button[id='MH__addmission_button']").style.background = '#f1ff00';
-          }
-        }
-        if (wardName == "Klinika Neurochirurgii ") {
-          const admissionDone = createAdmissionPanelNchir(dataDIV, admissionPanel);
-          createStayPanelNchir(dataDIV, stayPanel);
-          createDischargePanelNchir(dataDIV, dischargePanel);
-          if (admissionDone == false) {
-            controlPanel.querySelector("button[id='MH__addmission_button']").style.background = '#f1ff00';
-          }
-        }
-
-        overlay.append(admissionPanel);
-        overlay.append(stayPanel);
-        overlay.append(dischargePanel);
-
-        admissionPanel.style.display = 'none';
-        stayPanel.style.display = 'block';
-        dischargePanel.style.display = 'none';
-
-        controlPanel.onclick = (e) => {
-          e.stopPropagation();
-          switch (e.target.id) {
-            case 'MH__revert_button':
-              dataDIV.parentElement.removeChild(overlay);
-              dataDIV.style.display = 'block';
-              dataDIV.classList -= "MH__Optimized";
-              break;
-            case 'MH__addmission_button':
-              admissionPanel.style.display = 'block';
-              stayPanel.style.display = 'none';
-              dischargePanel.style.display = 'none';
-              controlPanel.querySelector('[class*="MH__selected_tab"]').classList.remove("MH__selected_tab");
-              controlPanel.querySelector(`[id="${e.target.id}"]`).classList += " MH__selected_tab";
-              break;
-            case 'MH__stay_button':
-              admissionPanel.style.display = 'none';
-              stayPanel.style.display = 'block';
-              dischargePanel.style.display = 'none';
-              controlPanel.querySelector('[class*="MH__selected_tab"]').classList.remove("MH__selected_tab");
-              controlPanel.querySelector(`[id="${e.target.id}"]`).classList += " MH__selected_tab";
-              break;
-            case 'MH__discharge_button':
-              admissionPanel.style.display = 'none';
-              stayPanel.style.display = 'none';
-              dischargePanel.style.display = 'block';
-              controlPanel.querySelector('[class*="MH__selected_tab"]').classList.remove("MH__selected_tab");
-              controlPanel.querySelector(`[id="${e.target.id}"]`).classList += " MH__selected_tab";
-              break;
-          }
-        }
-
-
-        dataDIV.parentElement.appendChild(overlay);
+    overlay.append(controlPanel);
+    const admissionPanel = document.createElement("div");
+    const stayPanel = document.createElement("div");
+    const dischargePanel = document.createElement("div");
+    if (wardName == "ODDZIAŁ KARDIOLOGICZNY (49042) ") {
+      const admissionDone = createAdmissionPanelInterna(
+        dataDIV,
+        admissionPanel
+      );
+      createStayPanelInterna(dataDIV, stayPanel);
+      createDischargePanelInterna(dataDIV, dischargePanel);
+      if (admissionDone == false) {
+        controlPanel.querySelector(
+          "button[id='MH__addmission_button']"
+        ).style.background = "#f1ff00";
       }
     }
+    if (wardName == "Klinika Neurochirurgii ") {
+      const admissionDone = createAdmissionPanelNchir(dataDIV, admissionPanel);
+      createStayPanelNchir(dataDIV, stayPanel);
+      createDischargePanelNchir(dataDIV, dischargePanel);
+      if (admissionDone == false) {
+        controlPanel.querySelector(
+          "button[id='MH__addmission_button']"
+        ).style.background = "#f1ff00";
+      }
+    }
+
+    overlay.append(admissionPanel);
+    overlay.append(stayPanel);
+    overlay.append(dischargePanel);
+
+    admissionPanel.style.display = "none";
+    stayPanel.style.display = "block";
+    dischargePanel.style.display = "none";
+
+    controlPanel.onclick = (e) => {
+      e.stopPropagation();
+      switch (e.target.id) {
+        case "MH__revert_button":
+          overlay.parentElement.removeChild(overlay);
+          dataDIV.style.display = "block";
+          dataDIV.classList -= "MH__Optimized";
+          restoreView();
+          break;
+        case "MH__addmission_button":
+          admissionPanel.style.display = "block";
+          stayPanel.style.display = "none";
+          dischargePanel.style.display = "none";
+          controlPanel
+            .querySelector('[class*="MH__selected_tab"]')
+            .classList.remove("MH__selected_tab");
+          controlPanel.querySelector(`[id="${e.target.id}"]`).classList +=
+            " MH__selected_tab";
+          break;
+        case "MH__stay_button":
+          admissionPanel.style.display = "none";
+          stayPanel.style.display = "block";
+          dischargePanel.style.display = "none";
+          controlPanel
+            .querySelector('[class*="MH__selected_tab"]')
+            .classList.remove("MH__selected_tab");
+          controlPanel.querySelector(`[id="${e.target.id}"]`).classList +=
+            " MH__selected_tab";
+          break;
+        case "MH__discharge_button":
+          admissionPanel.style.display = "none";
+          stayPanel.style.display = "none";
+          dischargePanel.style.display = "block";
+          controlPanel
+            .querySelector('[class*="MH__selected_tab"]')
+            .classList.remove("MH__selected_tab");
+          controlPanel.querySelector(`[id="${e.target.id}"]`).classList +=
+            " MH__selected_tab";
+          break;
+      }
+    };
+    // console.log(row);
+    overlay.style.display = "none";
+    row
+      .querySelector('div[class="MH__fixedMainPage__nameplate"]')
+      .parentElement.appendChild(overlay);
   }
-}
 }
 
 function detectEmptyInputFields() {
@@ -1865,32 +2365,35 @@ function detectEmptyInputFields() {
       }
       addSettingCog(field);
     }
-
   }
-
 }
 
 function configureJson(target_name = undefined) {
-
-  const parent = document.createElement('div');
-  parent.style.padding = '3rem';
+  const parent = document.createElement("div");
+  parent.style.padding = "3rem";
   const nazwa_headera = document
     .getElementById("header")
     .querySelector(".templateEditPageTitle").textContent;
-  const fieldIndex = GM_getValue(['settings'])["fields_with_autocomplete"].findIndex(
-    (item) => item.header_name === nazwa_headera
-  );
+  const fieldIndex = GM_getValue(["settings"])[
+    "fields_with_autocomplete"
+  ].findIndex((item) => item.header_name === nazwa_headera);
   let configured = false;
   if (fieldIndex != -1) {
     configured = true;
   }
-  const savedValues = GM_getValue(['settings'])["fields_with_autocomplete"][fieldIndex];
-  const titleDiv = document.createElement('div');
-  titleDiv.style.height = '3rem';
-  titleDiv.style.fontSize = '2rem';
-  titleDiv.innerHTML += `<span style='${configured ? 'color: green' : 'color: red'};'> Skonfigurowane: </span> <span style="color: black;"> ${savedValues.header_name} </span>`;
+  const savedValues = GM_getValue(["settings"])["fields_with_autocomplete"][
+    fieldIndex
+  ];
+  const titleDiv = document.createElement("div");
+  titleDiv.style.height = "3rem";
+  titleDiv.style.fontSize = "2rem";
+  titleDiv.innerHTML += `<span style='${
+    configured ? "color: green" : "color: red"
+  };'> Skonfigurowane: </span> <span style="color: black;"> ${
+    savedValues.header_name
+  } </span>`;
   parent.append(titleDiv);
-  const autofillCheckbox = document.createElement('input');
+  const autofillCheckbox = document.createElement("input");
   // autofillCheckbox.type = 'checkbox';
   // autofillCheckbox.checked = savedValues.suggest_text;
   // const label = document.createElement('label');
@@ -1902,12 +2405,22 @@ function configureJson(target_name = undefined) {
   // });
   // parent.append(autofillCheckbox);
   // parent.appendChild(label);
-  const drawer = document.createElement('div');
-  let jsonData = '';
+  const drawer = document.createElement("div");
+  let jsonData = "";
   // console.log(savedValues.user_configurable_text);
   console.log(savedValues.user_configurable_text[0][target_name]);
-  if (JSON.stringify(savedValues.user_configurable_text[0][target_name], null, 2) != undefined) {
-    jsonData = JSON.stringify(savedValues.user_configurable_text[0][target_name], null, 2);
+  if (
+    JSON.stringify(
+      savedValues.user_configurable_text[0][target_name],
+      null,
+      2
+    ) != undefined
+  ) {
+    jsonData = JSON.stringify(
+      savedValues.user_configurable_text[0][target_name],
+      null,
+      2
+    );
   } else {
     jsonData = `{
     "line1" : "Twoja pierwsza autosugestia",
@@ -1916,17 +2429,17 @@ function configureJson(target_name = undefined) {
     "line4" : "Jak chcesz się tego całkowicie pozbyć to zostaw pusty nawias {} bez linijek."
 }`;
   }
-  drawer.style.gap = '0.5rem';
-  drawer.style.padding = '0.5rem';
-  drawer.style.height = 'max-content';
+  drawer.style.gap = "0.5rem";
+  drawer.style.padding = "0.5rem";
+  drawer.style.height = "max-content";
   drawer.innerHTML = ` <div class="drawer" id="drawer"> <textarea id="jsonTextArea" style="width: 100%; min-height:30rem;">${jsonData}</textarea>
     <div style="display:flex;gap:2rem;font-size:1.5rem;"><button style="height:2rem;" id="checkjson">Sprawdź składnie i zapisz</button> <span id="mistake" style="display:none; color:red"> Niepoprawny JSON!</span> <span id="approved" style="display:none; color:green"> JSON zapisany</span><button style="height:2rem;" id="removejson">Usuń autosugestie</button></div>
     </div>`;
-  const instruction = document.createElement('div');
-  instruction.style.background = 'white';
-  instruction.style.width = 'fit-content';
-  instruction.style.padding = '0.5rem';
-  instruction.style.marginTop = '1rem';
+  const instruction = document.createElement("div");
+  instruction.style.background = "white";
+  instruction.style.width = "fit-content";
+  instruction.style.padding = "0.5rem";
+  instruction.style.marginTop = "1rem";
   instruction.innerHTML = `<div> Krótka instrukcja pisania JSON: </div>
     <div> Każda nowa linijka musi się zaczynać od "lineX": , pod X podstawić numer linijki. Nazwy linijek nie mogą się powtarzać! </div>
     <div> Dalej definiujemy swoją linijkę wewnątrz cudzysłowia "". Jeżeli ma być to tylko wartość tekstowa to wystarczy po prostu wpisać. "Bardzo lubię autosugestie" </div>
@@ -1940,12 +2453,10 @@ function configureJson(target_name = undefined) {
   drawer.append(instruction);
   parent.append(drawer);
 
-
-
   // json_lines.disableAutoCopy
 
   return parent;
-};
+}
 function isValidJson(jsonString) {
   try {
     JSON.parse(jsonString);
@@ -1957,87 +2468,94 @@ function isValidJson(jsonString) {
 }
 
 function synthesiseJSON(target_name = undefined) {
-
-
-  const existingDialog = document.querySelector('.MD__json_dialog');
+  const existingDialog = document.querySelector(".MD__json_dialog");
   if (existingDialog) {
     document.removeChild(existingDialog);
   }
 
-  const dialogElement = document.createElement('dialog');
-  dialogElement.style = "border: 1px solid purple; background: rgba(0, 0, 0, 0.4); width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;";
-  dialogElement.addEventListener('click', () => {
+  const dialogElement = document.createElement("dialog");
+  dialogElement.style =
+    "border: 1px solid purple; background: rgba(0, 0, 0, 0.4); width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;";
+  dialogElement.addEventListener("click", () => {
     const cleanup = document.querySelectorAll('div[id="MH__suggestiontext"]');
     for (let element of cleanup) {
-      element.parentNode.classList -= 'MedhelperSuggestion'
+      element.parentNode.classList -= "MedhelperSuggestion";
       element.parentNode.removeChild(element);
-
     }
 
     const cleanupEmpty = document.querySelectorAll('div[id="MH__emptyfield"]');
     for (let element of cleanupEmpty) {
-      element.parentNode.parentNode.classList -= 'MedhelperSuggestion'
+      element.parentNode.parentNode.classList -= "MedhelperSuggestion";
       element.parentNode.removeChild(element);
     }
-    const cleanupClass = document.querySelectorAll('textarea[class="MedhelperSuggestion"]');
+    const cleanupClass = document.querySelectorAll(
+      'textarea[class="MedhelperSuggestion"]'
+    );
     for (let element of cleanupClass) {
-      element.classList -= 'MedhelperSuggestion'
+      element.classList -= "MedhelperSuggestion";
     }
 
-    dialogElement.close()
+    dialogElement.close();
     dialogElement.remove();
     handleHeader();
   });
   document.body.append(dialogElement);
-  const dialogInnerElement = document.createElement('div');
-  dialogInnerElement.style = "width: 80%; height: 80%; background: #DDD; display: flex; flex-direction: column; border: 1px solid black;";
-  dialogInnerElement.addEventListener('click', (event) => event.stopPropagation());
+  const dialogInnerElement = document.createElement("div");
+  dialogInnerElement.style =
+    "width: 80%; height: 80%; background: #DDD; display: flex; flex-direction: column; border: 1px solid black;";
+  dialogInnerElement.addEventListener("click", (event) =>
+    event.stopPropagation()
+  );
   const dialogContent = configureJson(target_name);
   dialogInnerElement.append(dialogContent);
   dialogElement.append(dialogInnerElement);
   dialogElement.showModal();
 
-  const checkButton = document.getElementById('checkjson');
-  const removeButton = document.getElementById('removejson');
+  const checkButton = document.getElementById("checkjson");
+  const removeButton = document.getElementById("removejson");
   removeButton.onclick = (e) => {
     e.stopPropagation();
     const nazwa_headera = document
       .getElementById("header")
       .querySelector(".templateEditPageTitle").textContent;
-    const fieldIndex = GM_getValue(['settings'])["fields_with_autocomplete"].findIndex(
-      (item) => item.header_name === nazwa_headera
-    );
-    let oldSettings = GM_getValue('settings', {});
-    oldSettings["fields_with_autocomplete"][fieldIndex]["user_configurable_text"][0][target_name] = undefined;
+    const fieldIndex = GM_getValue(["settings"])[
+      "fields_with_autocomplete"
+    ].findIndex((item) => item.header_name === nazwa_headera);
+    let oldSettings = GM_getValue("settings", {});
+    oldSettings["fields_with_autocomplete"][fieldIndex][
+      "user_configurable_text"
+    ][0][target_name] = undefined;
     // oldSettings = oldSettings.filter(obj => obj["fields_with_autocomplete"][fieldIndex]["user_configurable_text"][0] !== target_name);
-    GM_setValue('settings', oldSettings); // Save back to storage.
-    document.getElementById('approved').style.display = "block";
-  }
+    GM_setValue("settings", oldSettings); // Save back to storage.
+    document.getElementById("approved").style.display = "block";
+  };
   checkButton.onclick = (e) => {
     e.stopPropagation();
-    const tableInput = document.getElementById('jsonTextArea').value;
+    const tableInput = document.getElementById("jsonTextArea").value;
     console.log(tableInput);
     if (isValidJson(tableInput)) {
-      document.getElementById('mistake').style.display = "none";
+      document.getElementById("mistake").style.display = "none";
       const nazwa_headera = document
         .getElementById("header")
         .querySelector(".templateEditPageTitle").textContent;
-      const fieldIndex = GM_getValue(['settings'])["fields_with_autocomplete"].findIndex(
-        (item) => item.header_name === nazwa_headera
-      );
+      const fieldIndex = GM_getValue(["settings"])[
+        "fields_with_autocomplete"
+      ].findIndex((item) => item.header_name === nazwa_headera);
       if (fieldIndex != -1) {
         // Construct the path as a string
         // let path = 'settings["fields_with_autocomplete"][${fieldIndex}]["user_configurable_text"][0]["${target_name}"]';
         // path = path.replace("${fieldIndex}", fieldIndex);
         // path = path.replace("${target_name}", target_name);
-        let oldSettings = GM_getValue('settings', {});
-        oldSettings["fields_with_autocomplete"][fieldIndex]["user_configurable_text"][0][target_name] = JSON.parse(tableInput);
-        GM_setValue('settings', oldSettings); // Save back to storage.
-        document.getElementById('approved').style.display = "block";
+        let oldSettings = GM_getValue("settings", {});
+        oldSettings["fields_with_autocomplete"][fieldIndex][
+          "user_configurable_text"
+        ][0][target_name] = JSON.parse(tableInput);
+        GM_setValue("settings", oldSettings); // Save back to storage.
+        document.getElementById("approved").style.display = "block";
       }
     } else {
-      document.getElementById('mistake').style.display = "block";
-      document.getElementById('approved').style.display = "none";
+      document.getElementById("mistake").style.display = "block";
+      document.getElementById("approved").style.display = "none";
     }
   };
 }
@@ -2048,25 +2566,26 @@ function resizeTextarea(textarea) {
   const min_width = "45%";
   const max_width = "45%";
 
-  textarea.style.minHeight = '20px'; // Adjust as needed
+  textarea.style.minHeight = "20px"; // Adjust as needed
 
   // Calculate the height of the content including padding and borders
   var scrollHeight = textarea.scrollHeight;
 
   // Ensure the height does not exceed a certain limit to prevent overflow
-  if (scrollHeight > maxHeight) { // Adjust this value based on your design
+  if (scrollHeight > maxHeight) {
+    // Adjust this value based on your design
     scrollHeight = maxHeight; // Maximum height, adjust as needed
   }
   textarea.style.maxWidth = max_width;
   textarea.style.minWidth = min_width;
-  textarea.style.minHeight = scrollHeight + 'px'; // Set the new height of the textarea
+  textarea.style.minHeight = scrollHeight + "px"; // Set the new height of the textarea
 }
 
 function addSettingCog(fieldOfIntrest) {
   fieldOfIntrest.style.position = "relative";
   fieldOfIntrest.classList = "MedhelperSuggestion";
   const parent = document.createElement("div");
-  parent.id = 'MH__emptyfield';
+  parent.id = "MH__emptyfield";
   parent.classList = "MedhelperSuggestion";
   parent.style.position = "absolute";
   parent.style.backgroundColor = "invisible";
@@ -2102,7 +2621,8 @@ function addSettingCog(fieldOfIntrest) {
   suggestionText.style.maxWidth = "2rem";
   suggestionText.style.backgroundColor = "#b1b1b1";
 
-  suggestionText.innerHTML = '<img style="max-width: 2rem;max-height: 2rem; filter: opacity(0.5);" src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/settings_icon.png" alt="Konfiguruj auto-uzupełnianie">';
+  suggestionText.innerHTML =
+    '<img style="max-width: 2rem;max-height: 2rem; filter: opacity(0.5);" src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/settings_icon.png" alt="Konfiguruj auto-uzupełnianie">';
   popup.appendChild(suggestionText);
   parent.appendChild(popup);
 

@@ -2087,7 +2087,12 @@ function fixMyView() {
     disableButton.style.background = GM_getValue("fixedViews", {})[wardName]
       ? "#89e786"
       : "#953e4d";
-    autoRefresh();
+    if (GM_getValue("fixedViews", {})[wardName]) {
+      declutterNameplates();
+      autoRefresh();
+    } else {
+      restoreView();
+    }
   };
 
   forceButton.onclick = (e) => {
@@ -2097,6 +2102,8 @@ function fixMyView() {
     )) {
       cleanupElement.parentElement.removeChild(cleanupElement);
     }
+    restoreView();
+    declutterNameplates();
     autoRefresh();
   };
 
@@ -2138,18 +2145,49 @@ function fixMyView() {
           namedataString.indexOf(".")
         )
         .trim();
-      console.log(age);
+      // console.log(age);
 
-      console.log(namedataString);
+      // console.log(namedataString);
       const fixedRow = document.createElement("div");
       // fixedRow.style.background = "rgb(91, 187, 104)";
       fixedRow.className = "MH__fixedMainPage__nameplate";
       fixedRow.innerHTML = name + " " + age;
       row.querySelector("td").appendChild(fixedRow);
 
+      greenBar.click();
+
       fixedRow.addEventListener("click", () => {
         greenBar.click();
+
+        if (
+          row.querySelector(".MH__fixedMainPage__data").style.display == "block"
+        ) {
+          row.querySelector(".MH__fixedMainPage__data").style.display = "none";
+        } else {
+          console.log("here");
+          row.querySelector(".MH__fixedMainPage__data").style.display = "block";
+        }
       });
+    }
+  }
+
+  function restoreView() {
+    for (let newNameplate of document.querySelectorAll(
+      ".MH__fixedMainPage__nameplate"
+    )) {
+      newNameplate.parentElement.removeChild(newNameplate);
+    }
+
+    for (let row of tableRows) {
+      const blackBar = row
+        .querySelector("td")
+        .querySelector('table[class="pobytTable"]');
+      blackBar.style.display = "block";
+
+      const greenBar = row
+        .querySelector("td")
+        .querySelector('table:nth-child(2)[class="pobytTable"]');
+      greenBar.style.display = "block";
     }
   }
 
@@ -2165,18 +2203,12 @@ function fixMyView() {
 
         if (!dataDIV || !dataDIV.innerHTML) continue; // Skip if dataDIV is not found or empty
 
-        optimize(
-          dataDIV,
-          row.querySelector('div[class="MH__fixedMainPage__nameplate"]')
-        );
+        optimize(dataDIV, row);
 
         const observer = new MutationObserver((mutationsList, observer) => {
           for (let mutation of mutationsList) {
             if (mutation.type === "childList") {
-              optimize(
-                dataDI,
-                row.querySelector("div[MH__fixedMainPage__nameplate]")
-              );
+              optimize(dataDI, row);
             }
           }
         });
@@ -2196,6 +2228,7 @@ function fixMyView() {
     declutterNameplates();
     autoRefresh();
   }
+
   function optimize(dataDIV, row) {
     for (let cleanupElement of row.parentElement.querySelectorAll(
       '[class="MH__fixedMainPage__data"]'
@@ -2265,6 +2298,7 @@ function fixMyView() {
           overlay.parentElement.removeChild(overlay);
           dataDIV.style.display = "block";
           dataDIV.classList -= "MH__Optimized";
+          restoreView();
           break;
         case "MH__addmission_button":
           admissionPanel.style.display = "block";
@@ -2299,7 +2333,10 @@ function fixMyView() {
       }
     };
     // console.log(row);
-    row.parentElement.appendChild(overlay);
+    overlay.style.display = "none";
+    row
+      .querySelector('div[class="MH__fixedMainPage__nameplate"]')
+      .parentElement.appendChild(overlay);
   }
 }
 

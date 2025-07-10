@@ -3,7 +3,7 @@
 // @namespace   Violentmonkey Scripts
 // @match       http://localhost:8000/*
 // @match       http*://medicus.usk/*
-// @version     1.194
+// @version     1.195
 // @author      3evv
 // @description 6/8/2025, 10:37:03 PM
 // @icon	https://raw.githubusercontent.com/3evv/Medichelper/main/images/icon128.jpeg
@@ -2026,7 +2026,6 @@ function fixMyView() {
         }
         .MH__fixedMainPage__nameplate{
         height: 1.5rem;
-        width 100%;
         font-size: 1.25rem;
         margin: 0.5 rem;
         padding: 0.25rem;
@@ -2041,6 +2040,12 @@ function fixMyView() {
         border: 0.15rem solid #0082bc;
 
          }
+        .MH__buttonPanel{
+        background:rgb(132, 145, 155);
+        }
+        .MH___orginalFilterpanel{
+        background-color:rgb(147, 159, 168);
+        }
         `;
   document.head.appendChild(style);
 
@@ -2053,21 +2058,29 @@ function fixMyView() {
     .querySelector("[selected]").textContent;
   const tableRows = tableHeader.querySelectorAll("tr.rowlist");
 
-  const logoutButton = document.querySelector(
-    '[class="logoutElementA"]'
-  ).parentNode;
+  tableHeader.style.background = "#30b27e";
+
+  const Filtertable = document.querySelector(
+    '[class="templateListTableHeaderTr"]'
+  );
+  Filtertable.classList += " MH___orginalFilterpanel";
+  Filtertable.style.backgroundColor = "";
+  const button_panel = document.createElement("div");
+  button_panel.classList = "MH__buttonPanel";
+
   const disableButton = document.createElement("button");
   disableButton.classList = "MH__toggleOpti";
   disableButton.setAttribute("type", "button");
-  disableButton.textContent = `Wyłącz/włącz zmianę widoku`;
-  disableButton.style.margin = "1rem";
+  disableButton.textContent = `Zmiana widoku`;
+  disableButton.style.margin = "0.2rem";
   const forceButton = document.createElement("button");
   forceButton.classList = "MH__toggleOpti";
   forceButton.setAttribute("type", "button");
   forceButton.textContent = `Wymuś zmianę widoku `;
-  forceButton.style.margin = "1rem";
+  forceButton.style.margin = "0.1rem";
+  button_panel.appendChild(disableButton);
 
-  logoutButton.insertBefore(disableButton, logoutButton.firstChild);
+  Filtertable.insertAdjacentElement("afterEnd", button_panel);
   // logoutButton.insertBefore(forceButton, logoutButton.firstChild);
 
   disableButton.style.background = GM_getValue("fixedViews", {})[wardName]
@@ -2138,7 +2151,12 @@ function fixMyView() {
           )
           .trim()
       );
-
+      const PeselData = namedataString
+        .substring(
+          namedataString.indexOf(",") - PESELlenght,
+          namedataString.indexOf(",")
+        )
+        .trim();
       const age = namedataString
         .substring(
           namedataString.indexOf("wiek:") + "wiek:".length,
@@ -2151,7 +2169,7 @@ function fixMyView() {
       const fixedRow = document.createElement("div");
       // fixedRow.style.background = "rgb(91, 187, 104)";
       fixedRow.className = "MH__fixedMainPage__nameplate";
-      fixedRow.innerHTML = name + " " + age;
+      fixedRow.innerHTML = name + " " + age + " " + PeselData;
       row.querySelector("td").appendChild(fixedRow);
 
       greenBar.click();
@@ -2164,29 +2182,29 @@ function fixMyView() {
         ) {
           row.querySelector(".MH__fixedMainPage__data").style.display = "none";
         } else {
-          console.log("here");
+          // console.log("here");
           row.querySelector(".MH__fixedMainPage__data").style.display = "block";
         }
       });
     }
   }
 
-
-  for (let row of tableRows) { //activate scripts load
-      const greenBar = row
-        .querySelector("td")
-        .querySelector('table:nth-child(2)[class="pobytTable"] > tbody > tr > th');
-      greenBar.click();
+  for (let row of tableRows) {
+    //activate scripts load
+    const greenBar = row
+      .querySelector("td")
+      .querySelector(
+        'table:nth-child(2)[class="pobytTable"] > tbody > tr > th'
+      );
     greenBar.click();
-    }
-
-
+    greenBar.click();
+  }
 
   function restoreView() {
     for (let newNameplate of document.querySelectorAll(
       ".MH__fixedMainPage__nameplate"
     )) {
-      newNameplate.style.display = 'none';
+      newNameplate.style.display = "none";
     }
 
     for (let row of tableRows) {
@@ -2218,7 +2236,10 @@ function fixMyView() {
 
         const observer = new MutationObserver((mutationsList, observer) => {
           for (let mutation of mutationsList) {
-            if (mutation.type === "childList" && mutation.type === "innerHTML") {
+            if (
+              mutation.type === "childList" &&
+              mutation.type === "innerHTML"
+            ) {
               optimize(dataDI, row);
             }
           }

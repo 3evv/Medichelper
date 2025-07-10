@@ -2068,7 +2068,7 @@ function fixMyView() {
   forceButton.style.margin = "1rem";
 
   logoutButton.insertBefore(disableButton, logoutButton.firstChild);
-  logoutButton.insertBefore(forceButton, logoutButton.firstChild);
+  // logoutButton.insertBefore(forceButton, logoutButton.firstChild);
 
   disableButton.style.background = GM_getValue("fixedViews", {})[wardName]
     ? "#89e786"
@@ -2095,17 +2095,17 @@ function fixMyView() {
     }
   };
 
-  forceButton.onclick = (e) => {
-    e.stopPropagation();
-    for (let cleanupElement of document.querySelectorAll(
-      ".MH__fixedMainPage"
-    )) {
-      cleanupElement.parentElement.removeChild(cleanupElement);
-    }
-    restoreView();
-    declutterNameplates();
-    autoRefresh();
-  };
+  // forceButton.onclick = (e) => {
+  //   e.stopPropagation();
+  //   for (let cleanupElement of document.querySelectorAll(
+  //     ".MH__fixedMainPage"
+  //   )) {
+  //     cleanupElement.parentElement.removeChild(cleanupElement);
+  //   }
+  //   restoreView();
+  //   declutterNameplates();
+  //   autoRefresh();
+  // };
 
   function capitalizeName(str) {
     if (!str) return ""; // Check for non-empty string
@@ -2171,23 +2171,34 @@ function fixMyView() {
     }
   }
 
+
+  for (let row of tableRows) { //activate scripts load
+      const greenBar = row
+        .querySelector("td")
+        .querySelector('table:nth-child(2)[class="pobytTable"] > tbody > tr > th');
+      greenBar.click();
+    greenBar.click();
+    }
+
+
+
   function restoreView() {
     for (let newNameplate of document.querySelectorAll(
       ".MH__fixedMainPage__nameplate"
     )) {
-      newNameplate.parentElement.removeChild(newNameplate);
+      newNameplate.style.display = 'none';
     }
 
     for (let row of tableRows) {
       const blackBar = row
         .querySelector("td")
         .querySelector('table[class="pobytTable"]');
-      blackBar.style.display = "block";
+      blackBar.style.display = "table";
 
       const greenBar = row
         .querySelector("td")
         .querySelector('table:nth-child(2)[class="pobytTable"]');
-      greenBar.style.display = "block";
+      greenBar.style.display = "table";
     }
   }
 
@@ -2207,7 +2218,7 @@ function fixMyView() {
 
         const observer = new MutationObserver((mutationsList, observer) => {
           for (let mutation of mutationsList) {
-            if (mutation.type === "childList") {
+            if (mutation.type === "childList" && mutation.type === "innerHTML") {
               optimize(dataDI, row);
             }
           }
@@ -2230,11 +2241,11 @@ function fixMyView() {
   }
 
   function optimize(dataDIV, row) {
-    for (let cleanupElement of row.parentElement.querySelectorAll(
-      '[class="MH__fixedMainPage__data"]'
-    )) {
-      cleanupElement.parentElement.removeChild(cleanupElement);
-    }
+    // for (let cleanupElement of row.parentElement.querySelectorAll(
+    //   '[class="MH__fixedMainPage__data"]'
+    // )) {
+    //   cleanupElement.parentElement.removeChild(cleanupElement);
+    // }
 
     // dataDIV.classList += "MH__Optimized";
     dataDIV.style.display = "none";

@@ -2169,7 +2169,22 @@ function fixMyView() {
       const fixedRow = document.createElement("div");
       // fixedRow.style.background = "rgb(91, 187, 104)";
       fixedRow.className = "MH__fixedMainPage__nameplate";
-      fixedRow.innerHTML = name + " " + age + " " + PeselData;
+      // fixedRow.innerHTML = name + " " + age + " " + PeselData;
+      const nameSpan = document.createElement("span");
+      nameSpan.textContent = name + " " + age;
+      nameSpan.style.width = "25rem";
+      // const ageSpan = document.createElement("span");
+      // ageSpan.textContent = age + " ";
+      // ageSpan.style.width = "25rem";
+      const peselSpan = document.createElement("span");
+      peselSpan.textContent = PeselData + " ";
+      peselSpan.style.width = "25rem";
+      fixedRow.style.display = "flex";
+
+      fixedRow.appendChild(nameSpan);
+      // fixedRow.appendChild(ageSpan);
+      fixedRow.appendChild(peselSpan);
+
       row.querySelector("td").appendChild(fixedRow);
 
       greenBar.click();

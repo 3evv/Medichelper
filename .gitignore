@@ -2,3 +2,7 @@
 .sync_8f2ff527f708.db
 .sync_8f2ff527f708.db-shm
 .sync_8f2ff527f708.db-wal
+MedicHelper/*
+node_modules/*
+package-lock.json
+package.json

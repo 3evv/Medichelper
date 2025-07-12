@@ -3,7 +3,7 @@
 // @namespace   Violentmonkey Scripts
 // @match       http://localhost:8000/*
 // @match       http*://medicus.usk/*
-// @version     1.195
+// @version     1.196
 // @author      3evv
 // @description 6/8/2025, 10:37:03 PM
 // @icon	https://raw.githubusercontent.com/3evv/Medichelper/main/images/icon128.jpeg
@@ -39,8 +39,7 @@
 
   // Check if the settings need to be updated from the HTML link
   function updateSettingsFromLink() {
-    const link =
-      "https://raw.githubusercontent.com/3evv/Medichelper/refs/heads/main/userSettings.json";
+    const link = "https://raw.githubusercontent.com/3evv/Medichelper/refs/heads/main/userSettings.json";
     fetch(link)
       .then((response) => response.text())
       .then((data) => {
@@ -91,14 +90,10 @@ if (document.title == "Mój widok") {
 }
 
 function handleHeader() {
-  const nazwa_headera = document
-    .getElementById("header")
-    .querySelector(".templateEditPageTitle").textContent;
+  const nazwa_headera = document.getElementById("header").querySelector(".templateEditPageTitle").textContent;
   let known_fields = GM_getValue(["settings"])["fields_with_autocomplete"];
 
-  const fieldIndex = known_fields.findIndex(
-    (item) => item.header_name === nazwa_headera
-  );
+  const fieldIndex = known_fields.findIndex((item) => item.header_name === nazwa_headera);
   if (fieldIndex != -1) {
     if (known_fields[fieldIndex].suggest_text) {
       //  console.log('suggest text');
@@ -129,10 +124,8 @@ function configurePopupParent(fieldOfIntrest) {
   parent.style.position = "absolute";
   parent.style.backgroundColor = "invisible";
   parent.style.borderRadius = "0.1rem";
-  parent.style.left =
-    fieldOfIntrest.getBoundingClientRect().right + 20 + window.scrollX + +"px";
-  parent.style.top =
-    fieldOfIntrest.getBoundingClientRect().top + window.scrollY + "px";
+  parent.style.left = fieldOfIntrest.getBoundingClientRect().right + 20 + window.scrollX + +"px";
+  parent.style.top = fieldOfIntrest.getBoundingClientRect().top + window.scrollY + "px";
   parent.style.width = "27%";
   parent.style.display = "flex";
   parent.style.flexDirection = "column";
@@ -155,9 +148,7 @@ function configurePopup() {
 }
 
 function calculateAge() {
-  const patientInfos = document.querySelectorAll(
-    "#header .templateEditPageSubTitle b"
-  );
+  const patientInfos = document.querySelectorAll("#header .templateEditPageSubTitle b");
   let personal_data = patientInfos[0].innerHTML;
   beg_of_PESEL = personal_data.indexOf("(") + 1;
   end_of_PESEL = personal_data.indexOf(")");
@@ -236,9 +227,7 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
           const trueVariant = modifiedFragment
             .substring(modifiedFragment.indexOf("?") + 1, tenaryIndex)
             .replaceAll("'", "");
-          const falseVariant = modifiedFragment
-            .substring(tenaryIndex + 1)
-            .replaceAll("'", "");
+          const falseVariant = modifiedFragment.substring(tenaryIndex + 1).replaceAll("'", "");
           const textBool = true;
           if (boolArray[key + "_" + local_index] == undefined) {
             boolArray[key + "_" + local_index] = {
@@ -247,21 +236,14 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
               falseVariant,
             };
           }
-          let output = `<span style="color:#ffffc2; font-style:oblique;" id="${
-            key + "_" + local_index
-          }"> [${
-            boolArray[key + "_" + local_index].textBool
-              ? trueVariant
-              : falseVariant
+          let output = `<span style="color:#ffffc2; font-style:oblique;" id="${key + "_" + local_index}"> [${
+            boolArray[key + "_" + local_index].textBool ? trueVariant : falseVariant
           }]</span>`;
           // if(trueVariant == '  '){
           //   output = `<span style="text-decoration: line-through; color: #6F0001;" id="${key + '_' + local_index}"> </span> [${falseVariant}]`;
           //   boolArray[key + '_' + local_index].textBool = false;
           // }
-          line =
-            line.substring(0, variableStart) +
-            output +
-            line.substring(variableEnd + 1);
+          line = line.substring(0, variableStart) + output + line.substring(variableEnd + 1);
           local_index += 1;
         }
       }
@@ -285,9 +267,7 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
   function updateSuggestionText(targetId) {
     const target = suggestionElement.querySelector(`#${targetId}`);
     target.innerHTML = ` [${
-      boolArray[targetId].textBool
-        ? boolArray[targetId].trueVariant
-        : boolArray[targetId].falseVariant
+      boolArray[targetId].textBool ? boolArray[targetId].trueVariant : boolArray[targetId].falseVariant
     }]`;
   }
   function updatePasteButton() {
@@ -342,61 +322,32 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
       let localHTML = line.innerHTML;
       let replacementLine = "";
       let overwriteIndex = -1;
-      while (
-        localHTML.indexOf(
-          `<span style="color:#ffffc2; font-style:oblique;" id="`
-        ) != -1
-      ) {
-        const beginingReplace = localHTML.indexOf(
-          `<span style="color:#ffffc2; font-style:oblique;" id="`
-        );
+      while (localHTML.indexOf(`<span style="color:#ffffc2; font-style:oblique;" id="`) != -1) {
+        const beginingReplace = localHTML.indexOf(`<span style="color:#ffffc2; font-style:oblique;" id="`);
         let replacementHTML = localHTML.substring(beginingReplace);
         const endingReplace = localHTML.indexOf("</span>") + "</span>".length;
         replacementHTML = localHTML.substring(0, endingReplace);
         targetId = replacementHTML.substring(
           replacementHTML.indexOf(`id="`) + `id="`.length,
-          replacementHTML.indexOf(
-            `"`,
-            replacementHTML.indexOf(`id="`) + `id="`.length
-          )
+          replacementHTML.indexOf(`"`, replacementHTML.indexOf(`id="`) + `id="`.length)
         );
         let inverseValue = `${
-          !boolArray[targetId].textBool
-            ? boolArray[targetId].trueVariant
-            : boolArray[targetId].falseVariant
+          !boolArray[targetId].textBool ? boolArray[targetId].trueVariant : boolArray[targetId].falseVariant
         }`;
         // console.log(line.innerHTML);
-        replacementLine =
-          localHTML.substring(0, beginingReplace) +
-          inverseValue +
-          localHTML.substring(endingReplace);
-        replacementLine = replacementLine
-          .replaceAll("[", "")
-          .replaceAll("]", "")
-          .replace(/\s+/g, " ")
-          .trim();
+        replacementLine = localHTML.substring(0, beginingReplace) + inverseValue + localHTML.substring(endingReplace);
+        replacementLine = replacementLine.replaceAll("[", "").replaceAll("]", "").replace(/\s+/g, " ").trim();
         localHTML = replacementLine;
         // console.log(replacementLine);
       }
       console.log(localHTML);
       if (textInputSuggestion.indexOf(localHTML) != -1) {
         console.log("Replacingu: ");
-        replacementLine = localText
-          .replaceAll("[", "")
-          .replaceAll("]", "")
-          .replace(/\s+/g, " ")
-          .trim();
+        replacementLine = localText.replaceAll("[", "").replaceAll("]", "").replace(/\s+/g, " ").trim();
         // textInputSuggestion = textInputSuggestion.substring(textInputSuggestion.indexOf(localHTML)) + replacementLine + textInputSuggestion.substring(textInputSuggestion.substring(textInputSuggestion.indexOf(localHTML) + replacementLine.length));
-        textInputSuggestion = textInputSuggestion.replace(
-          localHTML,
-          replacementLine
-        );
+        textInputSuggestion = textInputSuggestion.replace(localHTML, replacementLine);
       } else {
-        replacementLine = localText
-          .replaceAll("[", "")
-          .replaceAll("]", "")
-          .replace(/\s+/g, " ")
-          .trim();
+        replacementLine = localText.replaceAll("[", "").replaceAll("]", "").replace(/\s+/g, " ").trim();
       }
       if (textInputSuggestion.indexOf(replacementLine) == -1) {
         textInputSuggestion += replacementLine;
@@ -424,38 +375,21 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
   return suggestionElement;
 }
 
-function updateFieldHeight(
-  fieldOfIntrest,
-  parent,
-  popup,
-  minimal_przedmiotowe_suggestion_height
-) {
-  marg_bottom = parseFloat(
-    window.getComputedStyle(fieldOfIntrest).marginBottom
-  );
-  parent.style.left =
-    fieldOfIntrest.getBoundingClientRect().right + 20 + window.scrollX + "px";
-  parent.style.top =
-    fieldOfIntrest.getBoundingClientRect().top + window.scrollY + "px";
-  if (
-    fieldOfIntrest.getBoundingClientRect().height >
-    popup.getBoundingClientRect().height
-  ) {
+function updateFieldHeight(fieldOfIntrest, parent, popup, minimal_przedmiotowe_suggestion_height) {
+  marg_bottom = parseFloat(window.getComputedStyle(fieldOfIntrest).marginBottom);
+  parent.style.left = fieldOfIntrest.getBoundingClientRect().right + 20 + window.scrollX + "px";
+  parent.style.top = fieldOfIntrest.getBoundingClientRect().top + window.scrollY + "px";
+  if (fieldOfIntrest.getBoundingClientRect().height > popup.getBoundingClientRect().height) {
     popup.style.height = fieldOfIntrest.getBoundingClientRect().height + "px";
   } else {
-    if (
-      fieldOfIntrest.getBoundingClientRect().height >
-      minimal_przedmiotowe_suggestion_height
-    ) {
+    if (fieldOfIntrest.getBoundingClientRect().height > minimal_przedmiotowe_suggestion_height) {
       popup.style.height = fieldOfIntrest.getBoundingClientRect().height + "px";
     } else {
-      fieldOfIntrest.style.height =
-        minimal_przedmiotowe_suggestion_height + marg_bottom + "px";
+      fieldOfIntrest.style.height = minimal_przedmiotowe_suggestion_height + marg_bottom + "px";
       popup.style.height = fieldOfIntrest.getBoundingClientRect().height + "px";
     }
   }
-  parent.style.left =
-    fieldOfIntrest.getBoundingClientRect().right + 20 + window.scrollX + "px";
+  parent.style.left = fieldOfIntrest.getBoundingClientRect().right + 20 + window.scrollX + "px";
   if (GM_getValue(["settings"])["optimize"]) {
     resizeTextarea(fieldOfIntrest);
   }
@@ -473,10 +407,7 @@ function autofill_text_fields(fieldJson) {
       fieldOfIntrest.classList = "MedhelperSuggestion";
       const parent = configurePopupParent(fieldOfIntrest);
       const popup = configurePopup();
-      const suggestionText = configureSuggestion(
-        fieldOfIntrest,
-        fieldNamesArray[fieldName]
-      );
+      const suggestionText = configureSuggestion(fieldOfIntrest, fieldNamesArray[fieldName]);
 
       const min_width = "45%";
       const max_width = "57%";
@@ -486,39 +417,18 @@ function autofill_text_fields(fieldJson) {
       parent.appendChild(popup);
 
       window.addEventListener("resize", function () {
-        updateFieldHeight(
-          fieldOfIntrest,
-          parent,
-          popup,
-          minimal_przedmiotowe_suggestion_height
-        );
+        updateFieldHeight(fieldOfIntrest, parent, popup, minimal_przedmiotowe_suggestion_height);
       });
       window.addEventListener("onclick", function () {
-        updateFieldHeight(
-          fieldOfIntrest,
-          parent,
-          popup,
-          minimal_przedmiotowe_suggestion_height
-        );
+        updateFieldHeight(fieldOfIntrest, parent, popup, minimal_przedmiotowe_suggestion_height);
       });
       fieldOfIntrest.addEventListener("resize", function () {
-        updateFieldHeight(
-          fieldOfIntrest,
-          parent,
-          popup,
-          minimal_przedmiotowe_suggestion_height
-        );
+        updateFieldHeight(fieldOfIntrest, parent, popup, minimal_przedmiotowe_suggestion_height);
       });
       document.body.appendChild(parent);
 
-      const minimal_przedmiotowe_suggestion_height =
-        popup.getBoundingClientRect().height;
-      updateFieldHeight(
-        fieldOfIntrest,
-        parent,
-        popup,
-        minimal_przedmiotowe_suggestion_height
-      );
+      const minimal_przedmiotowe_suggestion_height = popup.getBoundingClientRect().height;
+      updateFieldHeight(fieldOfIntrest, parent, popup, minimal_przedmiotowe_suggestion_height);
 
       const resizeObserver = new ResizeObserver((entries) => {
         window.dispatchEvent(new Event("resize"));
@@ -531,9 +441,7 @@ function autofill_text_fields(fieldJson) {
 
 function handleNRS() {
   button_panel = document.getElementById("buttons");
-  button_panel.querySelector(
-    "ul"
-  ).innerHTML += `<li style="margin-left:0;margin-right:10px;display:inline;">
+  button_panel.querySelector("ul").innerHTML += `<li style="margin-left:0;margin-right:10px;display:inline;">
   <button id="nrs" class="mdl-button editTemplateButtons mdl-js-button mdl-button--raised mdl-js-ripple-effect" type="button" style="background-color: #B2F797; border-radius:4px;"> Wszystko ok </button>
   </li>`;
 
@@ -541,29 +449,17 @@ function handleNRS() {
 
   function automate_NRS() {
     // document.getElementsByName("rola_3733_default_values_button")[0].click();
-    document
-      .getElementsByName(
-        "karta_zywienia_asystujacy_l_user_id_default_values_button"
-      )[0]
-      .click();
-    document
-      .getElementsByName("karta_zywienia_dataczas_default_values_button")[0]
-      .click();
-    document
-      .getElementById("karta_zywienia_nrs_pogorszenie_stanu_dozyw1")
-      .click();
+    document.getElementsByName("karta_zywienia_asystujacy_l_user_id_default_values_button")[0].click();
+    document.getElementsByName("karta_zywienia_dataczas_default_values_button")[0].click();
+    document.getElementById("karta_zywienia_nrs_pogorszenie_stanu_dozyw1").click();
     document.getElementById("karta_zywienia_nrs_nasilenie_choroby1").click();
     document.getElementsByName("btn_ok")[0].click();
   }
 }
 
 function autofill_checkboxes(fieldJson) {
-  const buttonmount = document.getElementById(
-    "skierowanie_opis_skierowania_all"
-  );
-  const textField = buttonmount.querySelector(
-    'textarea[name="skierowanie_opis_skierowania"]'
-  );
+  const buttonmount = document.getElementById("skierowanie_opis_skierowania_all");
+  const textField = buttonmount.querySelector('textarea[name="skierowanie_opis_skierowania"]');
 
   buttonmount.style.display = "flex";
   buttonmount.style.flexDirection = "column";
@@ -637,12 +533,8 @@ function autofill_checkboxes(fieldJson) {
     .getElementById("skierowanie_typ_procedury_all")
     .querySelector('select[name="skierowanie_typ_procedury"]')
     .querySelector("[selected]");
-  if (
-    fieldJson["user_defined_packets"][testCategoryElement.value] != undefined
-  ) {
-    for (let packet of Object.values(
-      fieldJson["user_defined_packets"][testCategoryElement.value]
-    )) {
+  if (fieldJson["user_defined_packets"][testCategoryElement.value] != undefined) {
+    for (let packet of Object.values(fieldJson["user_defined_packets"][testCategoryElement.value])) {
       let local_id = packet.name;
 
       boolArray[local_id] = allChecked(local_id);
@@ -769,9 +661,7 @@ function createAdmissionPanelInterna(dataSource, admissionPanel) {
     ];
 
     for (let id of printARRAY) {
-      if (
-        documentsPanel.querySelector(`img[id=${id}]`).style.display == "none"
-      ) {
+      if (documentsPanel.querySelector(`img[id=${id}]`).style.display == "none") {
         addmissionDone = false;
       }
     }
@@ -781,64 +671,34 @@ function createAdmissionPanelInterna(dataSource, admissionPanel) {
     e.stopPropagation();
     switch (e.target.id) {
       case "MH__planDiagTer":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=252"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=252"]');
         break;
       case "MH__planDiagTerPrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=252"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=252"]');
         break;
       case "MH__zgodaKoro":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=16740"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=16740"]');
         break;
       case "MH__zgodaKoroPrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=16740"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=16740"]');
         break;
       case "MH__badPodPrzed":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1739"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1739"]');
         break;
       case "MH__badPodPrzedPrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]');
         break;
       case "MH__caprini":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=4188"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=4188"]');
         break;
       case "MH__capriniPrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=4188"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=4188"]');
         break;
       case "MH__zakazeniePrzyjecie":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1400"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1400"]');
         break;
       case "MH__zakazeniePrzyjeciePrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1400"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1400"]');
         break;
       case "MH__skalaNRS":
         clickHREF(dataSource, 'a[href^="app.karta_zywienia_list"]');
@@ -878,16 +738,10 @@ function createAdmissionPanelInterna(dataSource, admissionPanel) {
         clickHREF(dataSource, 'a[href^="app.Zlecenia_lekow"]');
         break;
       case "MH__diagnosticplanning":
-        clickHREF(
-          dataSource,
-          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]');
         break;
       case "MH__operativeplanning":
-        clickHREF(
-          dataSource,
-          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]');
         break;
       case "MH__observationpanel":
         clickHREF(dataSource, 'a[href^="app.raport_list"]');
@@ -919,16 +773,10 @@ function createAdmissionPanelInterna(dataSource, admissionPanel) {
 
         break;
       case "MH__patientFiles":
-        clickHREF(
-          dataSource,
-          'a[href^="app.BadaniePodstawa"][href$="x_tryb=K"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.BadaniePodstawa"][href$="x_tryb=K"]');
         break;
       case "MH__nurseQuestionarre":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=251"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=251"]');
         break;
       case "MH__patientDrugs":
         clickHREF(dataSource, 'a[href^="app.dokument_apteczka_list"]');
@@ -993,12 +841,7 @@ function createStayPanelInterna(dataSource, stayPanel) {
       'a[href^="app.ocena_ryzyka_zakazenia_dr"][href$="x_procedura_id=1401"]',
       "MH__infectionRiskPrint"
     );
-    checkPrintability(
-      dataSource,
-      documentsPanel,
-      'a[href^="app.dokument_zap_bk_dr"]',
-      "MH__bloodTransfusionPrint"
-    );
+    checkPrintability(dataSource, documentsPanel, 'a[href^="app.dokument_zap_bk_dr"]', "MH__bloodTransfusionPrint");
     checkPrintability(
       dataSource,
       documentsPanel,
@@ -1011,28 +854,16 @@ function createStayPanelInterna(dataSource, stayPanel) {
     e.stopPropagation();
     switch (e.target.id) {
       case "MH__badPodPrzed":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1739"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1739"]');
         break;
       case "MH__badPodPrzedPrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]');
         break;
       case "MH__infectionRisk":
-        clickHREF(
-          dataSource,
-          'a[href^="app.ocena_ryzyka_zakazenia_edit"][href$="x_procedura_id=1401"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.ocena_ryzyka_zakazenia_edit"][href$="x_procedura_id=1401"]');
         break;
       case "MH__infectionRiskPrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.ocena_ryzyka_zakazenia_dr"][href$="x_procedura_id=1401"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.ocena_ryzyka_zakazenia_dr"][href$="x_procedura_id=1401"]');
         break;
       case "MH__bloodTransfusion":
         clickHREF(dataSource, 'a[href^="app.dokument_zap_bk_list"]');
@@ -1041,16 +872,10 @@ function createStayPanelInterna(dataSource, stayPanel) {
         // clickHREF(dataSource, 'a[href^="app.dokument_zap_bk_list"][href$="x_procedura_id=393"]');
         break;
       case "MH__procedureConsent":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProcedury_list"][href$="x_procedura_id=393"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProcedury_list"][href$="x_procedura_id=393"]');
         break;
       case "MH__procedureConsentPrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProcedury_dr"][href$="x_procedura_id=393"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProcedury_dr"][href$="x_procedura_id=393"]');
         break;
       default:
     }
@@ -1083,16 +908,10 @@ function createStayPanelInterna(dataSource, stayPanel) {
         clickHREF(dataSource, 'a[href^="app.Zlecenia_lekow"]');
         break;
       case "MH__diagnosticplanning":
-        clickHREF(
-          dataSource,
-          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]');
         break;
       case "MH__operativeplanning":
-        clickHREF(
-          dataSource,
-          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]');
         break;
       case "MH__observationpanel":
         clickHREF(dataSource, 'a[href^="app.raport_list"]');
@@ -1124,16 +943,10 @@ function createStayPanelInterna(dataSource, stayPanel) {
 
         break;
       case "MH__patientFiles":
-        clickHREF(
-          dataSource,
-          'a[href^="app.BadaniePodstawa"][href$="x_tryb=K"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.BadaniePodstawa"][href$="x_tryb=K"]');
         break;
       case "MH__nurseQuestionarre":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=251"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=251"]');
         break;
       case "MH__patientDrugs":
         clickHREF(dataSource, 'a[href^="app.dokument_apteczka_list"]');
@@ -1193,16 +1006,10 @@ function createDischargePanelInterna(dataSource, dischargePanel) {
     e.stopPropagation();
     switch (e.target.id) {
       case "MH__badPodPrzed":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1739"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1739"]');
         break;
       case "MH__badPodPrzedPrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1739"]');
         break;
       case "MH__discharge":
         clickHREF(dataSource, 'a[href^="app.wypis_edit"]');
@@ -1238,16 +1045,10 @@ function createDischargePanelInterna(dataSource, dischargePanel) {
         clickHREF(dataSource, 'a[href^="app.Zlecenia_lekow"]');
         break;
       case "MH__diagnosticplanning":
-        clickHREF(
-          dataSource,
-          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]');
         break;
       case "MH__operativeplanning":
-        clickHREF(
-          dataSource,
-          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]');
         break;
       case "MH__observationpanel":
         clickHREF(dataSource, 'a[href^="app.raport_list"]');
@@ -1257,10 +1058,8 @@ function createDischargePanelInterna(dataSource, dischargePanel) {
   };
   let grouper_rozliczony = false;
   if (
-    dataSource.querySelector('div[style="font-style:italic; color:green;"]') !=
-      "Nie wybrano grupy." &&
-    dataSource.querySelector('div[style="font-style:italic; color:green;"]') !=
-      undefined
+    dataSource.querySelector('div[style="font-style:italic; color:green;"]') != "Nie wybrano grupy." &&
+    dataSource.querySelector('div[style="font-style:italic; color:green;"]') != undefined
   ) {
     grouper_rozliczony = true;
   }
@@ -1287,9 +1086,7 @@ function createDischargePanelInterna(dataSource, dischargePanel) {
   mainPanel.append(utilitiesPanel);
   dischargePanel.append(mainPanel);
 
-  const grouperStatus = utilitiesPanel.querySelector(
-    'div[id="MH__gruperStatus"]'
-  );
+  const grouperStatus = utilitiesPanel.querySelector('div[id="MH__gruperStatus"]');
   if (grouper_rozliczony) {
     grouperStatus.innerHTML = "Rozliczony: ";
     grouperStatus.innerHTML += dataSource
@@ -1395,9 +1192,7 @@ function createAdmissionPanelNchir(dataSource, admissionPanel) {
     ];
 
     for (let id of printARRAY) {
-      if (
-        documentsPanel.querySelector(`img[id=${id}]`).style.display == "none"
-      ) {
+      if (documentsPanel.querySelector(`img[id=${id}]`).style.display == "none") {
         addmissionDone = false;
       }
     }
@@ -1407,64 +1202,34 @@ function createAdmissionPanelNchir(dataSource, admissionPanel) {
     e.stopPropagation();
     switch (e.target.id) {
       case "MH__planDiagTer":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=252"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=252"]');
         break;
       case "MH__planDiagTerPrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=252"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=252"]');
         break;
       case "MH__procedureConsent":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProcedury_list"][href$="x_procedura_id=393"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProcedury_list"][href$="x_procedura_id=393"]');
         break;
       case "MH__procedureConsentPrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProcedury_dr"][href*="x_procedura_id=393"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProcedury_dr"][href*="x_procedura_id=393"]');
         break;
       case "MH__badPodPrzed":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1740"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1740"]');
         break;
       case "MH__badPodPrzedPrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]');
         break;
       case "MH__caprini":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=4190"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=4190"]');
         break;
       case "MH__capriniPrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=4190"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=4190"]');
         break;
       case "MH__zakazeniePrzyjecie":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1400"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1400"]');
         break;
       case "MH__zakazeniePrzyjeciePrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1400"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1400"]');
         break;
       case "MH__skalaNRS":
         clickHREF(dataSource, 'a[href^="app.karta_zywienia_list"]');
@@ -1505,16 +1270,10 @@ function createAdmissionPanelNchir(dataSource, admissionPanel) {
         clickHREF(dataSource, 'a[href^="app.Zlecenia_lekow"]');
         break;
       case "MH__diagnosticplanning":
-        clickHREF(
-          dataSource,
-          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]');
         break;
       case "MH__operativeplanning":
-        clickHREF(
-          dataSource,
-          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]');
         break;
       case "MH__observationpanel":
         clickHREF(dataSource, 'a[href^="app.raport_list"]');
@@ -1546,16 +1305,10 @@ function createAdmissionPanelNchir(dataSource, admissionPanel) {
 
         break;
       case "MH__patientFiles":
-        clickHREF(
-          dataSource,
-          'a[href^="app.BadaniePodstawa"][href$="x_tryb=K"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.BadaniePodstawa"][href$="x_tryb=K"]');
         break;
       case "MH__nurseQuestionarre":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=251"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=251"]');
         break;
       case "MH__patientDrugs":
         clickHREF(dataSource, 'a[href^="app.dokument_apteczka_list"]');
@@ -1621,12 +1374,7 @@ function createStayPanelNchir(dataSource, stayPanel) {
       'a[href^="app.ocena_ryzyka_zakazenia_dr"][href$="x_procedura_id=1401"]',
       "MH__infectionRiskPrint"
     );
-    checkPrintability(
-      dataSource,
-      documentsPanel,
-      'a[href^="app.dokument_zap_bk_dr"]',
-      "MH__bloodTransfusionPrint"
-    );
+    checkPrintability(dataSource, documentsPanel, 'a[href^="app.dokument_zap_bk_dr"]', "MH__bloodTransfusionPrint");
     checkPrintability(
       dataSource,
       documentsPanel,
@@ -1639,28 +1387,16 @@ function createStayPanelNchir(dataSource, stayPanel) {
     e.stopPropagation();
     switch (e.target.id) {
       case "MH__badPodPrzed":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1740"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1740"]');
         break;
       case "MH__badPodPrzedPrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]');
         break;
       case "MH__infectionRisk":
-        clickHREF(
-          dataSource,
-          'a[href^="app.ocena_ryzyka_zakazenia_edit"][href$="x_procedura_id=1401"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.ocena_ryzyka_zakazenia_edit"][href$="x_procedura_id=1401"]');
         break;
       case "MH__infectionRiskPrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.ocena_ryzyka_zakazenia_dr"][href$="x_procedura_id=1401"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.ocena_ryzyka_zakazenia_dr"][href$="x_procedura_id=1401"]');
         break;
       case "MH__bloodTransfusion":
         clickHREF(dataSource, 'a[href^="app.dokument_zap_bk_list"]');
@@ -1669,16 +1405,10 @@ function createStayPanelNchir(dataSource, stayPanel) {
         // clickHREF(dataSource, 'a[href^="app.dokument_zap_bk_list"][href$="x_procedura_id=393"]');
         break;
       case "MH__procedureConsent":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProcedury_list"][href$="x_procedura_id=393"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProcedury_list"][href$="x_procedura_id=393"]');
         break;
       case "MH__procedureConsentPrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProcedury_dr"][href*="x_procedura_id=393"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProcedury_dr"][href*="x_procedura_id=393"]');
         break;
       default:
     }
@@ -1711,16 +1441,10 @@ function createStayPanelNchir(dataSource, stayPanel) {
         clickHREF(dataSource, 'a[href^="app.Zlecenia_lekow"]');
         break;
       case "MH__diagnosticplanning":
-        clickHREF(
-          dataSource,
-          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]');
         break;
       case "MH__operativeplanning":
-        clickHREF(
-          dataSource,
-          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]');
         break;
       case "MH__observationpanel":
         clickHREF(dataSource, 'a[href^="app.raport_list"]');
@@ -1752,16 +1476,10 @@ function createStayPanelNchir(dataSource, stayPanel) {
 
         break;
       case "MH__patientFiles":
-        clickHREF(
-          dataSource,
-          'a[href^="app.BadaniePodstawa"][href$="x_tryb=K"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.BadaniePodstawa"][href$="x_tryb=K"]');
         break;
       case "MH__nurseQuestionarre":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=251"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=251"]');
         break;
       case "MH__patientDrugs":
         clickHREF(dataSource, 'a[href^="app.dokument_apteczka_list"]');
@@ -1827,16 +1545,10 @@ function createDischargePanelNchir(dataSource, dischargePanel) {
     e.stopPropagation();
     switch (e.target.id) {
       case "MH__badPodPrzed":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1740"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_edit"][href$="x_procedura_id=1740"]');
         break;
       case "MH__badPodPrzedPrint":
-        clickHREF(
-          dataSource,
-          'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.DodatkoweProceduryHistChoroby_dr"][href$="x_procedura_id=1740"]');
         break;
       case "MH__discharge":
         clickHREF(dataSource, 'a[href^="app.wypis_edit"]');
@@ -1872,16 +1584,10 @@ function createDischargePanelNchir(dataSource, dischargePanel) {
         clickHREF(dataSource, 'a[href^="app.Zlecenia_lekow"]');
         break;
       case "MH__diagnosticplanning":
-        clickHREF(
-          dataSource,
-          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=Z"]');
         break;
       case "MH__operativeplanning":
-        clickHREF(
-          dataSource,
-          'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]'
-        );
+        clickHREF(dataSource, 'a[href^="app.skierowanie_list"][href$="x_typ_skierowania=O"]');
         break;
       case "MH__observationpanel":
         clickHREF(dataSource, 'a[href^="app.raport_list"]');
@@ -1891,10 +1597,8 @@ function createDischargePanelNchir(dataSource, dischargePanel) {
   };
   let grouper_rozliczony = false;
   if (
-    dataSource.querySelector('div[style="font-style:italic; color:green;"]') !=
-      "Nie wybrano grupy." &&
-    dataSource.querySelector('div[style="font-style:italic; color:green;"]') !=
-      undefined
+    dataSource.querySelector('div[style="font-style:italic; color:green;"]') != "Nie wybrano grupy." &&
+    dataSource.querySelector('div[style="font-style:italic; color:green;"]') != undefined
   ) {
     grouper_rozliczony = true;
   }
@@ -1921,9 +1625,7 @@ function createDischargePanelNchir(dataSource, dischargePanel) {
   mainPanel.append(utilitiesPanel);
   dischargePanel.append(mainPanel);
 
-  const grouperStatus = utilitiesPanel.querySelector(
-    'div[id="MH__gruperStatus"]'
-  );
+  const grouperStatus = utilitiesPanel.querySelector('div[id="MH__gruperStatus"]');
   if (grouper_rozliczony) {
     grouperStatus.innerHTML = "Rozliczony: ";
     grouperStatus.innerHTML += dataSource
@@ -1939,9 +1641,257 @@ function createDischargePanelNchir(dataSource, dischargePanel) {
   checkIfPrintable();
 }
 
+function rebuildCategoryButtons() {
+  //Extract buttons hrefs
+  const orginalButtonHolder = document.querySelectorAll('table[class="menuRowTable"]');
+  let hrefElementsList = [];
+  for (let row of orginalButtonHolder) {
+    row.style.display = "none";
+    for (let button of row.querySelectorAll("a[href]")) {
+      hrefElementsList.push(button);
+    }
+  }
+
+  //Create new panel
+  let extendDrawer = false;
+  const categoryPanel = document.createElement("div");
+  categoryPanel.classList.add("MH__myViewcategoryPanel");
+  const displayedPanel = document.createElement("div");
+  displayedPanel.classList = "MH__myViewDisplayedPanel";
+  function generateButtons() {
+    for (let button of displayedPanel.querySelectorAll(".MH__myViewCategoryButton")) {
+      button.remove();
+    }
+
+    for (let grabbedElement of hrefElementsList
+      .filter((grabbedElement) => GM_getValue("config_" + grabbedElement.textContent, false)) //filter list and order it them based on user defined config
+      .sort((a, b) => {
+        const aOrder = GM_getValue("config_" + a.textContent + "_orderNumber", 12);
+        const bOrder = GM_getValue("config_" + b.textContent + "_orderNumber", 12);
+        return aOrder - bOrder;
+      })) {
+      const categoryButton = document.createElement("button");
+      categoryButton.type = "button";
+      categoryButton.classList = "MH__myViewCategoryButton";
+      categoryButton.textContent = grabbedElement.textContent;
+      categoryButton.onclick = function () {
+        grabbedElement.click();
+      };
+      displayedPanel.append(categoryButton);
+    }
+  }
+
+  generateButtons();
+  categoryPanel.append(displayedPanel);
+  if (displayedPanel.querySelector(".MH__myViewCategoryButton") === null) {
+    // if no button configured extend configuration panel
+    extendDrawer = true;
+  }
+
+  const configurationPanel = document.createElement("div");
+  configurationPanel.style.backgroundColor = "rgb(132, 145, 155)";
+
+  const configurationPanelSpan = document.createElement("div");
+  configurationPanelSpan.innerHTML =
+    ' <img class="MH__menu__icon" src="https://github.com/3evv/Medichelper/raw/main/images/settings_icon.png"></img>Konfiguracja panelu ';
+  // configurationPanelSpan.style.fontSize = "0.75rem";
+  configurationPanelSpan.style.display = "flex";
+  configurationPanelSpan.style.height = "1.5rem";
+  // configurationPanelSpan.style.width = "21rem";
+  configurationPanelSpan.style.justifySelf = "flex-end";
+  configurationPanelSpan.style.marginRight = "0.2rem";
+  configurationPanelSpan.style.textAlign = "flex-start";
+  configurationPanelSpan.classList = "MH__menu";
+
+  configurationPanelSpan.addEventListener("click", () => {
+    extendDrawer = !extendDrawer;
+    drawerPanel.style.display = extendDrawer ? "grid" : "none";
+    drawerPanelDescription.style.display = extendDrawer ? "grid" : "none";
+  });
+
+  configurationPanel.append(configurationPanelSpan);
+
+  const drawerPanel = document.createElement("div");
+  drawerPanel.classList = "MH__myViewConfigurationPanel";
+  drawerPanel.style.display = extendDrawer ? "grid" : "none";
+
+  for (let button of hrefElementsList) {
+    const configurationDiv = document.createElement("div");
+    configurationDiv.style.display = "flex";
+    configurationDiv.style.width = "100%";
+    configurationDiv.classList = "MH__myViewConfigurationPanel__ConfigurationList";
+    configurationDiv.style.paddingBottom = "0.5rem";
+
+    const inputElement = document.createElement("input");
+    inputElement.type = "checkbox";
+    inputElement.checked = GM_getValue("config_" + button.textContent, false);
+    inputElement.style.marginRight = "0.75rem";
+    inputElement.addEventListener("change", () => {
+      GM_setValue("config_" + button.textContent, inputElement.checked);
+      generateButtons();
+    });
+    const labelElement = document.createElement("label");
+    labelElement.textContent = button.textContent.trim();
+    labelElement.classList = "MH__myViewConfigurationPanel__label";
+    labelElement.style.flexGrow = "1";
+    labelElement.style.textAlign = "left";
+
+    labelElement.onclick = function () {
+      button.click();
+    };
+
+    const orderElement = document.createElement("input");
+    orderElement.type = "number";
+    orderElement.value = GM_getValue("config_" + button.textContent + "_orderNumber", 12);
+    orderElement.style.width = "2rem";
+    orderElement.style.marginRight = "0.25rem";
+    // orderElement.style.placeSelf = "right";
+
+    orderElement.addEventListener("change", () => {
+      GM_setValue("config_" + button.textContent + "_orderNumber", orderElement.value);
+      generateButtons();
+    });
+    configurationDiv.appendChild(inputElement);
+    configurationDiv.appendChild(labelElement);
+    configurationDiv.appendChild(orderElement);
+    drawerPanel.appendChild(configurationDiv);
+  }
+  const drawerPanelDescription = document.createElement("span");
+  drawerPanelDescription.innerHTML =
+    "Zaznacz pożądane elementy wyświetlane ciągle na górze strony za pomocą tickmarka. Liczba w prawym rogu oznacza kolejność wyświetlania, gdzie niższe wartości będą pozycjonować przyski bliżej lewej krawędzi. <br> Kliknięcie na nazwę przenosi na odpowiednią stronę/odnośnik.";
+  drawerPanelDescription.style.fontSize = "1.1rem";
+  drawerPanelDescription.style.textAlign = "left";
+  drawerPanelDescription.style.display = extendDrawer ? "grid" : "none";
+  drawerPanelDescription.style.marginLeft = "0.5rem";
+
+  configurationPanel.append(drawerPanelDescription);
+  configurationPanel.append(drawerPanel);
+
+  categoryPanel.appendChild(displayedPanel);
+  categoryPanel.appendChild(configurationPanel);
+  document
+    .querySelector('table[class="menuRowTable"]')
+    .parentNode.insertBefore(categoryPanel, document.querySelector('table[class="menuRowTable"]'));
+  // Create drawer with hidden elements and configuration
+}
+
+function rebuildSearchBarAndBottomBar() {
+  let upperBarHTMLREF = [];
+  const firstUpperBarElement = document
+    .querySelector("table > tbody > tr[style='height:4px;'] > td[class='menu_c_et']")
+    .closest("table"); //  tbody[style="height:4px;"] > tr[class="menu_c_et"]
+  upperBarHTMLREF.push(firstUpperBarElement);
+  let element = firstUpperBarElement.nextSibling;
+
+  const lastUpperBarElement = document.querySelector('div[class="navigPositionDiv"]');
+  // console.log(lastUpperBarElement);
+  while (element != lastUpperBarElement) {
+    upperBarHTMLREF.push(element);
+    element = element.nextSibling;
+  }
+  upperBarHTMLREF.push(lastUpperBarElement);
+
+  upperBarHTMLREF.forEach((element) => {
+    if (element.style) {
+      element.style.display = "none";
+    }
+  });
+
+  let lowerBarHTMLREF = [];
+  const lowerBarElementsStart = document.querySelector('table[class="templateListTable"]');
+  const lowerBarElementsEnd = document.querySelector('a[class="contextHelpElementA"]').closest("table");
+  element = lowerBarElementsStart.nextSibling;
+  while (element != lowerBarElementsEnd) {
+    element = element.nextSibling;
+    lowerBarHTMLREF.push(element);
+    if (element.style) {
+      element.style.display = "none";
+    }
+  }
+
+  // const toolBar = document.createElement("div"); todo: implement
+  // toolBar.clas = "MH__toolbar"
+  // toolBar.textContent = "here";
+  // document.body.append(toolBar);
+}
+
 function fixMyView() {
+  const tableHeader = document.querySelector("body > center > form > table.templateListTable");
+    const wardName = tableHeader
+    .querySelector("legend")
+    .parentElement.querySelector("select[name=filter_jedn_options]")
+    .querySelector("[selected]").textContent;
+
+  const logoutButton = document.body.querySelector('a[class="logoutElementA"]').parentElement;
+  const enableMyView = document.createElement("button");
+  enableMyView.type = 'button';
+  enableMyView.textContent = GM_getValue("fixedViews", {})[wardName] ? "Wyłącz optymalizację strony" : "Włącz optymalizację strony" ;
+  enableMyView.style.background = GM_getValue("fixedViews", {})[wardName] ? "#89e786" : "#953e4d";
+  enableMyView.style.marginRight = '0.5rem';
+  logoutButton.insertBefore(enableMyView, logoutButton.firstChild);
+  enableMyView.addEventListener("click", () => {
+      fixedViews[wardName] = !fixedViews[wardName];
+      GM_setValue("fixedViews", fixedViews);
+      location.reload();
+  });
+
+  let fixedViews = GM_getValue("fixedViews", {});
+  if(!fixedViews[wardName]){
+    return;
+  }
+
+  document.body.style.removeProperty("background-color");
   const style = document.createElement("style");
-  style.textContent = `.MH_documentRow {
+  style.textContent = `
+  .MH__toolbar{
+  background-color: rgba(103, 0, 0, 1);
+  width: 100%
+  
+  }
+  body {
+  display: flex;
+  flex-direction: column;
+  }
+  body, tr {
+  background-color: rgba(225, 223, 223, 1);
+  }
+
+  form {
+  width:100%;
+  display:flex;
+  flex-direction: column;
+
+  }
+  .MH__myViewCategoryButton {
+  background-color: rgb(147, 159, 168); /* Todo 3evv: fix colors */ 
+  padding: 1rem;
+  border: none;
+  border-radius: 0.25rem 0.25rem 0 0;
+  margin-right: 0.15rem;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 1);
+  }
+  .MH__myViewCategoryButton:hover {
+  background-color: #0082bc;
+  }
+  .MH__myViewcategoryPanel{
+  background-color: rgba(225, 223, 223, 1);
+  }
+  .MH__myViewConfigurationPanel{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  font-size: 1.1rem;
+  padding: 0.5rem;
+  background-color: rgb(132, 145, 155);
+  justify-items: start
+
+  }
+  .MH__myViewConfigurationPanel__label:hover {
+    color: #0082bc;
+  }
+
+
+  .MH_documentRow {
    display: flex;
   flex-direction: row;
   height: 2rem;
@@ -2024,10 +1974,25 @@ function fixMyView() {
         .MH__gruperStatus{
         justify-self:flex-end;
         }
-        .MH__fixedMainPage__nameplate{
+         .MH__fixedMainPage__nameplatelegend{
+         width: auto;
         height: 1.5rem;
         font-size: 1.25rem;
-        margin: 0.5 rem;
+        margin-top: 0.1rem;
+        margin-bottom: 0.05rem;
+        padding: 0.25rem;
+        padding-left: 0.75rem;
+        background:rgb(44, 187, 111);
+        color:rgb(231, 231, 225);
+        border-top: 0.15rem solid #434656;
+        border: 0.15rem solid transparent;
+        }
+        .MH__fixedMainPage__nameplate{
+        width: auto;
+        height: 1.5rem;
+        font-size: 1.25rem;
+        margin-top: 0.1rem;
+        margin-bottom: 0.05rem;
         padding: 0.25rem;
         padding-left: 0.75rem;
         background:rgb(44, 187, 111);
@@ -2042,70 +2007,213 @@ function fixMyView() {
          }
         .MH__buttonPanel{
         background:rgb(132, 145, 155);
+        padding: 0.2rem;
+        align-items: center;
         }
         .MH___orginalFilterpanel{
-        background-color:rgb(147, 159, 168);
+        background-color: rgba(153, 167, 177, 1);
         }
+
+        .MH__menu{
+        background-color: #00000017;
+        color: rgba(255, 255, 255, 1);
+        font-size: 1.15rem;
+        align-text: center;
+        }
+        .MH__menu__icon {
+        height: 1.15rem;
+        width: 1.15rem;
+		    // mask-image: url("https://github.com/3evv/Medichelper/raw/main/images/menu_drawer.png");
+        // mask-mode: alpha;
+		    // mask-size: cover;
+		    //background-color: #ffffffff;
+        align-self: center;
+        }
+        .MH__menu:hover {
+            background-color: #0082bc;
+        }
+        .MH__filterPanel{
+        display:flex;
+        width:auto;
+        padding: 0.5rem;
+        justify-content:space-between;
+        align-items:center;
+        background-color: rgba(153, 167, 177, 1);
+        height:3rem;
+        font-size:1rem;
+        color: rgba(255, 255, 255, 0.94);
+        }
+        .MH__filterPanelElement{
+        display:flex;
+        justify-content: space-between;
+        align-content: center;
+        }
+        .MH__filterPanelSpan{
+        padding-right: 0.3rem;
+        }
+        .rowlist {
+        display:flex;
+          width:100%;
+        }
+        .templateListColumnTd {
+        display:flex;
+        width:100%;
+        flex-direction: column;
+        }
+      
         `;
   document.head.appendChild(style);
+  // document.body.style.display = "flex";
+  // document.body.style.flexDirection = "column";
+  if(GM_getValue("fixHeader", true)){
+    rebuildCategoryButtons();
+    rebuildSearchBarAndBottomBar();
+  }
+ 
+  
+  tableHeader.style.display = 'flex';
+  tableHeader.style.flexDirection = 'column';
+  tableHeader.style.width = '99.99999%';
 
-  const tableHeader = document.querySelector(
-    "body > center > form > table.templateListTable"
-  );
-  const wardName = tableHeader
-    .querySelector("legend")
-    .parentElement.querySelector("select[name=filter_jedn_options]")
-    .querySelector("[selected]").textContent;
   const tableRows = tableHeader.querySelectorAll("tr.rowlist");
 
-  tableHeader.style.background = "#30b27e";
+  // tableHeader.style.background = "#30b27e";
 
-  const Filtertable = document.querySelector(
-    '[class="templateListTableHeaderTr"]'
-  );
+  function rebuildFilterPanel() {
+    const oldFiltersContainer = document.querySelector(".MH___orginalFilterpanel");
+    oldFiltersContainer.style.display = GM_getValue("ShowoldFiltersContainer", false) ? "table-row" : "none";
+    const newFilterPanelElement = document.createElement("div");
+    newFilterPanelElement.classList = "MH__filterPanel";
+    const wardChoosingElement = document.createElement("div");
+    wardChoosingElement.classList = "MH__filterPanelElement";
+    const wardNameSpan = document.createElement("span");
+    wardNameSpan.textContent = 'Oddział:';
+    wardNameSpan.classList = "MH__filterPanelSpan";
+    const wardDropdownElement = document.querySelector('select[name="filter_jedn_options"]'); //its stupid
+    wardDropdownElement.style.width = "20rem";
+    wardChoosingElement.append(wardNameSpan, wardDropdownElement);
+    newFilterPanelElement.appendChild(wardChoosingElement);
+    const appointedMChoosingElement = document.createElement("div");
+    appointedMChoosingElement.classList = "MH__filterPanelElement";
+    const MDNameSpan = document.createElement("span");
+    MDNameSpan.classList = "MH__filterPanelSpan";
+    MDNameSpan.textContent = "Lekarz prowadzący: ";
+    const filterByAppointedMD = document.querySelector('select[name="filter_fpersonelProwadz"]'); //its stupid
+    filterByAppointedMD.style.width = "15rem";
+    const myPatients = document.querySelector('input[id="filter_ogolOpts1"]').parentElement;
+    appointedMChoosingElement.append(MDNameSpan, filterByAppointedMD, myPatients);
+    newFilterPanelElement.appendChild(appointedMChoosingElement);
+    const filterByStatus = document.createElement("div");
+    filterByStatus.classList = "MH__filterPanelElement";
+    const filterByStatusNameSpan = document.createElement("span");
+    filterByStatusNameSpan.classList = "MH__filterPanelSpan";
+    filterByStatusNameSpan.textContent = "Status hospitalizacji: ";
+    const filterByStatusDropdown = document.createElement("select");
+    const statusOptions = ["Wszystkie", "Trwające", "Zakończone", "Zakończone bez JGP"];
+    let iterator = 1;
+    for (const option of statusOptions) {
+      filterByStatusDropdown.options.add(new Option(option, "filter_hospOpts" + iterator));
+      iterator += 1;
+    }
+    // filter_hospOpts1
+    const OptionsElements = document.querySelectorAll('input[type="radio"][name="filter_hospOpts"]');
+    for (let element of OptionsElements) {
+      // console.log(element);
+      if (element.hasAttribute("checked")) {
+        // console.log(String(element.id)[String(element.id).length - 1]);
+        let selectedIdNumber = Number(String(element.id)[String(element.id).length - 1]);
+        filterByStatusDropdown.options.selectedIndex = selectedIdNumber - 1;
+      }
+    }
+    filterByStatusDropdown.addEventListener("change", function () {
+      document.querySelector(`input[id="${filterByStatusDropdown.value}"]`).click();
+    });
+
+    filterByStatus.append(filterByStatusNameSpan, filterByStatusDropdown);
+    newFilterPanelElement.appendChild(filterByStatus);
+    showOldFiltersButton = document.createElement("button");
+    showOldFiltersButton.classList = "MH__filterPanelElement";
+    showOldFiltersButton.textContent = "Pokaż stare filtry";
+    showOldFiltersButton.type = "button";
+    showOldFiltersButton.style.justifySelf = "flex-end";
+    showOldFiltersButton.addEventListener("click", function () {
+      GM_setValue("ShowoldFiltersContainer", !GM_getValue("ShowoldFiltersContainer", false));
+      oldFiltersContainer.style.display = GM_getValue("ShowoldFiltersContainer", false) ? "table-row" : "none";
+    });
+    newFilterPanelElement.appendChild(showOldFiltersButton);
+
+    return newFilterPanelElement;
+  }
+
+  const Filtertable = document.querySelector('[class="templateListTableHeaderTr"]');
+  Filtertable.style.removeProperty("background-color");
+
   Filtertable.classList += " MH___orginalFilterpanel";
-  Filtertable.style.backgroundColor = "";
+  Filtertable.querySelector("tr").classList.add("MH___orginalFilterpanel");
+
+  if(GM_getValue("fixHeader", true)){
+  Filtertable.insertAdjacentElement("beforebegin", rebuildFilterPanel());
+  } 
   const button_panel = document.createElement("div");
   button_panel.classList = "MH__buttonPanel";
 
-  const disableButton = document.createElement("button");
+  const disableHeaderChange = document.createElement("input");
+  disableHeaderChange.classList = "MH__toggleHeader";
+  disableHeaderChange.setAttribute("type", "checkbox");
+  disableHeaderChange.checked = GM_getValue("fixHeader", true);
+  disableHeaderChange.style.margin = "0.2rem";
+  const disableHeaderChangeDescription = document.createElement("span");
+  disableHeaderChangeDescription.textContent = `Zmiana widoku nagłówka`;
+  disableHeaderChangeDescription.style.textAlign = "center";
+  disableHeaderChangeDescription.style.color = "rgba(255, 255, 255, 1)";
+  disableHeaderChangeDescription.style.paddingRight = '0.4rem';
+  
+  button_panel.appendChild(disableHeaderChange);
+  button_panel.appendChild(disableHeaderChangeDescription);
+
+  disableHeaderChange.addEventListener("change", () => {
+      GM_setValue('fixHeader', disableHeaderChange.checked);
+      location.reload();
+    });
+
+  const disableButton = document.createElement("input");
   disableButton.classList = "MH__toggleOpti";
-  disableButton.setAttribute("type", "button");
-  disableButton.textContent = `Zmiana widoku`;
+  disableButton.setAttribute("type", "checkbox");
+  disableButton.checked = GM_getValue("fixedViews", {})[wardName];
   disableButton.style.margin = "0.2rem";
-  const forceButton = document.createElement("button");
-  forceButton.classList = "MH__toggleOpti";
-  forceButton.setAttribute("type", "button");
-  forceButton.textContent = `Wymuś zmianę widoku `;
-  forceButton.style.margin = "0.1rem";
+  const disableDescription = document.createElement("span");
+  disableDescription.textContent = `Zmiana widoku listy pacjentów`;
+  disableDescription.style.textAlign = "center";
+  disableDescription.style.color = "rgba(255, 255, 255, 1)";
   button_panel.appendChild(disableButton);
+  button_panel.appendChild(disableDescription);
 
   Filtertable.insertAdjacentElement("afterEnd", button_panel);
-  // logoutButton.insertBefore(forceButton, logoutButton.firstChild);
+  
+  
 
-  disableButton.style.background = GM_getValue("fixedViews", {})[wardName]
-    ? "#89e786"
-    : "#953e4d";
+
+  // disableButton.style.background = GM_getValue("fixedViews", {})[wardName] ? "#89e786" : "#953e4d";
+
   disableButton.onclick = (e) => {
     e.stopPropagation();
 
     let fixedViews = GM_getValue("fixedViews", {});
     fixedViews[wardName] = !fixedViews[wardName];
     GM_setValue("fixedViews", fixedViews);
-    for (let button of document.querySelectorAll(
-      'button[id="MH__revert_button"]'
-    )) {
+    for (let button of document.querySelectorAll('button[id="MH__revert_button"]')) {
       button.click();
     }
-    disableButton.style.background = GM_getValue("fixedViews", {})[wardName]
-      ? "#89e786"
-      : "#953e4d";
+    
+    // disableButton.style.background = GM_getValue("fixedViews", {})[wardName] ? "#89e786" : "#953e4d";
     if (GM_getValue("fixedViews", {})[wardName]) {
       declutterNameplates();
       autoRefresh();
     } else {
       restoreView();
+      document.body.querySelector('.MH__fixedMainPage__nameplatelegend').remove();
     }
+    disableButton.checked = GM_getValue("fixedViews", {})[wardName];
   };
 
   // forceButton.onclick = (e) => {
@@ -2129,14 +2237,51 @@ function fixMyView() {
   }
 
   function declutterNameplates() {
+    const firstfixedRow = document.createElement("div");
+    firstfixedRow.style.backgroundColor = " #2da173ff";
+    let margin = "0.15rem";
+    firstfixedRow.style.marginLeft = margin;
+    firstfixedRow.style.marginRight = margin;
+    // firstfixedRow.style.marginLeft = "0.65rem";
+    firstfixedRow.className = "MH__fixedMainPage__nameplatelegend";
+
+    const nameSpan = document.createElement("span");
+    nameSpan.textContent = "Imię i nazwisko, wiek";
+    nameSpan.style.width = "25rem";
+
+    const peselSpan = document.createElement("span");
+    peselSpan.textContent = "Pesel";
+    peselSpan.style.width = "12rem";
+    firstfixedRow.style.display = "flex";
+
+    firstfixedRow.appendChild(nameSpan);
+    firstfixedRow.appendChild(peselSpan);
+
+    const roomSpan = document.createElement("span");
+    // roomSpan.textContent = PeselData + " ";
+    roomSpan.style.width = "25rem";
+    roomSpan.textContent = "Sala";
+    firstfixedRow.appendChild(roomSpan);
+    const appointedMDSpan = document.createElement("span");
+    // appointedMDSpan.textContent = PeselData + " ";
+    appointedMDSpan.style.width = "25rem";
+    appointedMDSpan.style.overflowY = "hidden";
+    appointedMDSpan.textContent = "Prowadzący";
+    firstfixedRow.appendChild(appointedMDSpan);
+    const plannedDischarge = document.createElement("span");
+    // plannedDischarge.style.width = "1rem";
+    plannedDischarge.classList = "MH__plannedDischarge";
+    firstfixedRow.appendChild(plannedDischarge);
+
+    document.querySelector('div[class="MH__buttonPanel"]').insertAdjacentElement("afterEnd", firstfixedRow);
+
     for (let row of tableRows) {
-      blackBar = row
-        .querySelector("td")
-        .querySelector('table[class="pobytTable"]');
+      if (row.style) {
+        row.style.removeProperty("background-color");
+      }
+      blackBar = row.querySelector("td").querySelector('table[class="pobytTable"]');
       blackBar.style.display = "none";
-      greenBar = row
-        .querySelector("td")
-        .querySelector('table:nth-child(2)[class="pobytTable"]');
+      greenBar = row.querySelector("td").querySelector('table:nth-child(2)[class="pobytTable"]');
       greenBar.setAttribute("MH__danepobytu", "");
       greenBar.style.display = "none";
       // console.log(greenBar);
@@ -2145,23 +2290,16 @@ function fixMyView() {
       const name = capitalizeName(
         namedataString
           .substring(
-            namedataString.indexOf("Przyjęcie do szpitala:") +
-              "Przyjęcie do szpitala:".length,
+            namedataString.indexOf("Przyjęcie do szpitala:") + "Przyjęcie do szpitala:".length,
             namedataString.indexOf(",") - PESELlenght
           )
           .trim()
       );
       const PeselData = namedataString
-        .substring(
-          namedataString.indexOf(",") - PESELlenght,
-          namedataString.indexOf(",")
-        )
+        .substring(namedataString.indexOf(",") - PESELlenght, namedataString.indexOf(","))
         .trim();
       const age = namedataString
-        .substring(
-          namedataString.indexOf("wiek:") + "wiek:".length,
-          namedataString.indexOf(".")
-        )
+        .substring(namedataString.indexOf("wiek:") + "wiek:".length, namedataString.indexOf("."))
         .trim();
       // console.log(age);
 
@@ -2171,19 +2309,35 @@ function fixMyView() {
       fixedRow.className = "MH__fixedMainPage__nameplate";
       // fixedRow.innerHTML = name + " " + age + " " + PeselData;
       const nameSpan = document.createElement("span");
-      nameSpan.textContent = name + " " + age;
+      nameSpan.textContent = name + ", " + age;
       nameSpan.style.width = "25rem";
       // const ageSpan = document.createElement("span");
       // ageSpan.textContent = age + " ";
       // ageSpan.style.width = "25rem";
       const peselSpan = document.createElement("span");
       peselSpan.textContent = PeselData + " ";
-      peselSpan.style.width = "25rem";
+      peselSpan.style.width = "12rem";
       fixedRow.style.display = "flex";
 
       fixedRow.appendChild(nameSpan);
       // fixedRow.appendChild(ageSpan);
       fixedRow.appendChild(peselSpan);
+
+      const roomSpan = document.createElement("span");
+      // roomSpan.textContent = PeselData + " ";
+      roomSpan.style.width = "25rem";
+      roomSpan.classList = "MH__roomSpan";
+      fixedRow.appendChild(roomSpan);
+      const appointedMDSpan = document.createElement("span");
+      // appointedMDSpan.textContent = PeselData + " ";
+      appointedMDSpan.style.width = "25rem";
+      appointedMDSpan.style.overflowY = "hidden";
+      appointedMDSpan.classList = "MH__appointedMDSpan";
+      fixedRow.appendChild(appointedMDSpan);
+      const plannedDischarge = document.createElement("span");
+      // plannedDischarge.style.width = "1rem";
+      plannedDischarge.classList = "MH__plannedDischarge";
+      fixedRow.appendChild(plannedDischarge);
 
       row.querySelector("td").appendChild(fixedRow);
 
@@ -2192,9 +2346,7 @@ function fixMyView() {
       fixedRow.addEventListener("click", () => {
         greenBar.click();
 
-        if (
-          row.querySelector(".MH__fixedMainPage__data").style.display == "block"
-        ) {
+        if (row.querySelector(".MH__fixedMainPage__data").style.display == "block") {
           row.querySelector(".MH__fixedMainPage__data").style.display = "none";
         } else {
           // console.log("here");
@@ -2206,44 +2358,29 @@ function fixMyView() {
 
   for (let row of tableRows) {
     //activate scripts load
-    const greenBar = row
-      .querySelector("td")
-      .querySelector(
-        'table:nth-child(2)[class="pobytTable"] > tbody > tr > th'
-      );
+    const greenBar = row.querySelector("td").querySelector('table:nth-child(2)[class="pobytTable"] > tbody > tr > th');
     greenBar.click();
     greenBar.click();
   }
 
   function restoreView() {
-    for (let newNameplate of document.querySelectorAll(
-      ".MH__fixedMainPage__nameplate"
-    )) {
+    for (let newNameplate of document.querySelectorAll(".MH__fixedMainPage__nameplate")) {
       newNameplate.style.display = "none";
     }
 
     for (let row of tableRows) {
-      const blackBar = row
-        .querySelector("td")
-        .querySelector('table[class="pobytTable"]');
+      const blackBar = row.querySelector("td").querySelector('table[class="pobytTable"]');
       blackBar.style.display = "table";
 
-      const greenBar = row
-        .querySelector("td")
-        .querySelector('table:nth-child(2)[class="pobytTable"]');
+      const greenBar = row.querySelector("td").querySelector('table:nth-child(2)[class="pobytTable"]');
       greenBar.style.display = "table";
     }
   }
 
   function autoRefresh() {
-    if (
-      GM_getValue("fixedViews")[wardName] != undefined &&
-      GM_getValue("fixedViews")[wardName] == true
-    ) {
+    if (GM_getValue("fixedViews")[wardName] != undefined && GM_getValue("fixedViews")[wardName] == true) {
       for (let row of tableRows) {
-        const dataDIV = row
-          ?.querySelector("[MH__danepobytu]")
-          .querySelector("td > div");
+        const dataDIV = row?.querySelector("[MH__danepobytu]").querySelector("td > div");
 
         if (!dataDIV || !dataDIV.innerHTML) continue; // Skip if dataDIV is not found or empty
 
@@ -2251,10 +2388,7 @@ function fixMyView() {
 
         const observer = new MutationObserver((mutationsList, observer) => {
           for (let mutation of mutationsList) {
-            if (
-              mutation.type === "childList" &&
-              mutation.type === "innerHTML"
-            ) {
+            if (mutation.type === "childList" && mutation.type === "innerHTML") {
               optimize(dataDI, row);
             }
           }
@@ -2268,10 +2402,7 @@ function fixMyView() {
     }
   }
 
-  if (
-    GM_getValue("fixedViews")[wardName] != undefined &&
-    GM_getValue("fixedViews")[wardName] == true
-  ) {
+  if (GM_getValue("fixedViews")[wardName] != undefined && GM_getValue("fixedViews")[wardName] == true) {
     declutterNameplates();
     autoRefresh();
   }
@@ -2307,16 +2438,11 @@ function fixMyView() {
     const stayPanel = document.createElement("div");
     const dischargePanel = document.createElement("div");
     if (wardName == "ODDZIAŁ KARDIOLOGICZNY (49042) ") {
-      const admissionDone = createAdmissionPanelInterna(
-        dataDIV,
-        admissionPanel
-      );
+      const admissionDone = createAdmissionPanelInterna(dataDIV, admissionPanel);
       createStayPanelInterna(dataDIV, stayPanel);
       createDischargePanelInterna(dataDIV, dischargePanel);
       if (admissionDone == false) {
-        controlPanel.querySelector(
-          "button[id='MH__addmission_button']"
-        ).style.background = "#f1ff00";
+        controlPanel.querySelector("button[id='MH__addmission_button']").style.background = "#f1ff00";
       }
     }
     if (wardName == "Klinika Neurochirurgii ") {
@@ -2324,11 +2450,35 @@ function fixMyView() {
       createStayPanelNchir(dataDIV, stayPanel);
       createDischargePanelNchir(dataDIV, dischargePanel);
       if (admissionDone == false) {
-        controlPanel.querySelector(
-          "button[id='MH__addmission_button']"
-        ).style.background = "#f1ff00";
+        controlPanel.querySelector("button[id='MH__addmission_button']").style.background = "#f1ff00";
       }
     }
+
+    const informationSpans = dataDIV.querySelector('td[class*="sdw"] > table > tbody').querySelectorAll("th");
+    // console.log(informationSpans);
+    const namePlate = dataDIV.closest('tr[class="rowlist"]').querySelector("div[class='MH__fixedMainPage__nameplate']");
+    for (let info of informationSpans) {
+      switch (info.textContent) {
+        case "Sala:":
+          namePlate.querySelector('span[class="MH__roomSpan"]').textContent =
+            info.parentElement.querySelector("td").textContent;
+          break;
+        case "Data wypisu:": //todo 3evv fix to apriopriate type?
+          namePlate.querySelector('span[class="MH__plannedDischarge"]').textContent =
+            info.parentElement.querySelector("td").textContent;
+          break;
+      }
+    }
+
+    const appointedMDelement = dataDIV
+      .querySelector('td[class*="sdw"] > table > tbody')
+      .querySelector('a[href] > font[color="#1b29ff"]')
+      .closest("tr");
+    // console.log(appointedMDelement);
+    let appointedMDvalue = appointedMDelement.querySelector("td").textContent;
+    appointedMDvalue = appointedMDvalue.substring(0, appointedMDvalue.indexOf("PWZ:"));
+
+    namePlate.querySelector('span[class="MH__appointedMDSpan"]').textContent = appointedMDvalue;
 
     overlay.append(admissionPanel);
     overlay.append(stayPanel);
@@ -2345,53 +2495,50 @@ function fixMyView() {
           overlay.parentElement.removeChild(overlay);
           dataDIV.style.display = "block";
           dataDIV.classList -= "MH__Optimized";
-          restoreView();
+          // console.log(dataDIV.closest("tr[class='rowlist']"));
+          dataDIV.closest("tr[class='rowlist']").querySelector(".MH__fixedMainPage__nameplate").style.display = "none";
+          dataDIV
+            .closest("tr[class='rowlist']")
+            .querySelector("td")
+            .querySelector('table[class="pobytTable"]').style.display = "table";
+          dataDIV
+            .closest("tr[class='rowlist']")
+            .querySelector("td")
+            .querySelector('table:nth-child(2)[class="pobytTable"]').style.display = "table";
+
           break;
         case "MH__addmission_button":
           admissionPanel.style.display = "block";
           stayPanel.style.display = "none";
           dischargePanel.style.display = "none";
-          controlPanel
-            .querySelector('[class*="MH__selected_tab"]')
-            .classList.remove("MH__selected_tab");
-          controlPanel.querySelector(`[id="${e.target.id}"]`).classList +=
-            " MH__selected_tab";
+          controlPanel.querySelector('[class*="MH__selected_tab"]').classList.remove("MH__selected_tab");
+          controlPanel.querySelector(`[id="${e.target.id}"]`).classList += " MH__selected_tab";
           break;
         case "MH__stay_button":
           admissionPanel.style.display = "none";
           stayPanel.style.display = "block";
           dischargePanel.style.display = "none";
-          controlPanel
-            .querySelector('[class*="MH__selected_tab"]')
-            .classList.remove("MH__selected_tab");
-          controlPanel.querySelector(`[id="${e.target.id}"]`).classList +=
-            " MH__selected_tab";
+          controlPanel.querySelector('[class*="MH__selected_tab"]').classList.remove("MH__selected_tab");
+          controlPanel.querySelector(`[id="${e.target.id}"]`).classList += " MH__selected_tab";
           break;
         case "MH__discharge_button":
           admissionPanel.style.display = "none";
           stayPanel.style.display = "none";
           dischargePanel.style.display = "block";
-          controlPanel
-            .querySelector('[class*="MH__selected_tab"]')
-            .classList.remove("MH__selected_tab");
-          controlPanel.querySelector(`[id="${e.target.id}"]`).classList +=
-            " MH__selected_tab";
+          controlPanel.querySelector('[class*="MH__selected_tab"]').classList.remove("MH__selected_tab");
+          controlPanel.querySelector(`[id="${e.target.id}"]`).classList += " MH__selected_tab";
           break;
       }
     };
     // console.log(row);
     overlay.style.display = "none";
-    row
-      .querySelector('div[class="MH__fixedMainPage__nameplate"]')
-      .parentElement.appendChild(overlay);
+    row.querySelector('div[class="MH__fixedMainPage__nameplate"]').parentElement.appendChild(overlay);
   }
 }
 
 function detectEmptyInputFields() {
   const emptyFields = document.querySelectorAll("textarea");
-  const nazwa_headera = document
-    .getElementById("header")
-    .querySelector(".templateEditPageTitle").textContent;
+  const nazwa_headera = document.getElementById("header").querySelector(".templateEditPageTitle").textContent;
 
   // console.log(emptyFields);
   for (let field of emptyFields) {
@@ -2407,27 +2554,21 @@ function detectEmptyInputFields() {
 function configureJson(target_name = undefined) {
   const parent = document.createElement("div");
   parent.style.padding = "3rem";
-  const nazwa_headera = document
-    .getElementById("header")
-    .querySelector(".templateEditPageTitle").textContent;
-  const fieldIndex = GM_getValue(["settings"])[
-    "fields_with_autocomplete"
-  ].findIndex((item) => item.header_name === nazwa_headera);
+  const nazwa_headera = document.getElementById("header").querySelector(".templateEditPageTitle").textContent;
+  const fieldIndex = GM_getValue(["settings"])["fields_with_autocomplete"].findIndex(
+    (item) => item.header_name === nazwa_headera
+  );
   let configured = false;
   if (fieldIndex != -1) {
     configured = true;
   }
-  const savedValues = GM_getValue(["settings"])["fields_with_autocomplete"][
-    fieldIndex
-  ];
+  const savedValues = GM_getValue(["settings"])["fields_with_autocomplete"][fieldIndex];
   const titleDiv = document.createElement("div");
   titleDiv.style.height = "3rem";
   titleDiv.style.fontSize = "2rem";
   titleDiv.innerHTML += `<span style='${
     configured ? "color: green" : "color: red"
-  };'> Skonfigurowane: </span> <span style="color: black;"> ${
-    savedValues.header_name
-  } </span>`;
+  };'> Skonfigurowane: </span> <span style="color: black;"> ${savedValues.header_name} </span>`;
   parent.append(titleDiv);
   const autofillCheckbox = document.createElement("input");
   // autofillCheckbox.type = 'checkbox';
@@ -2445,18 +2586,8 @@ function configureJson(target_name = undefined) {
   let jsonData = "";
   // console.log(savedValues.user_configurable_text);
   console.log(savedValues.user_configurable_text[0][target_name]);
-  if (
-    JSON.stringify(
-      savedValues.user_configurable_text[0][target_name],
-      null,
-      2
-    ) != undefined
-  ) {
-    jsonData = JSON.stringify(
-      savedValues.user_configurable_text[0][target_name],
-      null,
-      2
-    );
+  if (JSON.stringify(savedValues.user_configurable_text[0][target_name], null, 2) != undefined) {
+    jsonData = JSON.stringify(savedValues.user_configurable_text[0][target_name], null, 2);
   } else {
     jsonData = `{
     "line1" : "Twoja pierwsza autosugestia",
@@ -2524,9 +2655,7 @@ function synthesiseJSON(target_name = undefined) {
       element.parentNode.parentNode.classList -= "MedhelperSuggestion";
       element.parentNode.removeChild(element);
     }
-    const cleanupClass = document.querySelectorAll(
-      'textarea[class="MedhelperSuggestion"]'
-    );
+    const cleanupClass = document.querySelectorAll('textarea[class="MedhelperSuggestion"]');
     for (let element of cleanupClass) {
       element.classList -= "MedhelperSuggestion";
     }
@@ -2539,9 +2668,7 @@ function synthesiseJSON(target_name = undefined) {
   const dialogInnerElement = document.createElement("div");
   dialogInnerElement.style =
     "width: 80%; height: 80%; background: #DDD; display: flex; flex-direction: column; border: 1px solid black;";
-  dialogInnerElement.addEventListener("click", (event) =>
-    event.stopPropagation()
-  );
+  dialogInnerElement.addEventListener("click", (event) => event.stopPropagation());
   const dialogContent = configureJson(target_name);
   dialogInnerElement.append(dialogContent);
   dialogElement.append(dialogInnerElement);
@@ -2551,16 +2678,12 @@ function synthesiseJSON(target_name = undefined) {
   const removeButton = document.getElementById("removejson");
   removeButton.onclick = (e) => {
     e.stopPropagation();
-    const nazwa_headera = document
-      .getElementById("header")
-      .querySelector(".templateEditPageTitle").textContent;
-    const fieldIndex = GM_getValue(["settings"])[
-      "fields_with_autocomplete"
-    ].findIndex((item) => item.header_name === nazwa_headera);
+    const nazwa_headera = document.getElementById("header").querySelector(".templateEditPageTitle").textContent;
+    const fieldIndex = GM_getValue(["settings"])["fields_with_autocomplete"].findIndex(
+      (item) => item.header_name === nazwa_headera
+    );
     let oldSettings = GM_getValue("settings", {});
-    oldSettings["fields_with_autocomplete"][fieldIndex][
-      "user_configurable_text"
-    ][0][target_name] = undefined;
+    oldSettings["fields_with_autocomplete"][fieldIndex]["user_configurable_text"][0][target_name] = undefined;
     // oldSettings = oldSettings.filter(obj => obj["fields_with_autocomplete"][fieldIndex]["user_configurable_text"][0] !== target_name);
     GM_setValue("settings", oldSettings); // Save back to storage.
     document.getElementById("approved").style.display = "block";
@@ -2568,24 +2691,21 @@ function synthesiseJSON(target_name = undefined) {
   checkButton.onclick = (e) => {
     e.stopPropagation();
     const tableInput = document.getElementById("jsonTextArea").value;
-    console.log(tableInput);
+    // console.log(tableInput);
     if (isValidJson(tableInput)) {
       document.getElementById("mistake").style.display = "none";
-      const nazwa_headera = document
-        .getElementById("header")
-        .querySelector(".templateEditPageTitle").textContent;
-      const fieldIndex = GM_getValue(["settings"])[
-        "fields_with_autocomplete"
-      ].findIndex((item) => item.header_name === nazwa_headera);
+      const nazwa_headera = document.getElementById("header").querySelector(".templateEditPageTitle").textContent;
+      const fieldIndex = GM_getValue(["settings"])["fields_with_autocomplete"].findIndex(
+        (item) => item.header_name === nazwa_headera
+      );
       if (fieldIndex != -1) {
         // Construct the path as a string
         // let path = 'settings["fields_with_autocomplete"][${fieldIndex}]["user_configurable_text"][0]["${target_name}"]';
         // path = path.replace("${fieldIndex}", fieldIndex);
         // path = path.replace("${target_name}", target_name);
         let oldSettings = GM_getValue("settings", {});
-        oldSettings["fields_with_autocomplete"][fieldIndex][
-          "user_configurable_text"
-        ][0][target_name] = JSON.parse(tableInput);
+        oldSettings["fields_with_autocomplete"][fieldIndex]["user_configurable_text"][0][target_name] =
+          JSON.parse(tableInput);
         GM_setValue("settings", oldSettings); // Save back to storage.
         document.getElementById("approved").style.display = "block";
       }
@@ -2626,10 +2746,8 @@ function addSettingCog(fieldOfIntrest) {
   parent.style.position = "absolute";
   parent.style.backgroundColor = "invisible";
   parent.style.borderRadius = "0.1rem";
-  parent.style.left =
-    fieldOfIntrest.getBoundingClientRect().right + 20 + window.scrollX + +"px";
-  parent.style.top =
-    fieldOfIntrest.getBoundingClientRect().top + window.scrollY + "px";
+  parent.style.left = fieldOfIntrest.getBoundingClientRect().right + 20 + window.scrollX + +"px";
+  parent.style.top = fieldOfIntrest.getBoundingClientRect().top + window.scrollY + "px";
   parent.style.minWidth = "fit-content";
   parent.style.display = "flex";
   parent.style.flexDirection = "column";
@@ -2668,38 +2786,18 @@ function addSettingCog(fieldOfIntrest) {
   };
 
   window.addEventListener("resize", function () {
-    updateFieldHeight(
-      fieldOfIntrest,
-      parent,
-      popup,
-      minimal_przedmiotowe_suggestion_height
-    );
+    updateFieldHeight(fieldOfIntrest, parent, popup, minimal_przedmiotowe_suggestion_height);
   });
   window.addEventListener("onclick", function () {
-    updateFieldHeight(
-      fieldOfIntrest,
-      parent,
-      popup,
-      minimal_przedmiotowe_suggestion_height
-    );
+    updateFieldHeight(fieldOfIntrest, parent, popup, minimal_przedmiotowe_suggestion_height);
   });
   fieldOfIntrest.addEventListener("resize", function () {
-    updateFieldHeight(
-      fieldOfIntrest,
-      parent,
-      popup,
-      minimal_przedmiotowe_suggestion_height
-    );
+    updateFieldHeight(fieldOfIntrest, parent, popup, minimal_przedmiotowe_suggestion_height);
   });
   document.body.appendChild(parent);
 
   const minimal_przedmiotowe_suggestion_height = 0;
-  updateFieldHeight(
-    fieldOfIntrest,
-    parent,
-    popup,
-    minimal_przedmiotowe_suggestion_height
-  );
+  updateFieldHeight(fieldOfIntrest, parent, popup, minimal_przedmiotowe_suggestion_height);
 
   const resizeObserver = new ResizeObserver((entries) => {
     window.dispatchEvent(new Event("resize"));

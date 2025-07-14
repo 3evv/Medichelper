@@ -3,7 +3,7 @@
 // @namespace   Violentmonkey Scripts
 // @match       http://localhost:8000/*
 // @match       http*://medicus.usk/*
-// @version     1.198
+// @version     1.199
 // @author      3evv
 // @description 6/8/2025, 10:37:03 PM
 // @icon	https://raw.githubusercontent.com/3evv/Medichelper/main/images/icon128.jpeg
@@ -560,9 +560,36 @@ function clickHREF(data, selector) {
 }
 
 function checkPrintability(data, target, selector, id) {
-  if (data.querySelector(selector) == undefined) {
+  let printable = false;
+
+  function Check(){ if (data.querySelector(selector) != undefined) {
+    target.querySelector(`[id=${id}]`).style.display = "block";
+      return true;
+  } else {
     target.querySelector(`[id=${id}]`).style.display = "none";
+    return false;
   }
+  }
+
+  Check();
+
+//    var time = new Date().getTime();
+//      $(document.body).bind("mousemove keypress", function(e) {
+//          time = new Date().getTime();
+
+//      });
+
+     function refresh() {
+           printable =  Check();
+           if(!printable){
+             clearInterval(a);
+             // console.log(target);
+             }
+     }
+
+     let a = setInterval(refresh, 5000);
+
+
 }
 
 function optimizePageLayout() {
@@ -2389,7 +2416,7 @@ function fixMyView() {
         const observer = new MutationObserver((mutationsList, observer) => {
           for (let mutation of mutationsList) {
             if (mutation.type === "childList") {
-              console.log('here')
+              // console.log('here')
               optimize(dataDIV, row);
             }
           }

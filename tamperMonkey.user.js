@@ -3,7 +3,7 @@
 // @namespace   Violentmonkey Scripts
 // @match       http://localhost:8000/*
 // @match       http*://medicus.usk/*
-// @version     1.197
+// @version     1.198
 // @author      3evv
 // @description 6/8/2025, 10:37:03 PM
 // @icon	https://raw.githubusercontent.com/3evv/Medichelper/main/images/icon128.jpeg
@@ -2388,16 +2388,15 @@ function fixMyView() {
 
         const observer = new MutationObserver((mutationsList, observer) => {
           for (let mutation of mutationsList) {
-            if (mutation.type === "childList" && mutation.type === "innerHTML") {
+            if (mutation.type === "childList") {
               console.log('here')
-              optimize(dataDI, row);
+              optimize(dataDIV, row);
             }
           }
         });
 
         observer.observe(dataDIV, {
           childList: true,
-          innerHTML: true,
           attributes: true,
         });
       }
@@ -2471,9 +2470,7 @@ function fixMyView() {
             info.parentElement.querySelector("td").textContent;
           break;
       }
-    }
-
-    }
+      }
     if(dataDIV
       ?.querySelector('td[class*="sdw"] > table > tbody')
       ?.querySelector('a[href] > font[color="#1b29ff"]')
@@ -2488,6 +2485,9 @@ function fixMyView() {
 
     namePlate.querySelector('span[class="MH__appointedMDSpan"]').textContent = appointedMDvalue;
     }
+    }
+
+
 
     overlay.append(admissionPanel);
     overlay.append(stayPanel);

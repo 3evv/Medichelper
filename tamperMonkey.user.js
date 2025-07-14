@@ -3,7 +3,7 @@
 // @namespace   Violentmonkey Scripts
 // @match       http://localhost:8000/*
 // @match       http*://medicus.usk/*
-// @version     1.196
+// @version     1.197
 // @author      3evv
 // @description 6/8/2025, 10:37:03 PM
 // @icon	https://raw.githubusercontent.com/3evv/Medichelper/main/images/icon128.jpeg
@@ -81,7 +81,7 @@ if (GM_getValue("fixedViews") == undefined) {
 }
 
 if (document.title == "Mój widok") {
-  if (GM_getValue(["settings"])["optimize"]) {
+  if (GM_getValue(["settings"], false)["optimize"]) {
     // console.log("here");
     fixMyView();
   }
@@ -1846,7 +1846,7 @@ function fixMyView() {
   .MH__toolbar{
   background-color: rgba(103, 0, 0, 1);
   width: 100%
-  
+
   }
   body {
   display: flex;
@@ -1863,7 +1863,7 @@ function fixMyView() {
 
   }
   .MH__myViewCategoryButton {
-  background-color: rgb(147, 159, 168); /* Todo 3evv: fix colors */ 
+  background-color: rgb(147, 159, 168); /* Todo 3evv: fix colors */
   padding: 1rem;
   border: none;
   border-radius: 0.25rem 0.25rem 0 0;
@@ -2060,7 +2060,7 @@ function fixMyView() {
         width:100%;
         flex-direction: column;
         }
-      
+
         `;
   document.head.appendChild(style);
   // document.body.style.display = "flex";
@@ -2069,8 +2069,8 @@ function fixMyView() {
     rebuildCategoryButtons();
     rebuildSearchBarAndBottomBar();
   }
- 
-  
+
+
   tableHeader.style.display = 'flex';
   tableHeader.style.flexDirection = 'column';
   tableHeader.style.width = '99.99999%';
@@ -2153,7 +2153,7 @@ function fixMyView() {
 
   if(GM_getValue("fixHeader", true)){
   Filtertable.insertAdjacentElement("beforebegin", rebuildFilterPanel());
-  } 
+  }
   const button_panel = document.createElement("div");
   button_panel.classList = "MH__buttonPanel";
 
@@ -2167,7 +2167,7 @@ function fixMyView() {
   disableHeaderChangeDescription.style.textAlign = "center";
   disableHeaderChangeDescription.style.color = "rgba(255, 255, 255, 1)";
   disableHeaderChangeDescription.style.paddingRight = '0.4rem';
-  
+
   button_panel.appendChild(disableHeaderChange);
   button_panel.appendChild(disableHeaderChangeDescription);
 
@@ -2189,8 +2189,8 @@ function fixMyView() {
   button_panel.appendChild(disableDescription);
 
   Filtertable.insertAdjacentElement("afterEnd", button_panel);
-  
-  
+
+
 
 
   // disableButton.style.background = GM_getValue("fixedViews", {})[wardName] ? "#89e786" : "#953e4d";
@@ -2204,7 +2204,7 @@ function fixMyView() {
     for (let button of document.querySelectorAll('button[id="MH__revert_button"]')) {
       button.click();
     }
-    
+
     // disableButton.style.background = GM_getValue("fixedViews", {})[wardName] ? "#89e786" : "#953e4d";
     if (GM_getValue("fixedViews", {})[wardName]) {
       declutterNameplates();
@@ -2389,6 +2389,7 @@ function fixMyView() {
         const observer = new MutationObserver((mutationsList, observer) => {
           for (let mutation of mutationsList) {
             if (mutation.type === "childList" && mutation.type === "innerHTML") {
+              console.log('here')
               optimize(dataDI, row);
             }
           }
@@ -2396,6 +2397,7 @@ function fixMyView() {
 
         observer.observe(dataDIV, {
           childList: true,
+          innerHTML: true,
           attributes: true,
         });
       }
@@ -2454,6 +2456,7 @@ function fixMyView() {
       }
     }
 
+    if(dataDIV?.querySelector('td[class*="sdw"] > table > tbody')?.querySelectorAll("th")){
     const informationSpans = dataDIV.querySelector('td[class*="sdw"] > table > tbody').querySelectorAll("th");
     // console.log(informationSpans);
     const namePlate = dataDIV.closest('tr[class="rowlist"]').querySelector("div[class='MH__fixedMainPage__nameplate']");
@@ -2470,6 +2473,11 @@ function fixMyView() {
       }
     }
 
+    }
+    if(dataDIV
+      ?.querySelector('td[class*="sdw"] > table > tbody')
+      ?.querySelector('a[href] > font[color="#1b29ff"]')
+      ?.closest("tr")){
     const appointedMDelement = dataDIV
       .querySelector('td[class*="sdw"] > table > tbody')
       .querySelector('a[href] > font[color="#1b29ff"]')
@@ -2479,6 +2487,7 @@ function fixMyView() {
     appointedMDvalue = appointedMDvalue.substring(0, appointedMDvalue.indexOf("PWZ:"));
 
     namePlate.querySelector('span[class="MH__appointedMDSpan"]').textContent = appointedMDvalue;
+    }
 
     overlay.append(admissionPanel);
     overlay.append(stayPanel);

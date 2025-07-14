@@ -3,7 +3,7 @@
 // @namespace   Violentmonkey Scripts
 // @match       http://localhost:8000/*
 // @match       http*://medicus.usk/*
-// @version     1.199
+// @version     1.200
 // @author      3evv
 // @description 6/8/2025, 10:37:03 PM
 // @icon	https://raw.githubusercontent.com/3evv/Medichelper/main/images/icon128.jpeg
@@ -236,9 +236,8 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
               falseVariant,
             };
           }
-          let output = `<span style="color:#ffffc2; font-style:oblique;" id="${key + "_" + local_index}"> [${
-            boolArray[key + "_" + local_index].textBool ? trueVariant : falseVariant
-          }]</span>`;
+          let output = `<span style="color:#ffffc2; font-style:oblique;" id="${key + "_" + local_index}"> [${boolArray[key + "_" + local_index].textBool ? trueVariant : falseVariant
+            }]</span>`;
           // if(trueVariant == '  '){
           //   output = `<span style="text-decoration: line-through; color: #6F0001;" id="${key + '_' + local_index}"> </span> [${falseVariant}]`;
           //   boolArray[key + '_' + local_index].textBool = false;
@@ -256,9 +255,8 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
     suggestionButtons.innerHTML = `
     <div style="display: flex; flex-drection:row; justify-content: flex-end ;">
     <button style="display:none" id="append_button">Doklej</button>
-    <button id="paste_button" style="min-width:50%;max-height: 1.5rem;">  ${
-      pasted_input ? "Wyłącz auto-wklej" : " Auto-wklej"
-    } </button>
+    <button id="paste_button" style="min-width:50%;max-height: 1.5rem;">  ${pasted_input ? "Wyłącz auto-wklej" : " Auto-wklej"
+      } </button>
     <img id="config" style="max-width: 1.5rem;max-height: 1.5rem; filter: opacity(0.75);" src="https://raw.githubusercontent.com/3evv/Medichelper/main/images/settings_icon.png" alt="Konfiguruj auto-uzupełnianie"></div>
     `;
     suggestionElement.appendChild(suggestionButtons);
@@ -266,9 +264,8 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
 
   function updateSuggestionText(targetId) {
     const target = suggestionElement.querySelector(`#${targetId}`);
-    target.innerHTML = ` [${
-      boolArray[targetId].textBool ? boolArray[targetId].trueVariant : boolArray[targetId].falseVariant
-    }]`;
+    target.innerHTML = ` [${boolArray[targetId].textBool ? boolArray[targetId].trueVariant : boolArray[targetId].falseVariant
+      }]`;
   }
   function updatePasteButton() {
     const target = suggestionElement.querySelector(`#paste_button`);
@@ -331,9 +328,8 @@ function configureSuggestion(fieldOfIntrest, json_lines) {
           replacementHTML.indexOf(`id="`) + `id="`.length,
           replacementHTML.indexOf(`"`, replacementHTML.indexOf(`id="`) + `id="`.length)
         );
-        let inverseValue = `${
-          !boolArray[targetId].textBool ? boolArray[targetId].trueVariant : boolArray[targetId].falseVariant
-        }`;
+        let inverseValue = `${!boolArray[targetId].textBool ? boolArray[targetId].trueVariant : boolArray[targetId].falseVariant
+          }`;
         // console.log(line.innerHTML);
         replacementLine = localHTML.substring(0, beginingReplace) + inverseValue + localHTML.substring(endingReplace);
         replacementLine = replacementLine.replaceAll("[", "").replaceAll("]", "").replace(/\s+/g, " ").trim();
@@ -562,33 +558,33 @@ function clickHREF(data, selector) {
 function checkPrintability(data, target, selector, id) {
   let printable = false;
 
-  function Check(){ if (data.querySelector(selector) != undefined) {
-    target.querySelector(`[id=${id}]`).style.display = "block";
+  function Check() {
+    if (data.querySelector(selector) != undefined) {
+      target.querySelector(`[id=${id}]`).style.display = "block";
       return true;
-  } else {
-    target.querySelector(`[id=${id}]`).style.display = "none";
-    return false;
-  }
+    } else {
+      target.querySelector(`[id=${id}]`).style.display = "none";
+      return false;
+    }
   }
 
   Check();
 
-//    var time = new Date().getTime();
-//      $(document.body).bind("mousemove keypress", function(e) {
-//          time = new Date().getTime();
+  //    var time = new Date().getTime();
+  //      $(document.body).bind("mousemove keypress", function(e) {
+  //          time = new Date().getTime();
 
-//      });
+  //      });
 
-     function refresh() {
-           printable =  Check();
-           if(!printable){
-             clearInterval(a);
-             // console.log(target);
-             }
-     }
+  function refresh() {
+    printable = Check();
+    if (!printable) {
+      clearInterval(a);
+      // console.log(target);
+    }
+  }
 
-     let a = setInterval(refresh, 5000);
-
+  let a = setInterval(refresh, 5000);
 
 }
 
@@ -611,8 +607,8 @@ function createAdmissionPanelInterna(dataSource, admissionPanel) {
   mainPanel.style.border = "1px solid rgb(190,195,199)";
   // mainPanel.style.borderTop = '';
   mainPanel.style.paddingRight = "1.25rem";
-  mainPanel.style.paddingTop = "1rem";
-  mainPanel.style.paddingBottom = "1rem";
+  mainPanel.style.paddingTop = "2rem";
+  mainPanel.style.paddingBottom = "1.5rem";
   mainPanel.style.position = "relative";
   mainPanel.style.zIndex = "0";
   mainPanel.style.background = "rgb(241, 241, 241)";
@@ -679,19 +675,19 @@ function createAdmissionPanelInterna(dataSource, admissionPanel) {
       "MH__skalaNRSPrint"
     );
 
-    const printARRAY = [
-      "MH__planDiagTerPrint",
-      "MH__zgodaKoroPrint",
-      "MH__badPodPrzedPrint",
-      "MH__capriniPrint",
-      "MH__zakazeniePrzyjeciePrint",
-    ];
+    // const printARRAY = [
+    //   "MH__planDiagTerPrint",
+    //   "MH__zgodaKoroPrint",
+    //   "MH__badPodPrzedPrint",
+    //   "MH__capriniPrint",
+    //   "MH__zakazeniePrzyjeciePrint",
+    // ];
 
-    for (let id of printARRAY) {
-      if (documentsPanel.querySelector(`img[id=${id}]`).style.display == "none") {
-        addmissionDone = false;
-      }
-    }
+    // for (let id of printARRAY) {
+    //   if (documentsPanel.querySelector(`img[id=${id}]`).style.display == "none") {
+    //     addmissionDone = false;
+    //   }
+    // }
   }
 
   documentsPanel.onclick = (e) => {
@@ -829,8 +825,8 @@ function createStayPanelInterna(dataSource, stayPanel) {
   mainPanel.style.border = "1px solid rgb(190,195,199)";
   // mainPanel.style.borderTop = '';
   mainPanel.style.paddingRight = "1.25rem";
-  mainPanel.style.paddingTop = "1rem";
-  mainPanel.style.paddingBottom = "1rem";
+  mainPanel.style.paddingTop = "2rem";
+  mainPanel.style.paddingBottom = "1.5rem";
   mainPanel.style.position = "relative";
   mainPanel.style.zIndex = "0";
   mainPanel.style.background = "rgb(241, 241, 241)";
@@ -998,8 +994,8 @@ function createDischargePanelInterna(dataSource, dischargePanel) {
   mainPanel.style.border = "1px solid rgb(190,195,199)";
   // mainPanel.style.borderTop = '';
   mainPanel.style.paddingRight = "1.25rem";
-  mainPanel.style.paddingTop = "1rem";
-  mainPanel.style.paddingBottom = "1rem";
+  mainPanel.style.paddingTop = "2rem";
+  mainPanel.style.paddingBottom = "1.5rem";
   mainPanel.style.position = "relative";
   mainPanel.style.zIndex = "0";
   mainPanel.style.background = "rgb(241, 241, 241)";
@@ -1140,8 +1136,8 @@ function createAdmissionPanelNchir(dataSource, admissionPanel) {
   mainPanel.style.border = "1px solid rgb(190,195,199)";
   // mainPanel.style.borderTop = '';
   mainPanel.style.paddingRight = "1.25rem";
-  mainPanel.style.paddingTop = "1rem";
-  mainPanel.style.paddingBottom = "1rem";
+  mainPanel.style.paddingTop = "2rem";
+  mainPanel.style.paddingBottom = "1.5rem";
   mainPanel.style.position = "relative";
   mainPanel.style.zIndex = "0";
   mainPanel.style.background = "rgb(241, 241, 241)";
@@ -1210,19 +1206,19 @@ function createAdmissionPanelNchir(dataSource, admissionPanel) {
       "MH__skalaNRSPrint"
     );
 
-    const printARRAY = [
-      "MH__planDiagTerPrint",
-      "MH__procedureConsentPrint",
-      "MH__badPodPrzedPrint",
-      "MH__capriniPrint",
-      "MH__zakazeniePrzyjeciePrint",
-    ];
+    // const printARRAY = [
+    //   "MH__planDiagTerPrint",
+    //   "MH__procedureConsentPrint",
+    //   "MH__badPodPrzedPrint",
+    //   "MH__capriniPrint",
+    //   "MH__zakazeniePrzyjeciePrint",
+    // ];
 
-    for (let id of printARRAY) {
-      if (documentsPanel.querySelector(`img[id=${id}]`).style.display == "none") {
-        addmissionDone = false;
-      }
-    }
+    // for (let id of printARRAY) {
+    //   if (documentsPanel.querySelector(`img[id=${id}]`).style.display == "none") {
+    //     addmissionDone = false;
+    //   }
+    // }
   }
 
   documentsPanel.onclick = (e) => {
@@ -1362,8 +1358,8 @@ function createStayPanelNchir(dataSource, stayPanel) {
   mainPanel.style.border = "1px solid rgb(190,195,199)";
   // mainPanel.style.borderTop = '';
   mainPanel.style.paddingRight = "1.25rem";
-  mainPanel.style.paddingTop = "1rem";
-  mainPanel.style.paddingBottom = "1rem";
+  mainPanel.style.paddingTop = "2rem";
+  mainPanel.style.paddingBottom = "1.5rem";
   mainPanel.style.position = "relative";
   mainPanel.style.zIndex = "0";
   mainPanel.style.background = "rgb(241, 241, 241)";
@@ -1531,8 +1527,8 @@ function createDischargePanelNchir(dataSource, dischargePanel) {
   mainPanel.style.border = "1px solid rgb(190,195,199)";
   // mainPanel.style.borderTop = '';
   mainPanel.style.paddingRight = "1.25rem";
-  mainPanel.style.paddingTop = "1rem";
-  mainPanel.style.paddingBottom = "1rem";
+  mainPanel.style.paddingTop = "2rem";
+  mainPanel.style.paddingBottom = "1.5rem";
   mainPanel.style.position = "relative";
   mainPanel.style.zIndex = "0";
   mainPanel.style.background = "rgb(241, 241, 241)";
@@ -1716,6 +1712,7 @@ function rebuildCategoryButtons() {
   }
 
   const configurationPanel = document.createElement("div");
+  configurationPanel.classList = "MH__menuBar";
   configurationPanel.style.backgroundColor = "rgb(132, 145, 155)";
 
   const configurationPanelSpan = document.createElement("div");
@@ -1769,6 +1766,7 @@ function rebuildCategoryButtons() {
 
     const orderElement = document.createElement("input");
     orderElement.type = "number";
+    // orderElement.style.overflow = 'always-visible';
     orderElement.value = GM_getValue("config_" + button.textContent + "_orderNumber", 12);
     orderElement.style.width = "2rem";
     orderElement.style.marginRight = "0.25rem";
@@ -1787,6 +1785,8 @@ function rebuildCategoryButtons() {
   drawerPanelDescription.innerHTML =
     "Zaznacz pożądane elementy wyświetlane ciągle na górze strony za pomocą tickmarka. Liczba w prawym rogu oznacza kolejność wyświetlania, gdzie niższe wartości będą pozycjonować przyski bliżej lewej krawędzi. <br> Kliknięcie na nazwę przenosi na odpowiednią stronę/odnośnik.";
   drawerPanelDescription.style.fontSize = "1.1rem";
+  drawerPanelDescription.style.paddingTop = "0.5rem";
+  drawerPanelDescription.style.paddingLeft = "0.5rem";
   drawerPanelDescription.style.textAlign = "left";
   drawerPanelDescription.style.display = extendDrawer ? "grid" : "none";
   drawerPanelDescription.style.marginLeft = "0.5rem";
@@ -1844,7 +1844,7 @@ function rebuildSearchBarAndBottomBar() {
 
 function fixMyView() {
   const tableHeader = document.querySelector("body > center > form > table.templateListTable");
-    const wardName = tableHeader
+  const wardName = tableHeader
     .querySelector("legend")
     .parentElement.querySelector("select[name=filter_jedn_options]")
     .querySelector("[selected]").textContent;
@@ -1852,18 +1852,18 @@ function fixMyView() {
   const logoutButton = document.body.querySelector('a[class="logoutElementA"]').parentElement;
   const enableMyView = document.createElement("button");
   enableMyView.type = 'button';
-  enableMyView.textContent = GM_getValue("fixedViews", {})[wardName] ? "Wyłącz optymalizację strony" : "Włącz optymalizację strony" ;
+  enableMyView.textContent = GM_getValue("fixedViews", {})[wardName] ? "Wyłącz optymalizację strony" : "Włącz optymalizację strony";
   enableMyView.style.background = GM_getValue("fixedViews", {})[wardName] ? "#89e786" : "#953e4d";
   enableMyView.style.marginRight = '0.5rem';
   logoutButton.insertBefore(enableMyView, logoutButton.firstChild);
   enableMyView.addEventListener("click", () => {
-      fixedViews[wardName] = !fixedViews[wardName];
-      GM_setValue("fixedViews", fixedViews);
-      location.reload();
+    fixedViews[wardName] = !fixedViews[wardName];
+    GM_setValue("fixedViews", fixedViews);
+    location.reload();
   });
 
   let fixedViews = GM_getValue("fixedViews", {});
-  if(!fixedViews[wardName]){
+  if (!fixedViews[wardName]) {
     return;
   }
 
@@ -1910,8 +1910,9 @@ function fixMyView() {
   font-size: 1.1rem;
   padding: 0.5rem;
   background-color: rgb(132, 145, 155);
-  justify-items: start
-
+  justify-items: start;
+  padding-left: 1rem;
+  padding-right: 1rem;
   }
   .MH__myViewConfigurationPanel__label:hover {
     color: #0082bc;
@@ -1919,10 +1920,10 @@ function fixMyView() {
 
 
   .MH_documentRow {
-   display: flex;
+  display: flex;
   flex-direction: row;
   height: 2rem;
-  width: 30rem;
+  min-width: 15vw;
   align-items: flex-end;
   }
   .MH_documentLink:hover {
@@ -1979,10 +1980,10 @@ function fixMyView() {
         .MH__tab1{
         }
         .MH__tab2{
-        left: 5.2rem;
+        left: 5.6rem;
         }
         .MH__tab3{
-        left: 14.55rem;
+        left: 14.8rem;
         }
         .MH__tab_selected{
         position: absolute;
@@ -2005,7 +2006,7 @@ function fixMyView() {
          width: auto;
         height: 1.5rem;
         font-size: 1.25rem;
-        margin-top: 0.1rem;
+        margin-top: 0.25rem;
         margin-bottom: 0.05rem;
         padding: 0.25rem;
         padding-left: 0.75rem;
@@ -2013,6 +2014,7 @@ function fixMyView() {
         color:rgb(231, 231, 225);
         border-top: 0.15rem solid #434656;
         border: 0.15rem solid transparent;
+        font-weight: bold;
         }
         .MH__fixedMainPage__nameplate{
         width: auto;
@@ -2026,16 +2028,23 @@ function fixMyView() {
         color:rgb(231, 231, 225);
         border-top: 0.15rem solid #434656;
         border: 0.15rem solid transparent;
+        margin-left: 0.05em;
+        margin-right: 0.05rem;
         }
         .MH__fixedMainPage__nameplate:hover {
-        color: #0082bc;
-        border: 0.15rem solid #0082bc;
+        color: #000000ff;
+        border: 0.15rem solid #000000ff;
+        background:rgba(213, 213, 213, 1);
 
          }
         .MH__buttonPanel{
         background:rgb(132, 145, 155);
         padding: 0.2rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
         align-items: center;
+        margin-left: 0.15rem;
+        margin-right: 0.15rem;
         }
         .MH___orginalFilterpanel{
         background-color: rgba(153, 167, 177, 1);
@@ -2046,10 +2055,12 @@ function fixMyView() {
         color: rgba(255, 255, 255, 1);
         font-size: 1.15rem;
         align-text: center;
+        
         }
         .MH__menu__icon {
         height: 1.15rem;
         width: 1.15rem;
+        margin-right: 0.15rem;
 		    // mask-image: url("https://github.com/3evv/Medichelper/raw/main/images/menu_drawer.png");
         // mask-mode: alpha;
 		    // mask-size: cover;
@@ -2057,7 +2068,7 @@ function fixMyView() {
         align-self: center;
         }
         .MH__menu:hover {
-            background-color: #0082bc;
+        background-color: #0082bc;
         }
         .MH__filterPanel{
         display:flex;
@@ -2069,6 +2080,8 @@ function fixMyView() {
         height:3rem;
         font-size:1rem;
         color: rgba(255, 255, 255, 0.94);
+        margin-left: 0.15rem;
+        margin-right: 0.15rem;
         }
         .MH__filterPanelElement{
         display:flex;
@@ -2087,12 +2100,18 @@ function fixMyView() {
         width:100%;
         flex-direction: column;
         }
-
-        `;
+        .MH__myViewDisplayedPanel {
+         margin-left: 0.15rem;
+        margin-right: 0.15rem;
+        }
+        .MH__menuBar{
+         margin-left: 0.15rem;
+        margin-right: 0.15rem;
+        } `;
   document.head.appendChild(style);
   // document.body.style.display = "flex";
   // document.body.style.flexDirection = "column";
-  if(GM_getValue("fixHeader", true)){
+  if (GM_getValue("fixHeader", true)) {
     rebuildCategoryButtons();
     rebuildSearchBarAndBottomBar();
   }
@@ -2178,8 +2197,8 @@ function fixMyView() {
   Filtertable.classList += " MH___orginalFilterpanel";
   Filtertable.querySelector("tr").classList.add("MH___orginalFilterpanel");
 
-  if(GM_getValue("fixHeader", true)){
-  Filtertable.insertAdjacentElement("beforebegin", rebuildFilterPanel());
+  if (GM_getValue("fixHeader", true)) {
+    Filtertable.insertAdjacentElement("beforebegin", rebuildFilterPanel());
   }
   const button_panel = document.createElement("div");
   button_panel.classList = "MH__buttonPanel";
@@ -2199,9 +2218,9 @@ function fixMyView() {
   button_panel.appendChild(disableHeaderChangeDescription);
 
   disableHeaderChange.addEventListener("change", () => {
-      GM_setValue('fixHeader', disableHeaderChange.checked);
-      location.reload();
-    });
+    GM_setValue('fixHeader', disableHeaderChange.checked);
+    location.reload();
+  });
 
   const disableButton = document.createElement("input");
   disableButton.classList = "MH__toggleOpti";
@@ -2326,7 +2345,7 @@ function fixMyView() {
         .substring(namedataString.indexOf(",") - PESELlenght, namedataString.indexOf(","))
         .trim();
       const age = namedataString
-        .substring(namedataString.indexOf("wiek:") + "wiek:".length, namedataString.indexOf("."))
+        .substring(namedataString.indexOf("wiek:") + "wiek:".length, namedataString.indexOf(".") - 1)
         .trim();
       // console.log(age);
 
@@ -2336,7 +2355,7 @@ function fixMyView() {
       fixedRow.className = "MH__fixedMainPage__nameplate";
       // fixedRow.innerHTML = name + " " + age + " " + PeselData;
       const nameSpan = document.createElement("span");
-      nameSpan.textContent = name + ", " + age;
+      nameSpan.textContent = name + ", " + age + " lat";
       nameSpan.style.width = "25rem";
       // const ageSpan = document.createElement("span");
       // ageSpan.textContent = age + " ";
@@ -2482,36 +2501,36 @@ function fixMyView() {
       }
     }
 
-    if(dataDIV?.querySelector('td[class*="sdw"] > table > tbody')?.querySelectorAll("th")){
-    const informationSpans = dataDIV.querySelector('td[class*="sdw"] > table > tbody').querySelectorAll("th");
-    // console.log(informationSpans);
-    const namePlate = dataDIV.closest('tr[class="rowlist"]').querySelector("div[class='MH__fixedMainPage__nameplate']");
-    for (let info of informationSpans) {
-      switch (info.textContent) {
-        case "Sala:":
-          namePlate.querySelector('span[class="MH__roomSpan"]').textContent =
-            info.parentElement.querySelector("td").textContent;
-          break;
-        case "Data wypisu:": //todo 3evv fix to apriopriate type?
-          namePlate.querySelector('span[class="MH__plannedDischarge"]').textContent =
-            info.parentElement.querySelector("td").textContent;
-          break;
+    if (dataDIV?.querySelector('td[class*="sdw"] > table > tbody')?.querySelectorAll("th")) {
+      const informationSpans = dataDIV.querySelector('td[class*="sdw"] > table > tbody').querySelectorAll("th");
+      // console.log(informationSpans);
+      const namePlate = dataDIV.closest('tr[class="rowlist"]').querySelector("div[class='MH__fixedMainPage__nameplate']");
+      for (let info of informationSpans) {
+        switch (info.textContent) {
+          case "Sala:":
+            namePlate.querySelector('span[class="MH__roomSpan"]').textContent =
+              info.parentElement.querySelector("td").textContent;
+            break;
+          case "Data wypisu:": //todo 3evv fix to apriopriate type?
+            namePlate.querySelector('span[class="MH__plannedDischarge"]').textContent =
+              info.parentElement.querySelector("td").textContent;
+            break;
+        }
       }
-      }
-    if(dataDIV
-      ?.querySelector('td[class*="sdw"] > table > tbody')
-      ?.querySelector('a[href] > font[color="#1b29ff"]')
-      ?.closest("tr")){
-    const appointedMDelement = dataDIV
-      .querySelector('td[class*="sdw"] > table > tbody')
-      .querySelector('a[href] > font[color="#1b29ff"]')
-      .closest("tr");
-    // console.log(appointedMDelement);
-    let appointedMDvalue = appointedMDelement.querySelector("td").textContent;
-    appointedMDvalue = appointedMDvalue.substring(0, appointedMDvalue.indexOf("PWZ:"));
+      if (dataDIV
+        ?.querySelector('td[class*="sdw"] > table > tbody')
+        ?.querySelector('a[href] > font[color="#1b29ff"]')
+        ?.closest("tr")) {
+        const appointedMDelement = dataDIV
+          .querySelector('td[class*="sdw"] > table > tbody')
+          .querySelector('a[href] > font[color="#1b29ff"]')
+          .closest("tr");
+        // console.log(appointedMDelement);
+        let appointedMDvalue = appointedMDelement.querySelector("td").textContent;
+        appointedMDvalue = appointedMDvalue.substring(0, appointedMDvalue.indexOf("PWZ:"));
 
-    namePlate.querySelector('span[class="MH__appointedMDSpan"]').textContent = appointedMDvalue;
-    }
+        namePlate.querySelector('span[class="MH__appointedMDSpan"]').textContent = appointedMDvalue;
+      }
     }
 
 
@@ -2602,9 +2621,8 @@ function configureJson(target_name = undefined) {
   const titleDiv = document.createElement("div");
   titleDiv.style.height = "3rem";
   titleDiv.style.fontSize = "2rem";
-  titleDiv.innerHTML += `<span style='${
-    configured ? "color: green" : "color: red"
-  };'> Skonfigurowane: </span> <span style="color: black;"> ${savedValues.header_name} </span>`;
+  titleDiv.innerHTML += `<span style='${configured ? "color: green" : "color: red"
+    };'> Skonfigurowane: </span> <span style="color: black;"> ${savedValues.header_name} </span>`;
   parent.append(titleDiv);
   const autofillCheckbox = document.createElement("input");
   // autofillCheckbox.type = 'checkbox';
